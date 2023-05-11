@@ -69,4 +69,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     implementation(project(":feature:musicgenres"))
+    implementation(project(":feature:albumdetail"))
+    implementation(project(":feature:artistdetail"))
+    implementation(project(":feature:favorites"))
+    implementation(project(":feature:artists"))
 }
