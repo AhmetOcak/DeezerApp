@@ -1,6 +1,7 @@
 package com.network.di
 
 import com.network.BaseUrl
+import com.network.retrofit.ArtistApi
 import com.network.retrofit.MusicGenreApi
 import dagger.Module
 import dagger.Provides
@@ -18,9 +19,19 @@ object NetworkModule {
     @Singleton
     fun provideMusicGenreApi(): MusicGenreApi {
        return Retrofit.Builder()
-           .baseUrl(BaseUrl.MUSIC_GENRE_BASEURL)
+           .baseUrl(BaseUrl.DEEZER)
            .addConverterFactory(GsonConverterFactory.create())
            .build()
            .create(MusicGenreApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideArtistApi(): ArtistApi {
+        return Retrofit.Builder()
+            .baseUrl(BaseUrl.DEEZER)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ArtistApi::class.java)
     }
 }

@@ -1,9 +1,10 @@
 package com.network
 
 internal object BaseUrl {
-    const val MUSIC_GENRE_BASEURL = "https://api.deezer.com"
+    const val DEEZER = "https://api.deezer.com"
 }
 
 internal object EndPoint {
     const val MUSIC_GENRE_ENDPOINT = "/genre"
+    const val ARTIST_ENDPOINT = "/genre/{genre_id}/artists"
 }

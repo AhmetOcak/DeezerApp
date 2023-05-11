@@ -1,7 +1,7 @@
 package com.network.di
 
-import com.network.datasource.musicgenre.IMusicGenreRemoteDataSource
-import com.network.datasource.musicgenre.MusicGenreRemoteDataSourceImpl
+import com.network.datasource.artist.*
+import com.network.datasource.musicgenre.*
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,5 +14,9 @@ abstract class DataSourceModule {
 
     @Binds
     @Singleton
-    abstract fun bindMusicGenreDataSource(musicGenreRemoteDataSourceImpl: MusicGenreRemoteDataSourceImpl): IMusicGenreRemoteDataSource
+    abstract fun bindMusicGenreRemoteDataSource(musicGenreRemoteDataSourceImpl: MusicGenreRemoteDataSourceImpl): IMusicGenreRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindArtistRemoteDataSource(artistRemoteDataSourceImpl: ArtistRemoteDataSourceImpl): IArtistRemoteDataSource
 }
