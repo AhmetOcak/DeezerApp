@@ -13,7 +13,9 @@ import com.artists.ArtistsScreen
 import com.deezerapp.ui.theme.DeezerAppTheme
 import com.favorites.FavoritesScreen
 import com.musicgenres.MusicGenresScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ArtistsScreen()
+                    MusicGenresScreen()
                 }
             }
         }
