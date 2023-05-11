@@ -7,7 +7,7 @@ import retrofit2.http.Path
 
 interface ArtistApi {
 
-    @GET(EndPoint.ARTIST_ENDPOINT)
+    @GET(EndPoint.ARTIST)
     suspend fun getArtists(
         @Path("genre_id") genreId: Int
     ) : ArtistDto

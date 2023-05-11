@@ -21,6 +21,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
 import com.designsystem.R
+import com.designsystem.theme.DeepOrange
 
 /**
  * A method for the load image from the network in an animated way.
@@ -31,7 +32,11 @@ import com.designsystem.R
  *  @param imageUrl url of the image.
  */
 @Composable
-fun AnimatedImage(modifier: Modifier = Modifier, imageUrl: String) {
+fun AnimatedImage(
+    modifier: Modifier = Modifier,
+    imageUrl: String,
+    contentScale: ContentScale = ContentScale.Crop
+) {
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(imageUrl)
@@ -49,21 +54,37 @@ fun AnimatedImage(modifier: Modifier = Modifier, imageUrl: String) {
     when (painter.state) {
         is AsyncImagePainter.State.Loading -> {
             Box(modifier = modifier, contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = DeepOrange)
             }
         }
-        is AsyncImagePainter.State.Error -> { ErrorImage(modifier) }
-        is AsyncImagePainter.State.Empty -> { EmptyImage(modifier) }
-        else -> { AnimatedImage(modifier, transition, painter, matrix) }
+
+        is AsyncImagePainter.State.Error -> {
+            ErrorImage(modifier)
+        }
+
+        is AsyncImagePainter.State.Empty -> {
+            EmptyImage(modifier)
+        }
+
+        else -> {
+            Image(
+                modifier,
+                transition,
+                painter,
+                matrix,
+                contentScale
+            )
+        }
     }
 }
 
 @Composable
-private fun AnimatedImage(
+private fun Image(
     modifier: Modifier,
     transition: Float,
     painter: AsyncImagePainter,
-    matrix: ColorMatrix
+    matrix: ColorMatrix,
+    contentScale: ContentScale
 ) {
     Image(
         modifier = modifier
@@ -72,7 +93,7 @@ private fun AnimatedImage(
             .alpha(1f.coerceAtMost(transition / .2f)),
         painter = painter,
         contentDescription = "Artist image",
-        contentScale = ContentScale.Crop,
+        contentScale = contentScale,
         colorFilter = ColorFilter.colorMatrix(colorMatrix = matrix)
     )
 }

@@ -6,6 +6,6 @@ import retrofit2.http.GET
 
 interface MusicGenreApi {
 
-    @GET(EndPoint.MUSIC_GENRE_ENDPOINT)
+    @GET(EndPoint.MUSIC_GENRE)
     suspend fun getMusicGenres(): MusicGenreDto
 }

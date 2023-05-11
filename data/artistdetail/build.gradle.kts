@@ -1,10 +1,12 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("dagger.hilt.android.plugin")
+    id("kotlin-kapt")
 }
 
 android {
-    namespace = "com.usecases"
+    namespace = "com.artistdetail"
     compileSdk = 33
 
     defaultConfig {
@@ -38,20 +40,17 @@ dependencies {
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
-
-    // Javax Inject
-    implementation("javax.inject:javax.inject:1")
-
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.45")
+    kapt("com.google.dagger:hilt-compiler:2.45")
+
     // Paging 3
     implementation("androidx.paging:paging-runtime:3.1.1")
 
+    implementation(project(":data:network"))
     implementation(project(":domain:model"))
-
-    implementation(project(":data:musicgenres"))
-    implementation(project(":data:artist"))
-    implementation(project(":data:artistdetail"))
 }
