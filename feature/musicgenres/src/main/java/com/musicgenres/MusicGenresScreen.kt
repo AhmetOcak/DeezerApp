@@ -1,6 +1,7 @@
 package com.musicgenres
 
 import android.util.Log
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -49,7 +50,8 @@ fun MusicCategoriesScreenContent(
     modifier: Modifier,
     onNavigateArtistScreen: () -> Unit,
     onGenreClicked: (Int) -> Unit,
-    musicGenresState: MusicGenresState
+    musicGenresState: MusicGenresState,
+    darkTheme: Boolean = isSystemInDarkTheme()
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -58,7 +60,7 @@ fun MusicCategoriesScreenContent(
             DeezerTopAppBar(
                 actionIcon = DeezerIcons.Favorite,
                 actionIconTint = HeartRed,
-                logoId = R.drawable.deezer_logo_light,
+                logoId = if (darkTheme) R.drawable.deezer_logo_dark else R.drawable.deezer_logo_light,
                 logoContentDescription = null,
                 actionContentDescription = null,
                 onActionClick = onNavigateArtistScreen

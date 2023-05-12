@@ -4,13 +4,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -79,10 +82,12 @@ private fun ArtistDetailScreenContent(
                     .fillMaxSize(),
                 artistDetailState = artistDetailState
             )
-            Divider(modifier = Modifier.padding(horizontal = 16.dp))
-            AlbumsSection(modifier = modifier
-                .weight(3f)
-                .fillMaxSize(), trackList = trackList)
+            AlbumsSection(
+                modifier = modifier
+                    .weight(3f)
+                    .fillMaxSize(),
+                trackList = trackList
+            )
         }
     }
 }
@@ -127,30 +132,49 @@ Todo: trackList'ten albumler ayıklaancak
  */
 @Composable
 private fun AlbumsSection(modifier: Modifier, trackList: LazyPagingItems<TrackData>) {
+    Column(modifier = modifier) {
+        AlbumsSectionTitle()
+        AlbumsList(trackList = trackList)
+    }
+}
+
+@Composable
+private fun AlbumsList(trackList: LazyPagingItems<TrackData>, ) {
     LazyColumn(
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 16.dp),
         state = trackList.rememberLazyListState()
     ) {
         items(trackList, key = { it.id }) {
             AlbumCard(
-                modifier = Modifier,
                 albumImage = it?.album?.coverBig ?: "",
                 albumName = it?.album?.title ?: "",
                 albumId = it?.album?.id ?: 0,
                 onAlbumClicked = {}
             )
-            Divider(modifier = Modifier.padding(horizontal = 16.dp))
         }
 
         onLoadState(
-            modifier = modifier,
+            modifier = Modifier,
             loadState = trackList.loadState.append
         )
 
         onLoadState(
-            modifier = modifier,
+            modifier = Modifier,
             loadState = trackList.loadState.refresh
         )
     }
+}
+
+@Composable
+private fun AlbumsSectionTitle() {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 16.dp),
+        text = "Albums",
+        style = MaterialTheme.typography.titleLarge
+    )
+    Divider()
 }

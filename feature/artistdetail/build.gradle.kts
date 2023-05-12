@@ -64,9 +64,6 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     kapt("com.google.dagger:hilt-compiler:2.45")
 
-    // Accompanist
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.23.1")
-
     // Paging 3
     implementation("androidx.paging:paging-runtime:3.1.1")
     implementation("androidx.paging:paging-compose:1.0.0-alpha18")

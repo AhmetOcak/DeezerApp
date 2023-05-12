@@ -57,7 +57,7 @@ private fun FavoritesScreenContent(modifier: Modifier) {
                     .weight(2f)
                     .fillMaxSize()
             )
-            Divider(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp))
+            Divider()
             FavoriteSongs(
                 modifier = modifier
                     .weight(4f)

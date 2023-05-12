@@ -13,7 +13,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -86,11 +88,7 @@ private fun AlbumDetailScreenContent(
                             .fillMaxSize(),
                         albumImageUrl = albumDetailsState.data.coverBig
                     )
-                    Divider(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    )
+                    Title()
                     SongList(
                         modifier = modifier
                             .weight(3f)
@@ -130,6 +128,19 @@ private fun AlbumImage(modifier: Modifier, albumImageUrl: String) {
             imageUrl = albumImageUrl
         )
     }
+}
+
+@Composable
+private fun Title() {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 16.dp),
+        text = "Songs",
+        style = MaterialTheme.typography.titleLarge
+    )
+    Divider()
 }
 
 @Composable
