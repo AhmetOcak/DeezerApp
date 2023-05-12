@@ -4,7 +4,7 @@ import com.model.Artist
 import com.model.ArtistData
 import com.network.model.ArtistDto
 
-fun ArtistDto.toArtist(): Artist {
+internal fun ArtistDto.toArtist(): Artist {
     return Artist(
         data = data.map {
             ArtistData(

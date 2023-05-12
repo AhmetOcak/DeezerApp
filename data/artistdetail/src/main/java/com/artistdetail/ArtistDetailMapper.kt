@@ -3,7 +3,7 @@ package com.artistdetail
 import com.model.ArtistDetail
 import com.network.model.ArtistDetailDto
 
-fun ArtistDetailDto.toArtistDetail(): ArtistDetail {
+internal fun ArtistDetailDto.toArtistDetail(): ArtistDetail {
     return ArtistDetail(
         id = id ?: 0,
         name = name ?: "",

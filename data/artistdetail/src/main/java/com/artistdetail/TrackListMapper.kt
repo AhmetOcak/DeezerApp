@@ -6,7 +6,7 @@ import com.model.Contributors
 import com.model.TrackData
 import com.network.model.TrackDataDto
 
-fun TrackDataDto.toTrackData(): TrackData {
+internal fun TrackDataDto.toTrackData(): TrackData {
     return TrackData(
         id = id ?: 0,
         readable = readable ?: false,
