@@ -24,6 +24,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.designsystem.icons.DeezerIcons
@@ -77,6 +78,33 @@ fun MusicPlayer(
 }
 
 @Composable
+private fun SongDetail(modifier: Modifier, songName: String, songArtist: String) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center
+    ) {
+        SongName(songName = songName)
+        SongArtist(songArtist = songArtist)
+    }
+}
+
+@Composable
+private fun SongArtist(songArtist: String) {
+    Text(
+        text = songArtist,
+        style = MaterialTheme.typography.labelSmall.copy(color = Color.White)
+    )
+}
+
+@Composable
+private fun SongName(songName: String) {
+    Text(
+        text = songName,
+        style = MaterialTheme.typography.labelMedium.copy(color = Color.White)
+    )
+}
+
+@Composable
 private fun PlayerButton(modifier: Modifier, onPlayButtonClicked: () -> Unit) {
     var play by rememberSaveable { mutableStateOf(true) }
 
@@ -93,30 +121,10 @@ private fun PlayerButton(modifier: Modifier, onPlayButtonClicked: () -> Unit) {
             } else {
                 DeezerIcons.Pause
             },
+            tint = Color.White,
             contentDescription = null
         )
     }
-}
-
-@Composable
-private fun SongDetail(modifier: Modifier, songName: String, songArtist: String) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center
-    ) {
-        SongName(songName = songName)
-        SongArtist(songArtist = songArtist)
-    }
-}
-
-@Composable
-private fun SongArtist(songArtist: String) {
-    Text(text = songArtist, style = MaterialTheme.typography.labelMedium)
-}
-
-@Composable
-private fun SongName(songName: String) {
-    Text(text = songName, style = MaterialTheme.typography.labelLarge)
 }
 
 @Composable
@@ -129,7 +137,8 @@ private fun ClosePlayerButton(modifier: Modifier, onCloseClicked: () -> Unit, ic
             Icon(
                 modifier = modifier.size(iconSize),
                 imageVector = DeezerIcons.Close,
-                contentDescription = null
+                contentDescription = null,
+                tint = Color.White
             )
         }
     }

@@ -43,7 +43,9 @@ fun SongCard(
     duration: String,
     favoriteIconInitVal: Boolean,
     onSongClicked: () -> Unit,
-    onFavouriteBtnClicked: () -> Unit
+    onFavouriteBtnClicked: () -> Unit,
+    showAlbum: Boolean = false,
+    albumName: String = ""
 ) {
     ElevatedCard(
         modifier = modifier
@@ -67,7 +69,9 @@ fun SongCard(
                 songName = songName,
                 duration = duration,
                 onFavouriteBtnClicked = onFavouriteBtnClicked,
-                favoriteIconInitVal = favoriteIconInitVal
+                favoriteIconInitVal = favoriteIconInitVal,
+                showAlbum = showAlbum,
+                albumName = albumName
             )
         }
     }
@@ -87,7 +91,9 @@ private fun SongDetail(
     songName: String,
     duration: String,
     onFavouriteBtnClicked: () -> Unit,
-    favoriteIconInitVal: Boolean
+    favoriteIconInitVal: Boolean,
+    showAlbum: Boolean,
+    albumName: String
 ) {
     Row(
         modifier = modifier,
@@ -97,13 +103,18 @@ private fun SongDetail(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(start = 24.dp),
+                .padding(start = 24.dp)
+                .weight(8f),
             verticalArrangement = Arrangement.Center
         ) {
+            if (showAlbum) {
+                SongAlbum(albumName = albumName)
+            }
             SongName(songName = songName)
             SongDuration(duration = duration)
         }
         AddFavouritesButton(
+            modifier = modifier.weight(2f),
             onFavouriteBtnClicked = onFavouriteBtnClicked,
             favoriteIconInitVal = favoriteIconInitVal
         )
@@ -111,10 +122,15 @@ private fun SongDetail(
 }
 
 @Composable
-private fun AddFavouritesButton(onFavouriteBtnClicked: () -> Unit, favoriteIconInitVal: Boolean) {
+private fun AddFavouritesButton(
+    modifier: Modifier,
+    onFavouriteBtnClicked: () -> Unit,
+    favoriteIconInitVal: Boolean
+) {
     var isSongFavourite by rememberSaveable { mutableStateOf(favoriteIconInitVal) }
 
     IconButton(
+        modifier = modifier,
         onClick = {
             onFavouriteBtnClicked()
             isSongFavourite = !isSongFavourite
@@ -137,10 +153,19 @@ private fun AddFavouritesButton(onFavouriteBtnClicked: () -> Unit, favoriteIconI
 }
 
 @Composable
+private fun SongAlbum(albumName: String) {
+    Text(
+        text = albumName,
+        textAlign = TextAlign.Start,
+        style = MaterialTheme.typography.displayLarge
+    )
+}
+
+@Composable
 private fun SongName(songName: String) {
     Text(
         text = songName,
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Start,
         style = MaterialTheme.typography.displayMedium
     )
 }

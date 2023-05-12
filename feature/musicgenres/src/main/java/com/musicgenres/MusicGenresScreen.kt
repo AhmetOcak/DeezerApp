@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.designsystem.R
 import com.designsystem.components.DeezerCircularProgressIndicator
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
@@ -57,7 +58,7 @@ fun MusicCategoriesScreenContent(
             DeezerTopAppBar(
                 actionIcon = DeezerIcons.Favorite,
                 actionIconTint = HeartRed,
-                logoId = R.drawable.deezer_logo,
+                logoId = R.drawable.deezer_logo_light,
                 logoContentDescription = null,
                 actionContentDescription = null,
                 onActionClick = onNavigateArtistScreen

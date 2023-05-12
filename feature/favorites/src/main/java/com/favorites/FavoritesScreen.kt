@@ -1,16 +1,15 @@
 package com.favorites
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -29,6 +28,8 @@ import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
 import com.ui.MusicPlayer
 import com.ui.SongCard
+
+private val HEART_SIZE = 196.dp
 
 @Composable
 fun FavoritesScreen(modifier: Modifier = Modifier) {
@@ -51,10 +52,15 @@ private fun FavoritesScreenContent(modifier: Modifier) {
                 .fillMaxSize()
                 .padding(it)
         ) {
-            LikesBoard(modifier = modifier.weight(1f))
-            FavoriteSongs(
+            LikesBoard(
                 modifier = modifier
                     .weight(2f)
+                    .fillMaxSize()
+            )
+            Divider(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp))
+            FavoriteSongs(
+                modifier = modifier
+                    .weight(4f)
                     .fillMaxSize(),
                 onSongClicked = {
                     if (!showMusicPlayer) {
@@ -92,26 +98,20 @@ private fun Player(modifier: Modifier, onCloseClicked: () -> Unit) {
 private fun TopBar() {
     DeezerTopAppBar(
         title = "Favorites",
-        titleColor = Color.White,
         navigationIcon = DeezerIcons.ArrowBack,
-        navigationIconTint = Color.White,
         navigationContentDescription = null,
-        onNavigateClick = {},
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Black)
+        onNavigateClick = {}
     )
 }
 
 @Composable
 private fun LikesBoard(modifier: Modifier) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(256.dp)
-            .background(color = Color.Black),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            modifier = modifier.size(128.dp),
+            modifier = Modifier.size(HEART_SIZE),
             imageVector = DeezerIcons.Favorite,
             contentDescription = null,
             tint = HeartRed
@@ -130,11 +130,13 @@ private fun FavoriteSongs(modifier: Modifier, onSongClicked: () -> Unit) {
             SongCard(
                 modifier = Modifier,
                 songImageUrl = "https://e-cdns-images.dzcdn.net/images/artist/50c9aca4265d49bc492fb29d2b824aea/500x500-000000-80-0-0.jpg",
-                songName = "Duman II",
+                songName = "Gel İçelim",
                 duration = "2:54",
                 favoriteIconInitVal = true,
                 onSongClicked = onSongClicked,
-                onFavouriteBtnClicked = {}
+                onFavouriteBtnClicked = {},
+                showAlbum = true,
+                albumName = "Duman II"
             )
         }
     }

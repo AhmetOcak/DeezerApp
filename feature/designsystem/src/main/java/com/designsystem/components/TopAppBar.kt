@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 fun DeezerTopAppBar(
     modifier: Modifier = Modifier,
     title: String,
-    titleColor: Color = Color.White,
     actions: @Composable (RowScope.() -> Unit) = {},
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
     navigationIcon: ImageVector,
@@ -36,7 +35,12 @@ fun DeezerTopAppBar(
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
-        title = { Text(text = title, color = titleColor) },
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
         actions = actions,
         colors = colors,
         navigationIcon = {

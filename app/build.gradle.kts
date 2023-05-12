@@ -81,4 +81,5 @@ dependencies {
     implementation(project(":feature:artistdetail"))
     implementation(project(":feature:favorites"))
     implementation(project(":feature:artists"))
+    implementation(project(":feature:designsystem"))
 }

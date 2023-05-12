@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import com.albumdetail.AlbumDetailScreen
 import com.artistdetail.ArtistDetailScreen
 import com.artists.ArtistsScreen
-import com.deezerapp.ui.theme.DeezerAppTheme
+import com.designsystem.theme.DeezerAppTheme
 import com.favorites.FavoritesScreen
 import com.musicgenres.MusicGenresScreen
 import dagger.hilt.android.AndroidEntryPoint
