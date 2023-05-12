@@ -1,6 +1,7 @@
 package com.ui
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.designsystem.components.AnimatedImage
 import com.designsystem.icons.DeezerIcons
+import com.designsystem.theme.DarkPurple
 import com.designsystem.theme.GradientDeepPurple
 import com.designsystem.theme.HeartRed
 
@@ -125,7 +127,8 @@ private fun SongDetail(
 private fun AddFavouritesButton(
     modifier: Modifier,
     onFavouriteBtnClicked: () -> Unit,
-    favoriteIconInitVal: Boolean
+    favoriteIconInitVal: Boolean,
+    darkTheme: Boolean = isSystemInDarkTheme()
 ) {
     var isSongFavourite by rememberSaveable { mutableStateOf(favoriteIconInitVal) }
 
@@ -146,7 +149,7 @@ private fun AddFavouritesButton(
             tint = if (isSongFavourite) {
                 HeartRed
             } else {
-                Color.White
+                if (darkTheme) Color.White else DarkPurple
             }
         )
     }
