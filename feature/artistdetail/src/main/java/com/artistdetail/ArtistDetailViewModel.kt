@@ -22,7 +22,7 @@ class ArtistDetailViewModel @Inject constructor(
     private val _artistDetailState = MutableStateFlow<ArtistDetailState>(ArtistDetailState.Loading)
     val artistDetailState = _artistDetailState.asStateFlow()
 
-    private val _trackList = getTrackListUseCase(artistId = 8354140).cachedIn(viewModelScope)
+    private val _trackList = getTrackListUseCase(artistId = 663).cachedIn(viewModelScope)
     val trackList = _trackList
 
     var artistName: String = ""
@@ -33,7 +33,7 @@ class ArtistDetailViewModel @Inject constructor(
     }
 
     private fun getArtistDetails() = viewModelScope.launch(Dispatchers.IO) {
-        getArtistDetailUseCase(8354140).collect() { response ->
+        getArtistDetailUseCase(663).collect() { response ->
             when(response) {
                 is Response.Loading -> {
                     _artistDetailState.value = ArtistDetailState.Loading

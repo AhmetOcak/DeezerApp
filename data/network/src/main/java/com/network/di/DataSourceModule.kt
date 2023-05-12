@@ -1,5 +1,7 @@
 package com.network.di
 
+import com.network.datasource.albumdetails.AlbumDetailsRemoteDataSourceImpl
+import com.network.datasource.albumdetails.IAlbumDetailsRemoteDataSource
 import com.network.datasource.artist.*
 import com.network.datasource.artistdetail.ArtistDetailRemoteDataSourceImpl
 import com.network.datasource.artistdetail.IArtistDetailRemoteDataSource
@@ -25,4 +27,8 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindArtistDetailRemoteDataSource(artistDetailRemoteDataSourceImpl: ArtistDetailRemoteDataSourceImpl): IArtistDetailRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindAlbumDetailsRemoteDataSource(albumDetailRemoteDataSourceImpl: AlbumDetailsRemoteDataSourceImpl): IAlbumDetailsRemoteDataSource
 }

@@ -54,4 +54,5 @@ dependencies {
     implementation(project(":data:musicgenres"))
     implementation(project(":data:artist"))
     implementation(project(":data:artistdetail"))
+    implementation(project(":data:albumdetail"))
 }

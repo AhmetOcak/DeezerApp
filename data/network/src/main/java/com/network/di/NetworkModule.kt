@@ -1,6 +1,7 @@
 package com.network.di
 
 import com.network.BaseUrl
+import com.network.retrofit.AlbumDetailsApi
 import com.network.retrofit.ArtistApi
 import com.network.retrofit.ArtistDetailApi
 import com.network.retrofit.MusicGenreApi
@@ -44,5 +45,15 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ArtistDetailApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAlbumDetailsApi(): AlbumDetailsApi {
+        return Retrofit.Builder()
+            .baseUrl(BaseUrl.DEEZER)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AlbumDetailsApi::class.java)
     }
 }
