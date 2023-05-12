@@ -1,5 +1,6 @@
 package com.artistdetail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,7 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
@@ -42,13 +43,20 @@ fun ArtistDetailScreen(modifier: Modifier = Modifier) {
 
     val viewModel: ArtistDetailViewModel = hiltViewModel()
 
+    viewModel.getArtistDetails(299117)
+
     val artistDetailState by viewModel.artistDetailState.collectAsState()
+
+    val gradient = Brush.verticalGradient(
+        colors = listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f), MaterialTheme.colorScheme.background)
+    )
 
     ArtistDetailScreenContent(
         modifier = modifier,
         trackList = viewModel.trackList.collectAsLazyPagingItems(),
         artistDetailState = artistDetailState,
-        artistName = viewModel.artistName
+        artistName = viewModel.artistName,
+        gradient = gradient
     )
 }
 
@@ -58,18 +66,12 @@ private fun ArtistDetailScreenContent(
     modifier: Modifier,
     trackList: LazyPagingItems<TrackData>,
     artistDetailState: ArtistDetailState,
-    artistName: String
+    artistName: String,
+    gradient: Brush
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = {
-            DeezerTopAppBar(
-                title = artistName,
-                navigationIcon = DeezerIcons.ArrowBack,
-                navigationContentDescription = null,
-                onNavigateClick = {}
-            )
-        }
+        topBar = { TopBar(artistName) }
     ) {
         Column(
             modifier = modifier
@@ -79,7 +81,8 @@ private fun ArtistDetailScreenContent(
             ArtistImageSection(
                 modifier = modifier
                     .weight(2f)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .background(gradient),
                 artistDetailState = artistDetailState
             )
             AlbumsSection(
@@ -92,11 +95,25 @@ private fun ArtistDetailScreenContent(
     }
 }
 
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun TopBar(artistName: String) {
+    DeezerTopAppBar(
+        title = artistName,
+        navigationIcon = DeezerIcons.ArrowBack,
+        navigationContentDescription = null,
+        onNavigateClick = {}
+    )
+}
+
 /*
 Todo: Error eklenecek
  */
 @Composable
-private fun ArtistImageSection(modifier: Modifier, artistDetailState: ArtistDetailState) {
+private fun ArtistImageSection(
+    modifier: Modifier,
+    artistDetailState: ArtistDetailState
+) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
@@ -139,7 +156,7 @@ private fun AlbumsSection(modifier: Modifier, trackList: LazyPagingItems<TrackDa
 }
 
 @Composable
-private fun AlbumsList(trackList: LazyPagingItems<TrackData>, ) {
+private fun AlbumsList(trackList: LazyPagingItems<TrackData>) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 16.dp),
