@@ -17,6 +17,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +30,7 @@ import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.model.albumdetail.AlbumSong
 import com.ui.FullScreenProgIndicator
+import com.ui.MusicPlayer
 import com.ui.SongCard
 
 private val ALBUM_IMG_SIZE = 224.dp
@@ -52,6 +56,9 @@ private fun AlbumDetailScreenContent(
     albumDetailsState: AlbumDetailsState,
     albumName: String
 ) {
+
+    var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             DeezerTopAppBar(
@@ -88,7 +95,20 @@ private fun AlbumDetailScreenContent(
                         modifier = modifier
                             .weight(3f)
                             .fillMaxSize(),
-                        songs = albumDetailsState.data.tracks.data
+                        songs = albumDetailsState.data.tracks.data,
+                        onSongClicked = {
+                            if (!showMusicPlayer) {
+                                showMusicPlayer = true
+                            }
+                        }
+                    )
+                }
+                if (showMusicPlayer) {
+                    MusicPlayer(
+                        songName = "Gel içelim",
+                        songArtist = "Duman",
+                        onCloseClicked = { showMusicPlayer = false },
+                        onPlayButtonClicked = {}
                     )
                 }
             }
@@ -113,7 +133,7 @@ private fun AlbumImage(modifier: Modifier, albumImageUrl: String) {
 }
 
 @Composable
-private fun SongList(modifier: Modifier, songs: ArrayList<AlbumSong>) {
+private fun SongList(modifier: Modifier, songs: ArrayList<AlbumSong>, onSongClicked: () -> Unit) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(vertical = 16.dp),
@@ -126,7 +146,7 @@ private fun SongList(modifier: Modifier, songs: ArrayList<AlbumSong>) {
                 songImageUrl = it.album.coverBig,
                 songName = it.title,
                 duration = "${it.duration / 60}",
-                onSongClicked = {},
+                onSongClicked = onSongClicked,
                 onFavouriteBtnClicked = {},
                 favoriteIconInitVal = false
             )

@@ -68,28 +68,15 @@ private fun FavoritesScreenContent(modifier: Modifier) {
                     }
                 }
             )
-            if (showMusicPlayer) {
-                Player(
-                    modifier = modifier,
-                    onCloseClicked = {
-                        showMusicPlayer = false
-                    }
-                )
-            }
         }
-    }
-}
-
-@Composable
-private fun Player(modifier: Modifier, onCloseClicked: () -> Unit) {
-    Box(contentAlignment = Alignment.BottomCenter) {
-        MusicPlayer(
-            modifier = modifier,
-            songName = "Gel içelim",
-            songArtist = "Duman",
-            onCloseClicked = onCloseClicked,
-            onPlayButtonClicked = {}
-        )
+        if (showMusicPlayer) {
+            MusicPlayer(
+                songName = "Gel içelim",
+                songArtist = "Duman",
+                onCloseClicked = { showMusicPlayer = false },
+                onPlayButtonClicked = {}
+            )
+        }
     }
 }
 

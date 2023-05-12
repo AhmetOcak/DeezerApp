@@ -38,41 +38,43 @@ private val CloseButtonSize = 30.dp
 
 @Composable
 fun MusicPlayer(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     songName: String,
     songArtist: String,
     onCloseClicked: () -> Unit,
     onPlayButtonClicked: () -> Unit
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(PlayerHeight),
-        shape = PlayerShape,
-        colors = CardDefaults.cardColors(containerColor = PlayerColor)
-    ) {
-        Row(
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+        Card(
             modifier = modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
+                .height(PlayerHeight),
+            shape = PlayerShape,
+            colors = CardDefaults.cardColors(containerColor = PlayerColor)
         ) {
-            PlayerButton(
-                modifier = modifier.size(PlayStopButtonSize),
-                onPlayButtonClicked = onPlayButtonClicked
-            )
-            SongDetail(
+            Row(
                 modifier = modifier
-                    .fillMaxHeight()
-                    .padding(start = 16.dp),
-                songName = songName,
-                songArtist = songArtist
-            )
-            ClosePlayerButton(
-                modifier = modifier,
-                onCloseClicked = onCloseClicked,
-                iconSize = CloseButtonSize,
-            )
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                PlayerButton(
+                    modifier = modifier.size(PlayStopButtonSize),
+                    onPlayButtonClicked = onPlayButtonClicked
+                )
+                SongDetail(
+                    modifier = modifier
+                        .fillMaxHeight()
+                        .padding(start = 16.dp),
+                    songName = songName,
+                    songArtist = songArtist
+                )
+                ClosePlayerButton(
+                    modifier = modifier,
+                    onCloseClicked = onCloseClicked,
+                    iconSize = CloseButtonSize,
+                )
+            }
         }
     }
 }
