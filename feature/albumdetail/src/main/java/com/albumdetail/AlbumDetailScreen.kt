@@ -34,6 +34,7 @@ import com.model.albumdetail.AlbumSong
 import com.ui.FullScreenProgIndicator
 import com.ui.MusicPlayer
 import com.ui.SongCard
+import kotlin.time.Duration.Companion.seconds
 
 private val ALBUM_IMG_SIZE = 224.dp
 
@@ -156,7 +157,7 @@ private fun SongList(modifier: Modifier, songs: ArrayList<AlbumSong>, onSongClic
                 modifier = Modifier,
                 songImageUrl = it.album.coverBig,
                 songName = it.title,
-                duration = "${it.duration / 60}",
+                duration = "${it.duration.toDouble().seconds}",
                 onSongClicked = onSongClicked,
                 onFavouriteBtnClicked = {},
                 favoriteIconInitVal = false

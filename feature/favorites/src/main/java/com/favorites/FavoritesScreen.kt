@@ -12,8 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +22,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
@@ -57,7 +57,7 @@ private fun FavoritesScreenContent(modifier: Modifier) {
                     .weight(2f)
                     .fillMaxSize()
             )
-            Divider()
+            Title()
             FavoriteSongs(
                 modifier = modifier
                     .weight(4f)
@@ -127,4 +127,17 @@ private fun FavoriteSongs(modifier: Modifier, onSongClicked: () -> Unit) {
             )
         }
     }
+}
+
+@Composable
+private fun Title() {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 16.dp),
+        text = "My Favorite Songs",
+        style = MaterialTheme.typography.titleLarge
+    )
+    Divider()
 }
