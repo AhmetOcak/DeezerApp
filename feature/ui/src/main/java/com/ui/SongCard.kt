@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.designsystem.components.AnimatedImage
 import com.designsystem.icons.DeezerIcons
@@ -186,7 +187,9 @@ private fun SongAlbum(albumName: String) {
     Text(
         text = albumName,
         textAlign = TextAlign.Start,
-        style = MaterialTheme.typography.displayLarge
+        style = MaterialTheme.typography.displayLarge,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -195,7 +198,9 @@ private fun SongName(songName: String) {
     Text(
         text = songName,
         textAlign = TextAlign.Start,
-        style = MaterialTheme.typography.displayMedium
+        style = MaterialTheme.typography.displayMedium,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -204,6 +209,8 @@ private fun SongDuration(duration: String) {
     Text(
         text = duration,
         textAlign = TextAlign.Start,
-        style = MaterialTheme.typography.displaySmall
+        style = MaterialTheme.typography.displaySmall,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
     )
 }
