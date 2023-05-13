@@ -10,11 +10,14 @@ import androidx.navigation.navArgument
 import com.albumdetail.AlbumDetailScreen
 import com.artistdetail.ArtistDetailScreen
 import com.artists.ArtistsScreen
+import com.deezerapp.helpers.encodeForSafe
 import com.favorites.FavoritesScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.musicgenres.MusicGenresScreen
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -41,7 +44,7 @@ fun DeezerNavHost(
         composable(route = NavScreen.MusicGenres.route) {
             MusicGenresScreen(
                 onNavigateArtistsScreen = { id, name ->
-                    navController.navigate("${NavNames.artists_screen}/$id/$name")
+                    navController.navigate("${NavNames.artists_screen}/$id/${encodeForSafe(name)}")
                 },
                 onNavigateFavoritesScreen = {
                     navController.navigate(NavScreen.Favorites.route)
@@ -55,8 +58,7 @@ fun DeezerNavHost(
                 navArgument(NavArgKeys.artists_screen_arg_key_2) { type = NavType.StringType }
             )
         ) { navBackStackEntry ->
-            val genreName =
-                navBackStackEntry.arguments?.getString(NavArgKeys.artists_screen_arg_key_2)
+            val genreName = navBackStackEntry.arguments?.getString(NavArgKeys.artists_screen_arg_key_2)
 
             if (genreName != null) {
                 ArtistsScreen(
@@ -66,7 +68,7 @@ fun DeezerNavHost(
                     onNavigateBackClicked = {
                         navController.navigateUp()
                     },
-                    genreName = genreName
+                    genreName = URLDecoder.decode(genreName, StandardCharsets.UTF_8.toString())
                 )
             }
         }
