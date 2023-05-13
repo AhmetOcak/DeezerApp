@@ -268,6 +268,6 @@ private fun showMessage(context: Context, message: String) {
     Toast.makeText(
         context,
         message,
-        Toast.LENGTH_LONG
+        Toast.LENGTH_SHORT
     ).show()
 }

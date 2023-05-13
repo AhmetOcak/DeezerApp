@@ -209,7 +209,7 @@ private fun ShowDeleteMessage(
         is DeleteState.Success -> {
             Toast.makeText(
                 LocalContext.current,
-                (deleteState as DeleteState.Success).message,
+                deleteState.message,
                 Toast.LENGTH_SHORT
             ).show()
             viewModel.resetDeleteState()
@@ -217,7 +217,7 @@ private fun ShowDeleteMessage(
         is DeleteState.Error -> {
             Toast.makeText(
                 LocalContext.current,
-                (deleteState as DeleteState.Error).error,
+                deleteState.error,
                 Toast.LENGTH_SHORT
             ).show()
             viewModel.resetDeleteState()
