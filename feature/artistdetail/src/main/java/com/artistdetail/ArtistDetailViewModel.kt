@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.usecases.GetArtistDetailUseCase
-import com.usecases.GetTrackListUseCase
+import com.usecases.artistdetail.GetArtistDetailUseCase
+import com.usecases.artistdetail.GetTrackListUseCase
 import com.usecases.common.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

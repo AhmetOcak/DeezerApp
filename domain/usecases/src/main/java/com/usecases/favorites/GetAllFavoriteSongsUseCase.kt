@@ -1,7 +1,7 @@
-package com.usecases
+package com.usecases.favorites
 
 import android.util.Log
-import com.albumdetail.repository.IAlbumDetailRepository
+import com.favoritesongs.repository.IFavoriteSongRepository
 import com.model.FavoriteSongs
 import com.usecases.common.Response
 import com.usecases.common.UNKNOWN
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetAllFavoriteSongsUseCase @Inject constructor(private val repository: IAlbumDetailRepository) {
+class GetAllFavoriteSongsUseCase @Inject constructor(private val repository: IFavoriteSongRepository) {
 
     suspend operator fun invoke(): Flow<Response<List<FavoriteSongs>>> = flow {
         try {

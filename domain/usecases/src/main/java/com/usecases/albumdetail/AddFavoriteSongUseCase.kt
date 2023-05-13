@@ -1,4 +1,4 @@
-package com.usecases
+package com.usecases.albumdetail
 
 import android.util.Log
 import com.albumdetail.repository.IAlbumDetailRepository

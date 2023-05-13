@@ -2,7 +2,7 @@ package com.musicgenres
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.usecases.GetMusicGenresUseCase
+import com.usecases.musicgenres.GetMusicGenresUseCase
 import com.usecases.common.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

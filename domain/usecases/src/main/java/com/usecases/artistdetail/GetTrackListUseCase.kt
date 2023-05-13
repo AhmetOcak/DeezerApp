@@ -1,4 +1,4 @@
-package com.usecases
+package com.usecases.artistdetail
 
 import androidx.paging.PagingData
 import com.artistdetail.repository.IArtistDetailRepository

@@ -1,8 +1,8 @@
-package com.usecases
+package com.usecases.artists
 
 import android.util.Log
-import com.model.MusicGenre
-import com.musicgenre.repository.IMusicGenreRepository
+import com.artist.repository.IArtistRepository
+import com.model.Artist
 import com.usecases.common.NO_INTERNET
 import com.usecases.common.Response
 import com.usecases.common.UNKNOWN
@@ -11,19 +11,19 @@ import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
-class GetMusicGenresUseCase @Inject constructor(private val repository: IMusicGenreRepository) {
+class GetArtistsUseCase @Inject constructor(private val repository: IArtistRepository) {
 
-    suspend operator fun invoke(): Flow<Response<MusicGenre>> = flow {
+    suspend operator fun invoke(genreId: Int): Flow<Response<Artist>> = flow {
         try {
             emit(Response.Loading)
 
-            emit(Response.Success(data = repository.getMusicGenres()))
+            emit(Response.Success(data = repository.getArtists(genreId)))
         } catch (e: IOException) {
             emit(Response.Error(errorMessage = NO_INTERNET))
-            Log.e("GetMusicGenresUseCase", e.stackTraceToString())
+            Log.e("GetArtistsUseCase", e.stackTraceToString())
         } catch (e: Exception) {
             emit(Response.Error(errorMessage = e.message ?: UNKNOWN))
-            Log.e("GetMusicGenresUseCase", e.stackTraceToString())
+            Log.e("GetArtistsUseCase", e.stackTraceToString())
         }
     }
 }

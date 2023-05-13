@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.albumdetail"
+    namespace = "com.favoritesongs"
     compileSdk = 33
 
     defaultConfig {
@@ -48,8 +48,6 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.45")
     kapt("com.google.dagger:hilt-compiler:2.45")
 
-    implementation(project(":data:network"))
     implementation(project(":data:database"))
-
     implementation(project(":domain:model"))
 }

@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/data/artist" />
             <option value="$PROJECT_DIR$/data/artistdetail" />
             <option value="$PROJECT_DIR$/data/database" />
+            <option value="$PROJECT_DIR$/data/favoritesongs" />
             <option value="$PROJECT_DIR$/data/musicgenres" />
             <option value="$PROJECT_DIR$/data/network" />
             <option value="$PROJECT_DIR$/domain" />

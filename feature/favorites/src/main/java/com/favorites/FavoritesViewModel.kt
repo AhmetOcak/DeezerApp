@@ -2,8 +2,8 @@ package com.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.usecases.DeleteFavoriteSongUseCase
-import com.usecases.GetAllFavoriteSongsUseCase
+import com.usecases.favorites.DeleteFavoriteSongUseCase
+import com.usecases.favorites.GetAllFavoriteSongsUseCase
 import com.usecases.common.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

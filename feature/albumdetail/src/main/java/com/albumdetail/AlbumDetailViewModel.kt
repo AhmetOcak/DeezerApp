@@ -7,10 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.model.FavoriteSongs
-import com.usecases.AddFavoriteSongUseCase
-import com.usecases.DeleteFavoriteSongUseCase
-import com.usecases.GetAlbumDetailsUseCase
-import com.usecases.GetAllFavoriteSongsUseCase
+import com.usecases.albumdetail.*
 import com.usecases.common.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

@@ -55,4 +55,5 @@ dependencies {
     implementation(project(":data:artist"))
     implementation(project(":data:artistdetail"))
     implementation(project(":data:albumdetail"))
+    implementation(project(":data:favoritesongs"))
 }
