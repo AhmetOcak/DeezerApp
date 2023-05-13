@@ -34,6 +34,7 @@ import com.designsystem.theme.HeartRed
 import com.ui.EmptyListBox
 import com.ui.FullScreenProgIndicator
 import com.ui.MusicPlayer
+import com.ui.PlayerHeight
 import com.ui.SongCard
 import kotlin.time.Duration.Companion.seconds
 
@@ -87,7 +88,8 @@ private fun FavoritesScreenContent(
             FavoriteSongsList(
                 modifier = modifier
                     .weight(4f)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(bottom = if (showMusicPlayer) PlayerHeight else 0.dp),
                 onSongClicked = {
                     if (!showMusicPlayer) {
                         showMusicPlayer = true

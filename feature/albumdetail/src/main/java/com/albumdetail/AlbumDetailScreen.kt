@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,6 +38,7 @@ import com.model.FavoriteSongs
 import com.model.albumdetail.AlbumSong
 import com.ui.FullScreenProgIndicator
 import com.ui.MusicPlayer
+import com.ui.PlayerHeight
 import com.ui.SongCard
 import kotlin.time.Duration.Companion.seconds
 
@@ -132,6 +134,9 @@ private fun SuccessContent(
 ) {
     var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
 
+    var playingSongName by remember { mutableStateOf("") }
+    var playingSongArtist by remember { mutableStateOf("") }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -147,9 +152,13 @@ private fun SuccessContent(
         SongList(
             modifier = modifier
                 .weight(3f)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(bottom = if (showMusicPlayer) PlayerHeight else 0.dp),
             songs = albumDetailsState.data.tracks.data,
-            onSongClicked = {
+            onSongClicked = { musicUrl, songName, songArtist ->
+                playingSongName = songName
+                playingSongArtist = songArtist
+
                 if (!showMusicPlayer) {
                     showMusicPlayer = true
                 }
@@ -163,8 +172,8 @@ private fun SuccessContent(
     }
     if (showMusicPlayer) {
         MusicPlayer(
-            songName = "Gel içelim",
-            songArtist = "Duman",
+            songName = playingSongName,
+            songArtist = playingSongArtist,
             onCloseClicked = { showMusicPlayer = false },
             onPlayButtonClicked = {}
         )
@@ -200,7 +209,7 @@ private fun Title() {
 private fun SongList(
     modifier: Modifier,
     songs: ArrayList<AlbumSong>,
-    onSongClicked: () -> Unit,
+    onSongClicked: (String, String, String) -> Unit,
     databaseState: DatabaseState,
     isSongAvailableInFavorites: (Int) -> Boolean,
     resetDatabaseState: () -> Unit,
@@ -218,7 +227,9 @@ private fun SongList(
                 songImageUrl = it.album.coverBig,
                 songName = it.title,
                 duration = "${it.duration.toDouble().seconds}",
-                onSongClicked = onSongClicked,
+                onSongClicked = {
+                    onSongClicked(it.preview, it.title, it.artist.name)
+                },
                 onFavouriteBtnClicked = {
                     if (isSongAvailableInFavorites(it.id)) {
                         removeFavoriteSong(it.id)

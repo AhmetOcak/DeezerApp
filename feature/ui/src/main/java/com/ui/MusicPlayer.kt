@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.PlayerRed
 
-private val PlayerHeight = 80.dp
+val PlayerHeight = 80.dp
 private val PlayerShape = RoundedCornerShape(topStartPercent = 20, topEndPercent = 20)
 private val PlayerColor = PlayerRed
 private val PlayStopButtonSize = 36.dp
@@ -119,9 +119,9 @@ private fun PlayerButton(modifier: Modifier, onPlayButtonClicked: () -> Unit) {
         Icon(
             modifier = modifier,
             imageVector = if (play) {
-                DeezerIcons.Play
-            } else {
                 DeezerIcons.Pause
+            } else {
+                DeezerIcons.Play
             },
             tint = Color.White,
             contentDescription = null
