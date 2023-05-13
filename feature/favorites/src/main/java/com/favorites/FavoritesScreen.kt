@@ -1,5 +1,6 @@
 package com.favorites
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,31 +18,55 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
+import com.ui.EmptyListBox
+import com.ui.FullScreenProgIndicator
 import com.ui.MusicPlayer
 import com.ui.SongCard
+import kotlin.time.Duration.Companion.seconds
 
 private val HEART_SIZE = 196.dp
 
 @Composable
 fun FavoritesScreen(modifier: Modifier = Modifier, onNavigateBackClicked: () -> Unit) {
 
-    FavoritesScreenContent(modifier = modifier, onNavigateBackClicked = onNavigateBackClicked)
+    val viewModel: FavoritesViewModel = hiltViewModel()
+
+    val deleteState by viewModel.deleteState.collectAsState()
+
+    ShowDeleteMessage(deleteState, viewModel)
+
+    FavoritesScreenContent(
+        modifier = modifier,
+        onNavigateBackClicked = onNavigateBackClicked,
+        viewModel = viewModel,
+        onFavouriteBtnClicked = { viewModel.removeFavoriteSong(it) },
+        getAllFavoriteSongs = viewModel::getAllFavoriteSongs
+    )
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FavoritesScreenContent(modifier: Modifier, onNavigateBackClicked: () -> Unit) {
-
+private fun FavoritesScreenContent(
+    modifier: Modifier,
+    onNavigateBackClicked: () -> Unit,
+    viewModel: FavoritesViewModel,
+    onFavouriteBtnClicked: (Int) -> Unit,
+    getAllFavoriteSongs: () -> Unit
+) {
     var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
@@ -58,7 +84,7 @@ private fun FavoritesScreenContent(modifier: Modifier, onNavigateBackClicked: ()
                     .fillMaxSize()
             )
             Title()
-            FavoriteSongs(
+            FavoriteSongsList(
                 modifier = modifier
                     .weight(4f)
                     .fillMaxSize(),
@@ -66,7 +92,10 @@ private fun FavoritesScreenContent(modifier: Modifier, onNavigateBackClicked: ()
                     if (!showMusicPlayer) {
                         showMusicPlayer = true
                     }
-                }
+                },
+                favoritesState = viewModel.favoritesState.collectAsState().value,
+                onFavouriteBtnClicked = onFavouriteBtnClicked,
+                getAllFavoriteSongs = getAllFavoriteSongs
             )
         }
         if (showMusicPlayer) {
@@ -107,24 +136,50 @@ private fun LikesBoard(modifier: Modifier) {
 }
 
 @Composable
-private fun FavoriteSongs(modifier: Modifier, onSongClicked: () -> Unit) {
-    LazyColumn(
-        modifier = modifier,
-        contentPadding = PaddingValues(vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(10) {
-            SongCard(
-                modifier = Modifier,
-                songImageUrl = "https://e-cdns-images.dzcdn.net/images/artist/50c9aca4265d49bc492fb29d2b824aea/500x500-000000-80-0-0.jpg",
-                songName = "Gel İçelim",
-                duration = "2:54",
-                favoriteIconInitVal = true,
-                onSongClicked = onSongClicked,
-                onFavouriteBtnClicked = {},
-                showAlbum = true,
-                albumName = "Duman II"
-            )
+private fun FavoriteSongsList(
+    modifier: Modifier,
+    onSongClicked: () -> Unit,
+    favoritesState: FavoritesState,
+    onFavouriteBtnClicked: (Int) -> Unit,
+    getAllFavoriteSongs: () -> Unit
+) {
+    when(favoritesState) {
+        is FavoritesState.Nothing -> {}
+        is FavoritesState.Loading -> {
+            FullScreenProgIndicator()
+        }
+        is FavoritesState.Success -> {
+            if (favoritesState.data.isNotEmpty()) {
+                LazyColumn(
+                    modifier = modifier,
+                    contentPadding = PaddingValues(vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(favoritesState.data, key = { it.id }) {
+                        SongCard(
+                            modifier = Modifier,
+                            songImageUrl = it.songImgUrl,
+                            songName = it.songName,
+                            duration = "${it.duration.toDouble().seconds}",
+                            favoriteIconInitVal = true,
+                            onSongClicked = onSongClicked,
+                            onFavouriteBtnClicked = { onFavouriteBtnClicked(it.id) },
+                            showAlbum = true,
+                            albumName = it.albumName,
+                            deleteAnimation = true,
+                            sourceOfData = getAllFavoriteSongs
+                        )
+                    }
+                }
+            } else {
+                EmptyListBox(
+                    modifier = modifier.fillMaxSize(),
+                    message = "You don't have any favorite song."
+                )
+            }
+        }
+        is FavoritesState.Error -> {
+
         }
     }
 }
@@ -140,4 +195,30 @@ private fun Title() {
         style = MaterialTheme.typography.titleLarge
     )
     Divider()
+}
+
+@Composable
+private fun ShowDeleteMessage(
+    deleteState: DeleteState,
+    viewModel: FavoritesViewModel
+) {
+    when(deleteState) {
+        is DeleteState.Nothing -> {}
+        is DeleteState.Success -> {
+            Toast.makeText(
+                LocalContext.current,
+                (deleteState as DeleteState.Success).message,
+                Toast.LENGTH_SHORT
+            ).show()
+            viewModel.resetDeleteState()
+        }
+        is DeleteState.Error -> {
+            Toast.makeText(
+                LocalContext.current,
+                (deleteState as DeleteState.Error).error,
+                Toast.LENGTH_SHORT
+            ).show()
+            viewModel.resetDeleteState()
+        }
+    }
 }

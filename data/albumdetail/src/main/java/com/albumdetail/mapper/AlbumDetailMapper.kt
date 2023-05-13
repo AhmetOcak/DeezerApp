@@ -1,4 +1,4 @@
-package com.albumdetail
+package com.albumdetail.mapper
 
 import com.model.albumdetail.*
 import com.network.model.albumdetail.AlbumDetailsDto

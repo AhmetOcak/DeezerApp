@@ -1,5 +1,7 @@
 package com.albumdetail
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,11 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
+import com.model.FavoriteSongs
 import com.model.albumdetail.AlbumSong
 import com.ui.FullScreenProgIndicator
 import com.ui.MusicPlayer
@@ -43,16 +47,27 @@ fun AlbumDetailScreen(
     modifier: Modifier = Modifier,
     onNavigateBackClicked: () -> Unit
 ) {
-
     val viewModel: AlbumDetailViewModel = hiltViewModel()
 
     val albumDetailsState by viewModel.albumDetailsState.collectAsState()
+
+    if (!viewModel.databaseStatus) {
+        showMessage(
+            context = LocalContext.current,
+            message = "Favorite songs could not be found. Please try again later."
+        )
+    }
 
     AlbumDetailScreenContent(
         modifier = modifier,
         albumDetailsState = albumDetailsState,
         albumName = viewModel.albumName,
-        onBackNavigateClicked = onNavigateBackClicked
+        onBackNavigateClicked = onNavigateBackClicked,
+        viewModel = viewModel,
+        isSongAvailableInFavorites = { viewModel.isSongAvailableInFavorites(it) },
+        resetDatabaseState = viewModel::resetDatabaseState,
+        addFavoriteSong = { viewModel.addFavoriteSong(it) },
+        removeFavoriteSong = { viewModel.removeFavoriteSong(it) }
     )
 }
 
@@ -62,11 +77,13 @@ private fun AlbumDetailScreenContent(
     modifier: Modifier,
     albumDetailsState: AlbumDetailsState,
     albumName: String,
-    onBackNavigateClicked: () -> Unit
+    onBackNavigateClicked: () -> Unit,
+    isSongAvailableInFavorites: (Int) -> Boolean,
+    resetDatabaseState: () -> Unit,
+    viewModel: AlbumDetailViewModel,
+    addFavoriteSong: (FavoriteSongs) -> Unit,
+    removeFavoriteSong: (Int) -> Unit
 ) {
-
-    var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             DeezerTopAppBar(
@@ -83,44 +100,74 @@ private fun AlbumDetailScreenContent(
             }
 
             is AlbumDetailsState.Success -> {
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(it)
-                ) {
-                    AlbumImage(
-                        modifier = modifier
-                            .weight(2f)
-                            .fillMaxSize(),
-                        albumImageUrl = albumDetailsState.data.coverBig
-                    )
-                    Title()
-                    SongList(
-                        modifier = modifier
-                            .weight(3f)
-                            .fillMaxSize(),
-                        songs = albumDetailsState.data.tracks.data,
-                        onSongClicked = {
-                            if (!showMusicPlayer) {
-                                showMusicPlayer = true
-                            }
-                        }
-                    )
-                }
-                if (showMusicPlayer) {
-                    MusicPlayer(
-                        songName = "Gel içelim",
-                        songArtist = "Duman",
-                        onCloseClicked = { showMusicPlayer = false },
-                        onPlayButtonClicked = {}
-                    )
-                }
+                SuccessContent(
+                    modifier,
+                    it,
+                    albumDetailsState,
+                    viewModel,
+                    isSongAvailableInFavorites,
+                    resetDatabaseState,
+                    addFavoriteSong,
+                    removeFavoriteSong
+                )
             }
 
             is AlbumDetailsState.Error -> {
 
             }
         }
+    }
+}
+
+@Composable
+private fun SuccessContent(
+    modifier: Modifier,
+    it: PaddingValues,
+    albumDetailsState: AlbumDetailsState.Success,
+    viewModel: AlbumDetailViewModel,
+    isSongAvailableInFavorites: (Int) -> Boolean,
+    resetDatabaseState: () -> Unit,
+    addFavoriteSong: (FavoriteSongs) -> Unit,
+    removeFavoriteSong: (Int) -> Unit
+) {
+    var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(it)
+    ) {
+        AlbumImage(
+            modifier = modifier
+                .weight(2f)
+                .fillMaxSize(),
+            albumImageUrl = albumDetailsState.data.coverBig
+        )
+        Title()
+        SongList(
+            modifier = modifier
+                .weight(3f)
+                .fillMaxSize(),
+            songs = albumDetailsState.data.tracks.data,
+            onSongClicked = {
+                if (!showMusicPlayer) {
+                    showMusicPlayer = true
+                }
+            },
+            databaseState = viewModel.databaseState.collectAsState().value,
+            isSongAvailableInFavorites = isSongAvailableInFavorites,
+            resetDatabaseState = resetDatabaseState,
+            addFavoriteSong = addFavoriteSong,
+            removeFavoriteSong = removeFavoriteSong
+        )
+    }
+    if (showMusicPlayer) {
+        MusicPlayer(
+            songName = "Gel içelim",
+            songArtist = "Duman",
+            onCloseClicked = { showMusicPlayer = false },
+            onPlayButtonClicked = {}
+        )
     }
 }
 
@@ -150,13 +197,21 @@ private fun Title() {
 }
 
 @Composable
-private fun SongList(modifier: Modifier, songs: ArrayList<AlbumSong>, onSongClicked: () -> Unit) {
+private fun SongList(
+    modifier: Modifier,
+    songs: ArrayList<AlbumSong>,
+    onSongClicked: () -> Unit,
+    databaseState: DatabaseState,
+    isSongAvailableInFavorites: (Int) -> Boolean,
+    resetDatabaseState: () -> Unit,
+    addFavoriteSong: (FavoriteSongs) -> Unit,
+    removeFavoriteSong: (Int) -> Unit
+) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-
-        ) {
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         items(songs, key = { it.id }) {
             SongCard(
                 modifier = Modifier,
@@ -164,9 +219,44 @@ private fun SongList(modifier: Modifier, songs: ArrayList<AlbumSong>, onSongClic
                 songName = it.title,
                 duration = "${it.duration.toDouble().seconds}",
                 onSongClicked = onSongClicked,
-                onFavouriteBtnClicked = {},
-                favoriteIconInitVal = false
+                onFavouriteBtnClicked = {
+                    if (isSongAvailableInFavorites(it.id)) {
+                        removeFavoriteSong(it.id)
+                    } else {
+                        addFavoriteSong(
+                            FavoriteSongs(
+                                id = it.id,
+                                songImgUrl = it.album.coverBig,
+                                songName = it.title,
+                                duration = it.duration,
+                                albumName = it.album.title
+                            )
+                        )
+                    }
+                },
+                favoriteIconInitVal = isSongAvailableInFavorites(it.id)
             )
         }
     }
+    when (databaseState) {
+        is DatabaseState.Nothing -> {}
+        is DatabaseState.Loading -> {}
+        is DatabaseState.Success -> {
+            showMessage(context = LocalContext.current, message = databaseState.message)
+            resetDatabaseState()
+        }
+
+        is DatabaseState.Error -> {
+            showMessage(context = LocalContext.current, message = databaseState.message)
+            resetDatabaseState()
+        }
+    }
+}
+
+private fun showMessage(context: Context, message: String) {
+    Toast.makeText(
+        context,
+        message,
+        Toast.LENGTH_LONG
+    ).show()
 }

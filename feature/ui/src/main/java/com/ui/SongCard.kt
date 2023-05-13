@@ -1,5 +1,9 @@
 package com.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,34 +52,55 @@ fun SongCard(
     onSongClicked: () -> Unit,
     onFavouriteBtnClicked: () -> Unit,
     showAlbum: Boolean = false,
-    albumName: String = ""
+    albumName: String = "",
+    deleteAnimation: Boolean = false,
+    sourceOfData: () -> Unit = {}
 ) {
-    ElevatedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(cardHeight)
-            .padding(horizontal = 16.dp)
-            .border(width = 1.dp, brush = GradientDeepPurple, shape = cardShape),
-        shape = cardShape,
-        onClick = onSongClicked
+    val state = remember { MutableTransitionState(false).apply { targetState = true } }
+
+    AnimatedVisibility(
+        visibleState = state,
+        enter = EnterTransition.None,
+        exit = slideOutHorizontally()
     ) {
-        Row(modifier = modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-            SongImage(
-                modifier = modifier
-                    .weight(1f)
-                    .fillMaxSize(), songImageUrl = songImageUrl
-            )
-            SongDetail(
-                modifier = modifier
-                    .weight(2f)
-                    .fillMaxSize(),
-                songName = songName,
-                duration = duration,
-                onFavouriteBtnClicked = onFavouriteBtnClicked,
-                favoriteIconInitVal = favoriteIconInitVal,
-                showAlbum = showAlbum,
-                albumName = albumName
-            )
+        ElevatedCard(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(cardHeight)
+                .padding(horizontal = 16.dp)
+                .border(width = 1.dp, brush = GradientDeepPurple, shape = cardShape),
+            shape = cardShape,
+            onClick = onSongClicked
+        ) {
+            Row(modifier = modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+                SongImage(
+                    modifier = modifier
+                        .weight(1f)
+                        .fillMaxSize(), songImageUrl = songImageUrl
+                )
+                SongDetail(
+                    modifier = modifier
+                        .weight(2f)
+                        .fillMaxSize(),
+                    songName = songName,
+                    duration = duration,
+                    onFavouriteBtnClicked = {
+                        onFavouriteBtnClicked()
+                        if (deleteAnimation) {
+                            state.targetState = false
+                        }
+                    },
+                    favoriteIconInitVal = favoriteIconInitVal,
+                    showAlbum = showAlbum,
+                    albumName = albumName
+                )
+            }
+        }
+    }
+
+    if (deleteAnimation) {
+        if (state.isIdle && !state.currentState) {
+            sourceOfData()
         }
     }
 }
