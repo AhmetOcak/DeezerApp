@@ -44,7 +44,7 @@ private val cardHeight = 96.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongCard(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     songImageUrl: String,
     songName: String,
     duration: String,
