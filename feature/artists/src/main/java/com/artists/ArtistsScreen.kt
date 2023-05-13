@@ -11,7 +11,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,16 +21,20 @@ import com.ui.DeezerResourceCard
 import com.ui.FullScreenProgIndicator
 
 @Composable
-fun ArtistsScreen(modifier: Modifier = Modifier) {
-
+fun ArtistsScreen(
+    modifier: Modifier = Modifier,
+    onNavigateArtistDetailScreen: (Int) -> Unit,
+    onNavigateBackClicked: () -> Unit,
+    genreName: String
+) {
     val viewModel: ArtistViewModel = hiltViewModel()
-
-    val artistState by viewModel.artistState.collectAsState()
 
     ArtistsScreenContent(
         modifier = modifier,
-        artistState = artistState,
-        onArtistClicked = {}
+        artistState = viewModel.artistState.collectAsState().value,
+        onArtistClicked = { onNavigateArtistDetailScreen(it) },
+        onNavigateBackClicked = onNavigateBackClicked,
+        genreName = genreName
     )
 }
 
@@ -40,16 +43,18 @@ fun ArtistsScreen(modifier: Modifier = Modifier) {
 private fun ArtistsScreenContent(
     modifier: Modifier,
     artistState: ArtistState,
-    onArtistClicked: (Int) -> Unit
+    onArtistClicked: (Int) -> Unit,
+    onNavigateBackClicked: () -> Unit,
+    genreName: String
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             DeezerTopAppBar(
-                title = "Category Name",
+                title = genreName,
                 navigationIcon = DeezerIcons.ArrowBack,
                 navigationContentDescription = null,
-                onNavigateClick = {}
+                onNavigateClick = onNavigateBackClicked
             )
         },
     ) {

@@ -30,7 +30,9 @@ import com.ui.DeezerResourceCard
 
 @Composable
 fun MusicGenresScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateArtistsScreen: (Int, String) -> Unit,
+    onNavigateFavoritesScreen: () -> Unit
 ) {
     val viewModel: MusicGenreViewModel = hiltViewModel()
 
@@ -38,8 +40,10 @@ fun MusicGenresScreen(
 
     MusicCategoriesScreenContent(
         modifier = modifier,
-        onNavigateArtistScreen = {},
-        onGenreClicked = {},
+        onNavigateFavoritesScreen = onNavigateFavoritesScreen,
+        onGenreClicked = { id, name ->
+            onNavigateArtistsScreen(id, name)
+        },
         musicGenresState = musicGenresState
     )
 }
@@ -48,8 +52,8 @@ fun MusicGenresScreen(
 @Composable
 fun MusicCategoriesScreenContent(
     modifier: Modifier,
-    onNavigateArtistScreen: () -> Unit,
-    onGenreClicked: (Int) -> Unit,
+    onNavigateFavoritesScreen: () -> Unit,
+    onGenreClicked: (Int, String) -> Unit,
     musicGenresState: MusicGenresState,
     darkTheme: Boolean = isSystemInDarkTheme()
 ) {
@@ -63,16 +67,17 @@ fun MusicCategoriesScreenContent(
                 logoId = if (darkTheme) R.drawable.deezer_logo_dark else R.drawable.deezer_logo_light,
                 logoContentDescription = null,
                 actionContentDescription = null,
-                onActionClick = onNavigateArtistScreen
+                onActionClick = onNavigateFavoritesScreen
             )
         }
     ) {
-        when(musicGenresState) {
+        when (musicGenresState) {
             is MusicGenresState.Loading -> {
                 Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     DeezerCircularProgressIndicator()
                 }
             }
+
             is MusicGenresState.Success -> {
                 CategoryList(
                     modifier = modifier,
@@ -81,6 +86,7 @@ fun MusicCategoriesScreenContent(
                     musicGenres = musicGenresState.data
                 )
             }
+
             is MusicGenresState.Error -> {
                 Log.d("MUSIC GENRE ERROR", musicGenresState.message)
             }
@@ -92,7 +98,7 @@ fun MusicCategoriesScreenContent(
 private fun CategoryList(
     modifier: Modifier,
     padding: PaddingValues,
-    onGenreClicked: (Int) -> Unit,
+    onGenreClicked: (Int, String) -> Unit,
     musicGenres: ArrayList<Data>
 ) {
     LazyVerticalGrid(
@@ -107,7 +113,7 @@ private fun CategoryList(
         items(musicGenres, key = { it.id }) {
             DeezerResourceCard(
                 modifier = modifier,
-                onClick = { onGenreClicked(it.id) },
+                onClick = { onGenreClicked(it.id, it.name) },
                 resourceImgUrl = it.pictureMedium,
                 resourceName = it.name
             )

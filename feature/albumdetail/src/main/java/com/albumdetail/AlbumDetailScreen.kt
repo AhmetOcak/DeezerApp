@@ -39,7 +39,10 @@ import kotlin.time.Duration.Companion.seconds
 private val ALBUM_IMG_SIZE = 224.dp
 
 @Composable
-fun AlbumDetailScreen(modifier: Modifier = Modifier) {
+fun AlbumDetailScreen(
+    modifier: Modifier = Modifier,
+    onNavigateBackClicked: () -> Unit
+) {
 
     val viewModel: AlbumDetailViewModel = hiltViewModel()
 
@@ -48,7 +51,8 @@ fun AlbumDetailScreen(modifier: Modifier = Modifier) {
     AlbumDetailScreenContent(
         modifier = modifier,
         albumDetailsState = albumDetailsState,
-        albumName = viewModel.albumName
+        albumName = viewModel.albumName,
+        onBackNavigateClicked = onNavigateBackClicked
     )
 }
 
@@ -57,7 +61,8 @@ fun AlbumDetailScreen(modifier: Modifier = Modifier) {
 private fun AlbumDetailScreenContent(
     modifier: Modifier,
     albumDetailsState: AlbumDetailsState,
-    albumName: String
+    albumName: String,
+    onBackNavigateClicked: () -> Unit
 ) {
 
     var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
@@ -68,7 +73,7 @@ private fun AlbumDetailScreenContent(
                 title = albumName,
                 navigationIcon = DeezerIcons.ArrowBack,
                 navigationContentDescription = null,
-                onNavigateClick = {}
+                onNavigateClick = onBackNavigateClicked
             )
         }
     ) {

@@ -17,7 +17,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,24 +38,26 @@ import com.ui.AlbumCard
 private val ARTIST_IMG_SIZE = 224.dp
 
 @Composable
-fun ArtistDetailScreen(modifier: Modifier = Modifier) {
-
+fun ArtistDetailScreen(
+    modifier: Modifier = Modifier,
+    onNavigateAlbumDetails: (Int) -> Unit,
+    onNavigateBackClicked: () -> Unit
+) {
     val viewModel: ArtistDetailViewModel = hiltViewModel()
 
-    viewModel.getArtistDetails(299117)
-
-    val artistDetailState by viewModel.artistDetailState.collectAsState()
-
     val gradient = Brush.verticalGradient(
-        colors = listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f), MaterialTheme.colorScheme.background)
+        colors = listOf(
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+            MaterialTheme.colorScheme.background
+        )
     )
 
     ArtistDetailScreenContent(
         modifier = modifier,
-        trackList = viewModel.trackList.collectAsLazyPagingItems(),
-        artistDetailState = artistDetailState,
-        artistName = viewModel.artistName,
-        gradient = gradient
+        viewModel = viewModel,
+        gradient = gradient,
+        onNavigateBackClicked = onNavigateBackClicked,
+        onAlbumClicked = { onNavigateAlbumDetails(it) }
     )
 }
 
@@ -64,14 +65,14 @@ fun ArtistDetailScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun ArtistDetailScreenContent(
     modifier: Modifier,
-    trackList: LazyPagingItems<TrackData>,
-    artistDetailState: ArtistDetailState,
-    artistName: String,
-    gradient: Brush
+    viewModel: ArtistDetailViewModel,
+    gradient: Brush,
+    onNavigateBackClicked: () -> Unit,
+    onAlbumClicked: (Int) -> Unit
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { TopBar(artistName) }
+        topBar = { TopBar(viewModel.artistName, onNavigateBackClicked) }
     ) {
         Column(
             modifier = modifier
@@ -83,13 +84,14 @@ private fun ArtistDetailScreenContent(
                     .weight(2f)
                     .fillMaxSize()
                     .background(gradient),
-                artistDetailState = artistDetailState
+                artistDetailState = viewModel.artistDetailState.collectAsState().value
             )
             AlbumsSection(
                 modifier = modifier
                     .weight(3f)
                     .fillMaxSize(),
-                trackList = trackList
+                viewModel = viewModel,
+                onAlbumClicked = onAlbumClicked
             )
         }
     }
@@ -97,12 +99,12 @@ private fun ArtistDetailScreenContent(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun TopBar(artistName: String) {
+private fun TopBar(artistName: String, onNavigateBackClicked: () -> Unit) {
     DeezerTopAppBar(
         title = artistName,
         navigationIcon = DeezerIcons.ArrowBack,
         navigationContentDescription = null,
-        onNavigateClick = {}
+        onNavigateClick = onNavigateBackClicked
     )
 }
 
@@ -148,26 +150,38 @@ private fun ArtistImage(artistImage: String) {
 Todo: trackList'ten albumler ayıklaancak
  */
 @Composable
-private fun AlbumsSection(modifier: Modifier, trackList: LazyPagingItems<TrackData>) {
+private fun AlbumsSection(
+    modifier: Modifier,
+    viewModel: ArtistDetailViewModel,
+    onAlbumClicked: (Int) -> Unit
+) {
+
     Column(modifier = modifier) {
         AlbumsSectionTitle()
-        AlbumsList(trackList = trackList)
+        AlbumsList(
+            trackList = viewModel.trackList.collectAsLazyPagingItems(),
+            onAlbumClicked = onAlbumClicked
+        )
     }
 }
 
 @Composable
-private fun AlbumsList(trackList: LazyPagingItems<TrackData>) {
+private fun AlbumsList(trackList: LazyPagingItems<TrackData>, onAlbumClicked: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 16.dp),
-        state = trackList.rememberLazyListState()
+        state = trackList.rememberLazyListState(),
     ) {
-        items(trackList, key = { it.id }) {
+        items(trackList, key = { it.id }) { trackData ->
             AlbumCard(
-                albumImage = it?.album?.coverBig ?: "",
-                albumName = it?.album?.title ?: "",
-                albumId = it?.album?.id ?: 0,
-                onAlbumClicked = {}
+                albumImage = trackData?.album?.coverBig ?: "",
+                albumName = trackData?.album?.title ?: "",
+                albumId = trackData?.album?.id ?: 0,
+                onAlbumClicked = {
+                    if (trackData != null) {
+                        onAlbumClicked(trackData.album.id)
+                    }
+                }
             )
         }
 

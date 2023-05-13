@@ -1,5 +1,6 @@
 package com.artists
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.usecases.GetArtistsUseCase
@@ -14,18 +15,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ArtistViewModel @Inject constructor(
-    private val getArtistsUseCase: GetArtistsUseCase
+    private val getArtistsUseCase: GetArtistsUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _artistState = MutableStateFlow<ArtistState>(ArtistState.Loading)
     val artistState = _artistState.asStateFlow()
 
     init {
-        getArtists()
+        getArtists(genreId = checkNotNull(savedStateHandle.get<Int>("genre_id")))
     }
 
-    private fun getArtists() = viewModelScope.launch(Dispatchers.IO) {
-        getArtistsUseCase(116)
+    private fun getArtists(genreId: Int) = viewModelScope.launch(Dispatchers.IO) {
+        getArtistsUseCase(genreId)
             .flowOn(Dispatchers.IO)
             .collect() { response ->
                 when (response) {

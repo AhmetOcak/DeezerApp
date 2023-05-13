@@ -1,5 +1,6 @@
 package com.albumdetail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.usecases.GetAlbumDetailsUseCase
@@ -13,21 +14,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AlbumDetailViewModel @Inject constructor(
-    private val getAlbumDetailsUseCase: GetAlbumDetailsUseCase
+    private val getAlbumDetailsUseCase: GetAlbumDetailsUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _albumDetailsState = MutableStateFlow<AlbumDetailsState>(AlbumDetailsState.Loading)
     val albumDetailsState = _albumDetailsState.asStateFlow()
 
-    init {
-        getAlbumDetails()
-    }
-
     var albumName: String = ""
         private set
 
-    private fun getAlbumDetails() = viewModelScope.launch(Dispatchers.IO) {
-        getAlbumDetailsUseCase(albumId = 175654362).collect() { response ->
+    init {
+        getAlbumDetails(checkNotNull(savedStateHandle.get<Int>("album_id")))
+    }
+
+    private fun getAlbumDetails(albumId: Int) = viewModelScope.launch(Dispatchers.IO) {
+        getAlbumDetailsUseCase(albumId).collect() { response ->
             when(response) {
                 is Response.Loading -> {
                     _albumDetailsState.value = AlbumDetailsState.Loading

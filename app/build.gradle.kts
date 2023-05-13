@@ -76,6 +76,9 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     kapt("com.google.dagger:hilt-compiler:2.45")
 
+    // Navigation Animation
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.25.1")
+
     implementation(project(":feature:musicgenres"))
     implementation(project(":feature:albumdetail"))
     implementation(project(":feature:artistdetail"))

@@ -32,20 +32,20 @@ import com.ui.SongCard
 private val HEART_SIZE = 196.dp
 
 @Composable
-fun FavoritesScreen(modifier: Modifier = Modifier) {
+fun FavoritesScreen(modifier: Modifier = Modifier, onNavigateBackClicked: () -> Unit) {
 
-    FavoritesScreenContent(modifier = modifier)
+    FavoritesScreenContent(modifier = modifier, onNavigateBackClicked = onNavigateBackClicked)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FavoritesScreenContent(modifier: Modifier) {
+private fun FavoritesScreenContent(modifier: Modifier, onNavigateBackClicked: () -> Unit) {
 
     var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { TopBar() }
+        topBar = { TopBar(onNavigateBackClicked) }
     ) {
         Column(
             modifier = modifier
@@ -82,12 +82,12 @@ private fun FavoritesScreenContent(modifier: Modifier) {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun TopBar() {
+private fun TopBar(onNavigateBackClicked: () -> Unit) {
     DeezerTopAppBar(
         title = "Favorites",
         navigationIcon = DeezerIcons.ArrowBack,
         navigationContentDescription = null,
-        onNavigateClick = {}
+        onNavigateClick = onNavigateBackClicked
     )
 }
 
