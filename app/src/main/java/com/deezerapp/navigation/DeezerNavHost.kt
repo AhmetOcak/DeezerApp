@@ -28,13 +28,13 @@ fun DeezerNavHost(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentScope.SlideDirection.Right,
-                animationSpec = tween(500)
+                animationSpec = tween(250)
             )
         },
         exitTransition = {
             slideOutOfContainer(
                 AnimatedContentScope.SlideDirection.Left,
-                animationSpec = tween(500)
+                animationSpec = tween(250)
             )
         }
     ) {
