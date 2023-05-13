@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.designsystem.icons.DeezerIcons
@@ -58,19 +59,23 @@ fun MusicPlayer(
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                PlayerButton(
-                    modifier = modifier.size(PlayStopButtonSize),
-                    onPlayButtonClicked = onPlayButtonClicked
-                )
-                SongDetail(
-                    modifier = modifier
-                        .fillMaxHeight()
-                        .padding(start = 16.dp),
-                    songName = songName,
-                    songArtist = songArtist
-                )
+                Row(modifier = modifier.weight(8f), verticalAlignment = Alignment.CenterVertically) {
+                    PlayerButton(
+                        modifier = modifier.size(PlayStopButtonSize),
+                        onPlayButtonClicked = onPlayButtonClicked
+                    )
+                    SongDetail(
+                        modifier = modifier
+                            .fillMaxHeight()
+                            .padding(start = 16.dp),
+                        songName = songName,
+                        songArtist = songArtist
+                    )
+                }
                 ClosePlayerButton(
-                    modifier = modifier,
+                    modifier = modifier
+                        .weight(2f)
+                        .fillMaxSize(),
                     onCloseClicked = onCloseClicked,
                     iconSize = CloseButtonSize,
                 )
@@ -94,7 +99,9 @@ private fun SongDetail(modifier: Modifier, songName: String, songArtist: String)
 private fun SongArtist(songArtist: String) {
     Text(
         text = songArtist,
-        style = MaterialTheme.typography.labelSmall.copy(color = Color.White)
+        style = MaterialTheme.typography.labelSmall.copy(color = Color.White),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -102,7 +109,9 @@ private fun SongArtist(songArtist: String) {
 private fun SongName(songName: String) {
     Text(
         text = songName,
-        style = MaterialTheme.typography.labelMedium.copy(color = Color.White)
+        style = MaterialTheme.typography.labelMedium.copy(color = Color.White),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -132,12 +141,12 @@ private fun PlayerButton(modifier: Modifier, onPlayButtonClicked: () -> Unit) {
 @Composable
 private fun ClosePlayerButton(modifier: Modifier, onCloseClicked: () -> Unit, iconSize: Dp) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         contentAlignment = Alignment.CenterEnd
     ) {
         IconButton(onClick = onCloseClicked) {
             Icon(
-                modifier = modifier.size(iconSize),
+                modifier = Modifier.size(iconSize),
                 imageVector = DeezerIcons.Close,
                 contentDescription = null,
                 tint = Color.White
