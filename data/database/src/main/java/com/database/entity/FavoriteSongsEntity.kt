@@ -20,6 +20,12 @@ data class FavoriteSongsEntity(
     @ColumnInfo(name = "album_name")
     var albumName: String,
 
+    @ColumnInfo(name = "audio_url")
+    var audioUrl: String,
+
+    @ColumnInfo(name = "artist_name")
+    var artistName: String,
+
     @ColumnInfo(name = "duration")
     var duration: Int
 )

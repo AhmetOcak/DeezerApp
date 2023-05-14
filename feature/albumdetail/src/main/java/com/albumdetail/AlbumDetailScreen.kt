@@ -267,6 +267,8 @@ private fun SongList(
                                 songImgUrl = it.album.coverBig,
                                 songName = it.title,
                                 duration = it.duration,
+                                artistName = it.artist.name,
+                                audioUrl = it.preview,
                                 albumName = it.album.title
                             )
                         )

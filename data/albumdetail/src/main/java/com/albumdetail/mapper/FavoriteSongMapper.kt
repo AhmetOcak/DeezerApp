@@ -9,6 +9,8 @@ fun FavoriteSongs.toFavoriteSongsEntity(): FavoriteSongsEntity {
         songName = songName,
         songImgUrl = songImgUrl,
         duration = duration,
+        artistName = artistName,
+        audioUrl = audioUrl,
         albumName = albumName
     )
 }
@@ -23,6 +25,8 @@ fun List<FavoriteSongsEntity>.toFavoriteSongsList(): List<FavoriteSongs> {
                 songName = it.songName,
                 songImgUrl = it.songImgUrl,
                 duration = it.duration,
+                artistName = it.artistName,
+                audioUrl = it.audioUrl,
                 albumName = it.albumName
             )
         )

@@ -1,12 +1,15 @@
 package com.favorites
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,6 +37,8 @@ import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
 import com.ui.EmptyListBox
 import com.ui.FullScreenProgIndicator
+import com.ui.GIF_HEIGHT
+import com.ui.Gif
 import com.ui.MusicPlayer
 import com.ui.PlayerHeight
 import com.ui.SongCard
@@ -54,7 +60,10 @@ fun FavoritesScreen(modifier: Modifier = Modifier, onNavigateBackClicked: () -> 
         onNavigateBackClicked = onNavigateBackClicked,
         viewModel = viewModel,
         onFavouriteBtnClicked = { viewModel.removeFavoriteSong(it) },
-        getAllFavoriteSongs = viewModel::getAllFavoriteSongs
+        getAllFavoriteSongs = viewModel::getAllFavoriteSongs,
+        onPlayAudio = { viewModel.playAudio(it) },
+        onPauseAudio = viewModel::pauseAudio,
+        onDestroyAudio = viewModel::closeMediaPlayer
     )
 }
 
@@ -66,9 +75,15 @@ private fun FavoritesScreenContent(
     onNavigateBackClicked: () -> Unit,
     viewModel: FavoritesViewModel,
     onFavouriteBtnClicked: (Long) -> Unit,
-    getAllFavoriteSongs: () -> Unit
+    getAllFavoriteSongs: () -> Unit,
+    onPlayAudio: (String) -> Unit,
+    onPauseAudio: () -> Unit,
+    onDestroyAudio: () -> Unit
 ) {
     var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
+
+    var playingArtistName by remember { mutableStateOf("") }
+    var playingSongName by remember { mutableStateOf("") }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -85,12 +100,23 @@ private fun FavoritesScreenContent(
                     .fillMaxSize()
             )
             Title()
+            Row(modifier.height(GIF_HEIGHT)) {
+                if (viewModel.isAudioPlaying) {
+                    Gif(context = LocalContext.current)
+                }
+            }
+            Divider()
             FavoriteSongsList(
                 modifier = modifier
                     .weight(4f)
                     .fillMaxSize()
                     .padding(bottom = if (showMusicPlayer) PlayerHeight else 0.dp),
-                onSongClicked = {
+                onSongClicked = { musicUrl, artistName, songName ->
+                    onPlayAudio(musicUrl)
+
+                    playingArtistName = artistName
+                    playingSongName = songName
+
                     if (!showMusicPlayer) {
                         showMusicPlayer = true
                     }
@@ -102,11 +128,14 @@ private fun FavoritesScreenContent(
         }
         if (showMusicPlayer) {
             MusicPlayer(
-                songName = "Gel içelim",
-                songArtist = "Duman",
-                onCloseClicked = { showMusicPlayer = false },
-                onPlayButtonClicked = {},
-                isAudioPlaying = false
+                songName = playingSongName,
+                songArtist = playingArtistName,
+                onCloseClicked = {
+                    onDestroyAudio()
+                    showMusicPlayer = false
+                },
+                onPlayButtonClicked = { onPauseAudio() },
+                isAudioPlaying = viewModel.isAudioPlaying
             )
         }
     }
@@ -141,16 +170,17 @@ private fun LikesBoard(modifier: Modifier) {
 @Composable
 private fun FavoriteSongsList(
     modifier: Modifier,
-    onSongClicked: () -> Unit,
+    onSongClicked: (String, String, String) -> Unit,
     favoritesState: FavoritesState,
     onFavouriteBtnClicked: (Long) -> Unit,
     getAllFavoriteSongs: () -> Unit
 ) {
-    when(favoritesState) {
+    when (favoritesState) {
         is FavoritesState.Nothing -> {}
         is FavoritesState.Loading -> {
             FullScreenProgIndicator()
         }
+
         is FavoritesState.Success -> {
             if (favoritesState.data.isNotEmpty()) {
                 LazyColumn(
@@ -165,7 +195,9 @@ private fun FavoriteSongsList(
                             songName = it.songName,
                             duration = "${it.duration.toDouble().seconds}",
                             favoriteIconInitVal = true,
-                            onSongClicked = onSongClicked,
+                            onSongClicked = {
+                                onSongClicked(it.audioUrl, it.artistName, it.songName)
+                            },
                             onFavouriteBtnClicked = { onFavouriteBtnClicked(it.id) },
                             showAlbum = true,
                             albumName = it.albumName,
@@ -181,6 +213,7 @@ private fun FavoriteSongsList(
                 )
             }
         }
+
         is FavoritesState.Error -> {
 
         }
@@ -197,7 +230,6 @@ private fun Title() {
         text = "My Favorite Songs",
         style = MaterialTheme.typography.titleLarge
     )
-    Divider()
 }
 
 @Composable
@@ -205,7 +237,7 @@ private fun ShowDeleteMessage(
     deleteState: DeleteState,
     viewModel: FavoritesViewModel
 ) {
-    when(deleteState) {
+    when (deleteState) {
         is DeleteState.Nothing -> {}
         is DeleteState.Success -> {
             Toast.makeText(
@@ -215,6 +247,7 @@ private fun ShowDeleteMessage(
             ).show()
             viewModel.resetDeleteState()
         }
+
         is DeleteState.Error -> {
             Toast.makeText(
                 LocalContext.current,
