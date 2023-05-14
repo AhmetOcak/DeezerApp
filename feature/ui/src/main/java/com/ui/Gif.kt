@@ -15,7 +15,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 
-private val GIF_HEIGHT = 32.dp
+val GIF_HEIGHT = 32.dp
 
 @Composable
 fun Gif(modifier: Modifier = Modifier, context: Context) {
@@ -29,13 +29,14 @@ fun Gif(modifier: Modifier = Modifier, context: Context) {
         }.build()
 
     Image(
-        modifier = modifier.fillMaxWidth().height(GIF_HEIGHT),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(GIF_HEIGHT),
         painter = rememberAsyncImagePainter(
-            model = ImageRequest.Builder(context).data(R.drawable.playing),
+            model = ImageRequest.Builder(context).data(R.drawable.playing).build(),
             imageLoader = imageLoader
         ),
         contentScale = ContentScale.Crop,
-        contentDescription =null
+        contentDescription = null
     )
-
 }
