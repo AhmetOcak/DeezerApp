@@ -31,7 +31,7 @@ import com.ui.DeezerResourceCard
 @Composable
 fun MusicGenresScreen(
     modifier: Modifier = Modifier,
-    onNavigateArtistsScreen: (Int, String) -> Unit,
+    onNavigateArtistsScreen: (Long, String) -> Unit,
     onNavigateFavoritesScreen: () -> Unit
 ) {
     val viewModel: MusicGenreViewModel = hiltViewModel()
@@ -53,7 +53,7 @@ fun MusicGenresScreen(
 fun MusicCategoriesScreenContent(
     modifier: Modifier,
     onNavigateFavoritesScreen: () -> Unit,
-    onGenreClicked: (Int, String) -> Unit,
+    onGenreClicked: (Long, String) -> Unit,
     musicGenresState: MusicGenresState,
     darkTheme: Boolean = isSystemInDarkTheme()
 ) {
@@ -98,7 +98,7 @@ fun MusicCategoriesScreenContent(
 private fun CategoryList(
     modifier: Modifier,
     padding: PaddingValues,
-    onGenreClicked: (Int, String) -> Unit,
+    onGenreClicked: (Long, String) -> Unit,
     musicGenres: ArrayList<Data>
 ) {
     LazyVerticalGrid(

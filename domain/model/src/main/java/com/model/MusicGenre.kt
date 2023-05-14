@@ -5,7 +5,7 @@ data class MusicGenre(
 )
 
 data class Data(
-    val id: Int,
+    val id: Long,
     val name: String,
     val picture: String,
     val pictureSmall: String,

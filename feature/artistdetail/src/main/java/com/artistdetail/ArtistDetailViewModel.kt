@@ -30,11 +30,11 @@ class ArtistDetailViewModel @Inject constructor(
         private set
 
     init {
-        getArtistDetails(checkNotNull(savedStateHandle.get<Int>("artist_id")))
-        getArtistAlbums(checkNotNull(savedStateHandle.get<Int>("artist_id")))
+        getArtistDetails(checkNotNull(savedStateHandle.get<Long>("artist_id")))
+        getArtistAlbums(checkNotNull(savedStateHandle.get<Long>("artist_id")))
     }
 
-    private fun getArtistDetails(artistId: Int) = viewModelScope.launch(Dispatchers.IO) {
+    private fun getArtistDetails(artistId: Long) = viewModelScope.launch(Dispatchers.IO) {
         getArtistDetailUseCase(artistId).collect() { response ->
             when (response) {
                 is Response.Loading -> {
@@ -54,7 +54,7 @@ class ArtistDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getArtistAlbums(artistId: Int) = viewModelScope.launch(Dispatchers.IO) {
+    private fun getArtistAlbums(artistId: Long) = viewModelScope.launch(Dispatchers.IO) {
         getArtistAlbumsUseCase(artistId).collect() { response ->
             when(response) {
                 is Response.Loading -> {

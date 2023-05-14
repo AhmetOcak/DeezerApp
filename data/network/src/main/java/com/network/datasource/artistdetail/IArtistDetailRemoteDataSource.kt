@@ -5,7 +5,7 @@ import com.network.model.ArtistDetailDto
 
 interface IArtistDetailRemoteDataSource {
 
-    suspend fun getArtistDetails(artistId: Int): ArtistDetailDto
+    suspend fun getArtistDetails(artistId: Long): ArtistDetailDto
 
-    suspend fun getArtistAlbums(artistId: Int): ArtistAlbumsDto
+    suspend fun getArtistAlbums(artistId: Long): ArtistAlbumsDto
 }

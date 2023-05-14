@@ -14,7 +14,7 @@ class AlbumDetailsRepositoryImpl @Inject constructor(
     private val localDataSource: IFavoriteSongsLocalDataSource
 ) : IAlbumDetailRepository {
 
-    override suspend fun getAlbumDetails(albumId: Int): AlbumDetails {
+    override suspend fun getAlbumDetails(albumId: Long): AlbumDetails {
         return remoteDataSource.getAlbumDetails(albumId).toAlbumDetails()
     }
 
@@ -26,7 +26,7 @@ class AlbumDetailsRepositoryImpl @Inject constructor(
         return localDataSource.addFavoriteSong(favoriteSongs.toFavoriteSongsEntity())
     }
 
-    override suspend fun removeFavoriteSong(songId: Int) {
+    override suspend fun removeFavoriteSong(songId: Long) {
         return localDataSource.removeFavoriteSong(songId)
     }
 }

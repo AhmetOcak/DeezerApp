@@ -5,7 +5,7 @@ import com.model.ArtistDetail
 
 interface IArtistDetailRepository {
 
-    suspend fun getArtistDetails(artistId: Int): ArtistDetail
+    suspend fun getArtistDetails(artistId: Long): ArtistDetail
 
-    suspend fun getArtistAlbums(artistId: Int): ArtistAlbums
+    suspend fun getArtistAlbums(artistId: Long): ArtistAlbums
 }

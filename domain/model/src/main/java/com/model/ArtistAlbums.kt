@@ -6,7 +6,7 @@ data class ArtistAlbums(
 )
 
 data class ArtistAlbumsData(
-    val id: Int,
+    val id: Long,
     val title: String,
     val link: String,
     val cover: String,

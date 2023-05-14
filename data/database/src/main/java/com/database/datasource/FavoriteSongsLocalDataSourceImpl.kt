@@ -14,6 +14,6 @@ class FavoriteSongsLocalDataSourceImpl @Inject constructor(
     override suspend fun getAllFavoriteSongs(): List<FavoriteSongsEntity> =
         dao.getAllFavoriteSongs()
 
-    override suspend fun removeFavoriteSong(songId: Int) =
+    override suspend fun removeFavoriteSong(songId: Long) =
         dao.removeFavoriteSong(songId)
 }

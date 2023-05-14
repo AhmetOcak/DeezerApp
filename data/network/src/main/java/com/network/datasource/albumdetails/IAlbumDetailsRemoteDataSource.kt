@@ -4,5 +4,5 @@ import com.network.model.albumdetail.AlbumDetailsDto
 
 interface IAlbumDetailsRemoteDataSource {
 
-    suspend fun getAlbumDetails(albumId: Int): AlbumDetailsDto
+    suspend fun getAlbumDetails(albumId: Long): AlbumDetailsDto
 }

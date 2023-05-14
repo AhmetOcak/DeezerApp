@@ -12,7 +12,7 @@ data class ArtistAlbumsDto(
 
 data class ArtistAlbumsDataDto(
     @SerializedName("id")
-    val id: Int? = null,
+    val id: Long? = null,
 
     @SerializedName("title")
     val title: String? = null,

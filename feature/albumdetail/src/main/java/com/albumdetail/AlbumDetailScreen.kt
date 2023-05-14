@@ -37,6 +37,7 @@ import com.designsystem.icons.DeezerIcons
 import com.model.FavoriteSongs
 import com.model.albumdetail.AlbumSong
 import com.ui.FullScreenProgIndicator
+import com.ui.Gif
 import com.ui.MusicPlayer
 import com.ui.PlayerHeight
 import com.ui.SongCard
@@ -69,7 +70,10 @@ fun AlbumDetailScreen(
         isSongAvailableInFavorites = { viewModel.isSongAvailableInFavorites(it) },
         resetDatabaseState = viewModel::resetDatabaseState,
         addFavoriteSong = { viewModel.addFavoriteSong(it) },
-        removeFavoriteSong = { viewModel.removeFavoriteSong(it) }
+        removeFavoriteSong = { viewModel.removeFavoriteSong(it) },
+        onPlayAudio = { viewModel.playAudio(it) },
+        onPauseAudio = viewModel::pauseAudio,
+        onDestroyAudio = viewModel::closeMediaPlayer
     )
 }
 
@@ -80,11 +84,14 @@ private fun AlbumDetailScreenContent(
     albumDetailsState: AlbumDetailsState,
     albumName: String,
     onBackNavigateClicked: () -> Unit,
-    isSongAvailableInFavorites: (Int) -> Boolean,
+    isSongAvailableInFavorites: (Long) -> Boolean,
     resetDatabaseState: () -> Unit,
     viewModel: AlbumDetailViewModel,
     addFavoriteSong: (FavoriteSongs) -> Unit,
-    removeFavoriteSong: (Int) -> Unit
+    removeFavoriteSong: (Long) -> Unit,
+    onPlayAudio: (String) -> Unit,
+    onPauseAudio: () -> Unit,
+    onDestroyAudio: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -103,14 +110,17 @@ private fun AlbumDetailScreenContent(
 
             is AlbumDetailsState.Success -> {
                 SuccessContent(
-                    modifier,
-                    it,
-                    albumDetailsState,
-                    viewModel,
-                    isSongAvailableInFavorites,
-                    resetDatabaseState,
-                    addFavoriteSong,
-                    removeFavoriteSong
+                    modifier = modifier,
+                    it = it,
+                    albumDetailsState = albumDetailsState,
+                    viewModel = viewModel,
+                    isSongAvailableInFavorites = isSongAvailableInFavorites,
+                    resetDatabaseState = resetDatabaseState,
+                    addFavoriteSong = addFavoriteSong,
+                    removeFavoriteSong = removeFavoriteSong,
+                    onPlayAudio = onPlayAudio,
+                    onPauseAudio = onPauseAudio,
+                    onDestroyAudio = onDestroyAudio
                 )
             }
 
@@ -127,10 +137,13 @@ private fun SuccessContent(
     it: PaddingValues,
     albumDetailsState: AlbumDetailsState.Success,
     viewModel: AlbumDetailViewModel,
-    isSongAvailableInFavorites: (Int) -> Boolean,
+    isSongAvailableInFavorites: (Long) -> Boolean,
     resetDatabaseState: () -> Unit,
     addFavoriteSong: (FavoriteSongs) -> Unit,
-    removeFavoriteSong: (Int) -> Unit
+    removeFavoriteSong: (Long) -> Unit,
+    onPlayAudio: (String) -> Unit,
+    onPauseAudio: () -> Unit,
+    onDestroyAudio: () -> Unit
 ) {
     var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
 
@@ -156,6 +169,8 @@ private fun SuccessContent(
                 .padding(bottom = if (showMusicPlayer) PlayerHeight else 0.dp),
             songs = albumDetailsState.data.tracks.data,
             onSongClicked = { musicUrl, songName, songArtist ->
+                onPlayAudio(musicUrl)
+
                 playingSongName = songName
                 playingSongArtist = songArtist
 
@@ -174,8 +189,12 @@ private fun SuccessContent(
         MusicPlayer(
             songName = playingSongName,
             songArtist = playingSongArtist,
-            onCloseClicked = { showMusicPlayer = false },
-            onPlayButtonClicked = {}
+            onCloseClicked = {
+                onDestroyAudio()
+                showMusicPlayer = false
+            },
+            onPlayButtonClicked = { onPauseAudio() },
+            isAudioPlaying = viewModel.isAudioPlaying
         )
     }
 }
@@ -190,6 +209,9 @@ private fun AlbumImage(modifier: Modifier, albumImageUrl: String) {
             imageUrl = albumImageUrl
         )
     }
+    /*Box(modifier = modifier) {
+        Gif(context = LocalContext.current)
+    }*/
 }
 
 @Composable
@@ -211,10 +233,10 @@ private fun SongList(
     songs: ArrayList<AlbumSong>,
     onSongClicked: (String, String, String) -> Unit,
     databaseState: DatabaseState,
-    isSongAvailableInFavorites: (Int) -> Boolean,
+    isSongAvailableInFavorites: (Long) -> Boolean,
     resetDatabaseState: () -> Unit,
     addFavoriteSong: (FavoriteSongs) -> Unit,
-    removeFavoriteSong: (Int) -> Unit
+    removeFavoriteSong: (Long) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,

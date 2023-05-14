@@ -9,6 +9,6 @@ interface AlbumDetailsApi {
 
     @GET(EndPoint.ALBUM_DETAIL)
     suspend fun getAlbumDetails(
-        @Path("album_id") albumId: Int
+        @Path("album_id") albumId: Long
     ) : AlbumDetailsDto
 }

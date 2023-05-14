@@ -13,7 +13,7 @@ class FavoriteSongRepositoryImpl @Inject constructor(
         return localDataSource.getAllFavoriteSongs().toFavoriteSongsList()
     }
 
-    override suspend fun removeFavoriteSong(songId: Int) {
+    override suspend fun removeFavoriteSong(songId: Long) {
         return localDataSource.removeFavoriteSong(songId)
     }
 }

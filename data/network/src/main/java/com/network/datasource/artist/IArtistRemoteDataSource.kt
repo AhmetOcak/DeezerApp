@@ -4,5 +4,5 @@ import com.network.model.ArtistDto
 
 interface IArtistRemoteDataSource {
 
-    suspend fun getArtists(genreId: Int): ArtistDto
+    suspend fun getArtists(genreId: Long): ArtistDto
 }

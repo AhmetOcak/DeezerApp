@@ -15,5 +15,5 @@ interface FavoriteSongsDao {
     suspend fun getAllFavoriteSongs(): List<FavoriteSongsEntity>
 
     @Query("DELETE FROM favorite_song WHERE id = :songId")
-    suspend fun removeFavoriteSong(songId: Int)
+    suspend fun removeFavoriteSong(songId: Long)
 }

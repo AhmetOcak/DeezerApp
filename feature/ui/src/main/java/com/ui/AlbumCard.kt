@@ -27,9 +27,9 @@ fun AlbumCard(
     modifier: Modifier = Modifier,
     albumImage: String,
     albumName: String,
-    albumId: Int,
+    albumId: Long,
     albumReleaseDate: String,
-    onAlbumClicked: (Int) -> Unit,
+    onAlbumClicked: (Long) -> Unit,
     albumHeight: Dp = ALBUM_IMG_HEIGHT
 ) {
     Row(

@@ -65,7 +65,7 @@ private fun FavoritesScreenContent(
     modifier: Modifier,
     onNavigateBackClicked: () -> Unit,
     viewModel: FavoritesViewModel,
-    onFavouriteBtnClicked: (Int) -> Unit,
+    onFavouriteBtnClicked: (Long) -> Unit,
     getAllFavoriteSongs: () -> Unit
 ) {
     var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
@@ -105,7 +105,8 @@ private fun FavoritesScreenContent(
                 songName = "Gel içelim",
                 songArtist = "Duman",
                 onCloseClicked = { showMusicPlayer = false },
-                onPlayButtonClicked = {}
+                onPlayButtonClicked = {},
+                isAudioPlaying = false
             )
         }
     }
@@ -142,7 +143,7 @@ private fun FavoriteSongsList(
     modifier: Modifier,
     onSongClicked: () -> Unit,
     favoritesState: FavoritesState,
-    onFavouriteBtnClicked: (Int) -> Unit,
+    onFavouriteBtnClicked: (Long) -> Unit,
     getAllFavoriteSongs: () -> Unit
 ) {
     when(favoritesState) {

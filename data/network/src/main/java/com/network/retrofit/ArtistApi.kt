@@ -9,6 +9,6 @@ interface ArtistApi {
 
     @GET(EndPoint.ARTIST)
     suspend fun getArtists(
-        @Path("genre_id") genreId: Int
+        @Path("genre_id") genreId: Long
     ) : ArtistDto
 }

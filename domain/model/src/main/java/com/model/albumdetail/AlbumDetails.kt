@@ -1,7 +1,7 @@
 package com.model.albumdetail
 
 data class AlbumDetails(
-    val id: Int,
+    val id: Long,
     val title: String,
     val upc: String,
     val link: String,

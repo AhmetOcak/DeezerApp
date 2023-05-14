@@ -1,7 +1,7 @@
 package com.model.albumdetail
 
 data class AlbumSong(
-    val id: Int,
+    val id: Long,
     val readable: Boolean,
     val title: String,
     val titleShort: String,

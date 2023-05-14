@@ -23,10 +23,10 @@ class ArtistViewModel @Inject constructor(
     val artistState = _artistState.asStateFlow()
 
     init {
-        getArtists(genreId = checkNotNull(savedStateHandle.get<Int>("genre_id")))
+        getArtists(genreId = checkNotNull(savedStateHandle.get<Long>("genre_id")))
     }
 
-    private fun getArtists(genreId: Int) = viewModelScope.launch(Dispatchers.IO) {
+    private fun getArtists(genreId: Long) = viewModelScope.launch(Dispatchers.IO) {
         getArtistsUseCase(genreId)
             .flowOn(Dispatchers.IO)
             .collect() { response ->

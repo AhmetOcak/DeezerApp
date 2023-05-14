@@ -1,7 +1,7 @@
 package com.model.albumdetail
 
 data class AlbumGenreData(
-    val id: Int,
+    val id: Long,
     val name: String,
     val picture: String,
     val type: String

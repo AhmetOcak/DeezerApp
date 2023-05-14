@@ -9,7 +9,7 @@ data class MusicGenreDto(
 
 data class DataDto(
     @SerializedName("id")
-    val id: Int? = null,
+    val id: Long? = null,
 
     @SerializedName("name")
     val name: String? = null,

@@ -23,7 +23,7 @@ import com.ui.FullScreenProgIndicator
 @Composable
 fun ArtistsScreen(
     modifier: Modifier = Modifier,
-    onNavigateArtistDetailScreen: (Int) -> Unit,
+    onNavigateArtistDetailScreen: (Long) -> Unit,
     onNavigateBackClicked: () -> Unit,
     genreName: String
 ) {
@@ -43,7 +43,7 @@ fun ArtistsScreen(
 private fun ArtistsScreenContent(
     modifier: Modifier,
     artistState: ArtistState,
-    onArtistClicked: (Int) -> Unit,
+    onArtistClicked: (Long) -> Unit,
     onNavigateBackClicked: () -> Unit,
     genreName: String
 ) {
@@ -84,7 +84,7 @@ private fun ArtistList(
     modifier: Modifier,
     scaffoldPadding: PaddingValues,
     artists: ArrayList<ArtistData>,
-    onArtistClicked: (Int) -> Unit
+    onArtistClicked: (Long) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = modifier

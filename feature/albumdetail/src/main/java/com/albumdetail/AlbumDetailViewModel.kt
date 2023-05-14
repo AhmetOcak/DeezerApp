@@ -1,5 +1,9 @@
 package com.albumdetail
 
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,6 +38,12 @@ class AlbumDetailViewModel @Inject constructor(
 
     private var favoriteSongs: List<FavoriteSongs> = mutableListOf()
 
+    var mediaPlayer: MediaPlayer = MediaPlayer()
+        private set
+
+    var isAudioPlaying by mutableStateOf(true)
+        private set
+
     var databaseStatus by mutableStateOf(true)
         private set
 
@@ -41,10 +52,16 @@ class AlbumDetailViewModel @Inject constructor(
 
     init {
         getAllFavoriteSongs()
-        getAlbumDetails(checkNotNull(savedStateHandle.get<Int>("album_id")))
+        getAlbumDetails(checkNotNull(savedStateHandle.get<Long>("album_id")))
+
+        mediaPlayer.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build()
+        )
     }
 
-    private fun getAlbumDetails(albumId: Int) = viewModelScope.launch(Dispatchers.IO) {
+    private fun getAlbumDetails(albumId: Long) = viewModelScope.launch(Dispatchers.IO) {
         getAlbumDetailsUseCase(albumId).collect() { response ->
             when(response) {
                 is Response.Loading -> {
@@ -91,7 +108,7 @@ class AlbumDetailViewModel @Inject constructor(
         }
     }
 
-    fun removeFavoriteSong(songId: Int) = viewModelScope.launch(Dispatchers.IO) {
+    fun removeFavoriteSong(songId: Long) = viewModelScope.launch(Dispatchers.IO) {
         deleteFavoriteSongUseCase(songId).collect() { response ->
             when(response) {
                 is Response.Loading -> {
@@ -107,7 +124,7 @@ class AlbumDetailViewModel @Inject constructor(
         }
     }
 
-    fun isSongAvailableInFavorites(songId: Int): Boolean {
+    fun isSongAvailableInFavorites(songId: Long): Boolean {
         return if (databaseStatus) {
             favoriteSongs.any { it.id == songId }
         } else {
@@ -115,6 +132,52 @@ class AlbumDetailViewModel @Inject constructor(
         }
     }
 
+    fun playAudio(audioUrl: String) {
+        try {
+            if (mediaPlayer.isPlaying) {
+                isAudioPlaying = true
+
+                mediaPlayer.stop()
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(audioUrl)
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+            } else {
+                isAudioPlaying = true
+
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(audioUrl)
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+            }
+        } catch (e: IOException) {
+            Log.e("MEDIA PLAYER", e.stackTraceToString())
+        }
+    }
+
+    fun pauseAudio() {
+        if (mediaPlayer.isPlaying) {
+            isAudioPlaying = false
+            mediaPlayer.pause()
+        } else {
+            isAudioPlaying = true
+            mediaPlayer.start()
+        }
+    }
+
+    fun closeMediaPlayer() {
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.stop()
+            mediaPlayer.reset()
+        }
+    }
+
     fun resetDatabaseState() { _databaseState.value = DatabaseState.Nothing }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        mediaPlayer.release()
+    }
 
 }

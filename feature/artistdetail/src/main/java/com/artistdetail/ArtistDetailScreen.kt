@@ -39,7 +39,7 @@ private val ARTIST_IMG_SIZE = 224.dp
 @Composable
 fun ArtistDetailScreen(
     modifier: Modifier = Modifier,
-    onNavigateAlbumDetails: (Int) -> Unit,
+    onNavigateAlbumDetails: (Long) -> Unit,
     onNavigateBackClicked: () -> Unit
 ) {
     val viewModel: ArtistDetailViewModel = hiltViewModel()
@@ -68,7 +68,7 @@ private fun ArtistDetailScreenContent(
     viewModel: ArtistDetailViewModel,
     gradient: Brush,
     onNavigateBackClicked: () -> Unit,
-    onAlbumClicked: (Int) -> Unit
+    onAlbumClicked: (Long) -> Unit
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -147,7 +147,7 @@ private fun ArtistImage(artistImage: String) {
 private fun AlbumsSection(
     modifier: Modifier,
     artistAlbumsState: ArtistAlbumsState,
-    onAlbumClicked: (Int) -> Unit
+    onAlbumClicked: (Long) -> Unit
 ) {
     Column(modifier = modifier) {
         when (artistAlbumsState) {
@@ -169,7 +169,7 @@ private fun AlbumsSection(
 }
 
 @Composable
-private fun AlbumsList(artistAlbums: ArrayList<ArtistAlbumsData>, onAlbumClicked: (Int) -> Unit) {
+private fun AlbumsList(artistAlbums: ArrayList<ArtistAlbumsData>, onAlbumClicked: (Long) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 16.dp)

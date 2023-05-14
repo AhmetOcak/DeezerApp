@@ -18,15 +18,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.PlayerRed
@@ -43,7 +38,8 @@ fun MusicPlayer(
     songName: String,
     songArtist: String,
     onCloseClicked: () -> Unit,
-    onPlayButtonClicked: () -> Unit
+    onPlayButtonClicked: () -> Unit,
+    isAudioPlaying: Boolean
 ) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Card(
@@ -59,10 +55,14 @@ fun MusicPlayer(
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(modifier = modifier.weight(8f), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = modifier.weight(8f),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     PlayerButton(
                         modifier = modifier.size(PlayStopButtonSize),
-                        onPlayButtonClicked = onPlayButtonClicked
+                        onPlayButtonClicked = onPlayButtonClicked,
+                        isAudioPlaying = isAudioPlaying
                     )
                     SongDetail(
                         modifier = modifier
@@ -76,8 +76,7 @@ fun MusicPlayer(
                     modifier = modifier
                         .weight(2f)
                         .fillMaxSize(),
-                    onCloseClicked = onCloseClicked,
-                    iconSize = CloseButtonSize,
+                    onCloseClicked = onCloseClicked
                 )
             }
         }
@@ -116,18 +115,19 @@ private fun SongName(songName: String) {
 }
 
 @Composable
-private fun PlayerButton(modifier: Modifier, onPlayButtonClicked: () -> Unit) {
-    var play by rememberSaveable { mutableStateOf(true) }
-
+private fun PlayerButton(
+    modifier: Modifier,
+    onPlayButtonClicked: () -> Unit,
+    isAudioPlaying: Boolean
+) {
     IconButton(
         onClick = {
             onPlayButtonClicked()
-            play = !play
         }
     ) {
         Icon(
             modifier = modifier,
-            imageVector = if (play) {
+            imageVector = if (isAudioPlaying) {
                 DeezerIcons.Pause
             } else {
                 DeezerIcons.Play
@@ -139,14 +139,14 @@ private fun PlayerButton(modifier: Modifier, onPlayButtonClicked: () -> Unit) {
 }
 
 @Composable
-private fun ClosePlayerButton(modifier: Modifier, onCloseClicked: () -> Unit, iconSize: Dp) {
+private fun ClosePlayerButton(modifier: Modifier, onCloseClicked: () -> Unit) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.CenterEnd
     ) {
         IconButton(onClick = onCloseClicked) {
             Icon(
-                modifier = Modifier.size(iconSize),
+                modifier = Modifier.size(CloseButtonSize),
                 imageVector = DeezerIcons.Close,
                 contentDescription = null,
                 tint = Color.White

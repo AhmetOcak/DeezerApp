@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class GetAlbumDetailsUseCase @Inject constructor(private val repository: IAlbumDetailRepository) {
 
-    suspend operator fun invoke(albumId: Int): Flow<Response<AlbumDetails>> = flow {
+    suspend operator fun invoke(albumId: Long): Flow<Response<AlbumDetails>> = flow {
         try {
             emit(Response.Loading)
 

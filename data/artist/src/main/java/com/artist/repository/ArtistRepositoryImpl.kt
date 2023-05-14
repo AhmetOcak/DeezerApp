@@ -9,7 +9,7 @@ class ArtistRepositoryImpl @Inject constructor(
     private val dataSourceImpl: ArtistRemoteDataSourceImpl
 ) : IArtistRepository {
 
-    override suspend fun getArtists(genreId: Int): Artist {
+    override suspend fun getArtists(genreId: Long): Artist {
         return dataSourceImpl.getArtists(genreId).toArtist()
     }
 }

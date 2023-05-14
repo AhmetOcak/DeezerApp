@@ -54,7 +54,7 @@ fun DeezerNavHost(
         composable(
             route = NavScreen.Artists.route,
             arguments = listOf(
-                navArgument(NavArgKeys.artists_screen_arg_key_1) { type = NavType.IntType },
+                navArgument(NavArgKeys.artists_screen_arg_key_1) { type = NavType.LongType },
                 navArgument(NavArgKeys.artists_screen_arg_key_2) { type = NavType.StringType }
             )
         ) { navBackStackEntry ->
@@ -75,7 +75,7 @@ fun DeezerNavHost(
         composable(
             route = NavScreen.ArtistDetail.route,
             arguments = listOf(
-                navArgument(NavArgKeys.artist_detail_screen_arg_key) { type = NavType.IntType }
+                navArgument(NavArgKeys.artist_detail_screen_arg_key) { type = NavType.LongType }
             )
         ) {
             ArtistDetailScreen(
@@ -90,7 +90,7 @@ fun DeezerNavHost(
         composable(
             route = NavScreen.AlbumDetails.route,
             arguments = listOf(
-                navArgument(NavArgKeys.album_details_screen_arg_key) { type = NavType.IntType }
+                navArgument(NavArgKeys.album_details_screen_arg_key) { type = NavType.LongType }
             )
         ) {
             AlbumDetailScreen(

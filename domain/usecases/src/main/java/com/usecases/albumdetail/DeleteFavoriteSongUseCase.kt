@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class DeleteFavoriteSongUseCase @Inject constructor(private val repository: IAlbumDetailRepository) {
 
-    suspend operator fun invoke(songId: Int): Flow<Response<Unit>> = flow {
+    suspend operator fun invoke(songId: Long): Flow<Response<Unit>> = flow {
         try {
             emit(Response.Loading)
 

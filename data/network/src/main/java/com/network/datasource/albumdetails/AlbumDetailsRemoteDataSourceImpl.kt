@@ -8,7 +8,7 @@ class AlbumDetailsRemoteDataSourceImpl @Inject constructor(
     private val api: AlbumDetailsApi
 ) : IAlbumDetailsRemoteDataSource {
 
-    override suspend fun getAlbumDetails(albumId: Int): AlbumDetailsDto =
+    override suspend fun getAlbumDetails(albumId: Long): AlbumDetailsDto =
         api.getAlbumDetails(albumId)
 
 }

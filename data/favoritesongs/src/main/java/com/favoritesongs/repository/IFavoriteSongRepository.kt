@@ -6,5 +6,5 @@ interface IFavoriteSongRepository {
 
     suspend fun getAllFavoriteSongs(): List<FavoriteSongs>
 
-    suspend fun removeFavoriteSong(songId: Int)
+    suspend fun removeFavoriteSong(songId: Long)
 }

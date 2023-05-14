@@ -8,5 +8,5 @@ interface IFavoriteSongsLocalDataSource {
 
     suspend fun getAllFavoriteSongs(): List<FavoriteSongsEntity>
 
-    suspend fun removeFavoriteSong(songId: Int)
+    suspend fun removeFavoriteSong(songId: Long)
 }

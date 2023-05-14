@@ -4,5 +4,5 @@ import com.model.Artist
 
 interface IArtistRepository {
 
-    suspend fun getArtists(genreId: Int): Artist
+    suspend fun getArtists(genreId: Long): Artist
 }

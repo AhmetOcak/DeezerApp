@@ -5,11 +5,11 @@ import com.model.albumdetail.AlbumDetails
 
 interface IAlbumDetailRepository {
 
-    suspend fun getAlbumDetails(albumId: Int): AlbumDetails
+    suspend fun getAlbumDetails(albumId: Long): AlbumDetails
 
     suspend fun getAllFavoriteSongs(): List<FavoriteSongs>
 
     suspend fun addFavoriteSong(favoriteSongs: FavoriteSongs)
 
-    suspend fun removeFavoriteSong(songId: Int)
+    suspend fun removeFavoriteSong(songId: Long)
 }

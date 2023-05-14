@@ -1,7 +1,7 @@
 package com.model
 
 data class ArtistDetail(
-    val id: Int,
+    val id: Long,
     val name: String,
     val link: String,
     val share: String,

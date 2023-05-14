@@ -9,7 +9,7 @@ data class FavoriteSongsEntity(
 
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    var id: Int,
+    var id: Long,
 
     @ColumnInfo(name = "img_url")
     var songImgUrl: String,

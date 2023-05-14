@@ -46,7 +46,7 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
-    fun removeFavoriteSong(songId: Int) = viewModelScope.launch(Dispatchers.IO) {
+    fun removeFavoriteSong(songId: Long) = viewModelScope.launch(Dispatchers.IO) {
          deleteFavoriteSongUseCase(songId).collect() { response ->
             when(response) {
                 is Response.Loading -> {}

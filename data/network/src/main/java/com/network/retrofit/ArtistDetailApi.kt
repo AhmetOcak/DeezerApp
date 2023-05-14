@@ -10,11 +10,11 @@ interface ArtistDetailApi {
 
     @GET(EndPoint.ARTIST_DETAIL)
     suspend fun getArtistDetails(
-        @Path("artist_id") artistId: Int
+        @Path("artist_id") artistId: Long
     ) : ArtistDetailDto
 
     @GET(EndPoint.ARTIST_TRACK_LIST)
      suspend fun getArtistAlbums(
-        @Path("artist_id") artist_id: Int
+        @Path("artist_id") artist_id: Long
     ) : ArtistAlbumsDto
 }

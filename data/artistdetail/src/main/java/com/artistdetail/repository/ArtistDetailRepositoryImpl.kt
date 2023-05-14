@@ -11,11 +11,11 @@ class ArtistDetailRepositoryImpl @Inject constructor(
     private val remoteDataSource: IArtistDetailRemoteDataSource
 ) : IArtistDetailRepository{
 
-    override suspend fun getArtistDetails(artistId: Int): ArtistDetail {
+    override suspend fun getArtistDetails(artistId: Long): ArtistDetail {
         return remoteDataSource.getArtistDetails(artistId).toArtistDetail()
     }
 
-    override suspend fun getArtistAlbums(artistId: Int): ArtistAlbums {
+    override suspend fun getArtistAlbums(artistId: Long): ArtistAlbums {
         return remoteDataSource.getArtistAlbums(artistId).toArtistAlbums()
     }
 
