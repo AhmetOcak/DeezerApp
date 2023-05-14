@@ -37,16 +37,17 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation(Libs.AndroidX.coreKtx)
+    implementation(Libs.AndroidX.appcompat)
+    implementation(Libs.AndroidX.material)
+
+    testImplementation(Libs.Test.junit)
+    androidTestImplementation(Libs.Test.AnroidX.junit)
+    androidTestImplementation(Libs.Test.AnroidX.espresso)
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.45")
-    kapt("com.google.dagger:hilt-compiler:2.45")
+    implementation(Libs.Hilt.daggerHilt)
+    kapt(Libs.Hilt.compiler)
 
     implementation(project(":data:network"))
     implementation(project(":domain:model"))

@@ -35,16 +35,16 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation(Libs.AndroidX.coreKtx)
+    implementation(Libs.AndroidX.appcompat)
+    implementation(Libs.AndroidX.material)
+
+    testImplementation(Libs.Test.junit)
+    androidTestImplementation(Libs.Test.AnroidX.junit)
+    androidTestImplementation(Libs.Test.AnroidX.espresso)
 
     // Javax Inject
-    implementation("javax.inject:javax.inject:1")
-
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation(Libs.Javax.inject)
 
     implementation(project(":domain:model"))
 

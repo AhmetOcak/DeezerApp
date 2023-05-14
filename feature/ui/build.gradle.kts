@@ -41,25 +41,25 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation(Libs.AndroidX.coreKtx)
+    implementation(Libs.AndroidX.appcompat)
+    implementation(Libs.AndroidX.material)
 
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-    implementation("androidx.activity:activity-compose:1.5.1")
-    implementation(platform("androidx.compose:compose-bom:2023.04.01"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    implementation(Libs.AndroidX.runtimeKtx)
+    implementation(Libs.AndroidX.activityCompose)
+    implementation(platform(Libs.AndroidX.composeBom))
+    implementation(Libs.AndroidX.composeUi)
+    implementation(Libs.AndroidX.composeUiGraphics)
+    implementation(Libs.AndroidX.composeUiToolingPreview)
+    implementation(Libs.AndroidX.composeMaterial3)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    testImplementation(Libs.Test.junit)
+    androidTestImplementation(Libs.Test.AnroidX.junit)
+    androidTestImplementation(Libs.Test.AnroidX.espresso)
 
     // Coil
-    implementation("io.coil-kt:coil-compose:2.1.0")
-    implementation("io.coil-kt:coil-gif:2.3.0")
+    implementation(Libs.Coil.coilCompose)
+    implementation(Libs.Coil.coilGif)
 
     implementation(project(":feature:designsystem"))
 }
