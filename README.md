@@ -20,6 +20,16 @@
 
 * [Okhttp](https://square.github.io/okhttp/)
 
+## Video from app
+
+<div>
+  
+  <video src='https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/b8d8f7fa-dc5c-4ff1-a6ed-bbfb75974ef2' />
+  
+</div>
+
+## Outputs 🖼
+
 |                    | Dark | Light |
 |--------------------|------|-------|
 | Müzik Kategorileri | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/d36bf472-1347-4fe7-a21f-6c1cbc143f9e" width="240" height="480"/>     | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/f79c86ab-1fd5-4319-a95e-401d686c67db" width="240" height="480"/>      |
