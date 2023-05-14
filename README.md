@@ -1,6 +1,8 @@
-# AppcentDeezerApp
+# Appcent Deezer App (Apptern Case Study)
 
 <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/20645b0d-b4ec-4581-bbd8-d79f11aac36b" width="192" height="192"/>
+
+Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpack Compose kullanılmıştır. Uygulamada açılan ilk ekranda müzik türleri listelenmiştir. Aynı sayfada <b>Beğenilenler</b> sayfasına giden bir kalp iconu bulunmaktadır. Müzik türlerinden biri seçildiği zaman ilgili müzik türü ile alakalı sanatçıların listelendiği <b>Sanatçılar</b> sayfasına gidilir. Listelenen sanatçılardan biri seçildiği zaman ilgili sanatçının detaylarının gösterildiği ve albümlerinin listelendiği <b>Sanatçı Detay</b> sayfasına gidilir. Listelenen albümlerden biri seçildiği zaman ilgili albüme ait şarkıların listelendiği <b> Albüm Detay </b> sayfasına gidilir. Bu sayfada istenilen şarkı favorilere eklenebilir, favorilerde ekle bir şarkı var ise ilgili şarkı favorilerden kaldırabilir. Seçilen şarkıların 30 saniyelik önizlemesi çalar. Önizleme istenildiği zaman durdurulabilir. Favoriler sayfasında da eklenen şarkıların 30 saniyelik önizlemesi çalınabilir ve istenildiği zaman durdurulabilir. İstenilen şarkı favorilerden kaldırılabilir. Uygulama açık ve kapalı temalarla uyumlu bir şekilde çalışmaktadır.
 
 ## Tech Stack 📚
 
@@ -20,7 +22,7 @@
 
 * [Okhttp](https://square.github.io/okhttp/)
 
-## Video from app
+## Video from app 📱
 
 <div>
   
