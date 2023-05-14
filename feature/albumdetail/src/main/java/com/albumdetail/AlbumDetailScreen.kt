@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,6 +39,7 @@ import com.designsystem.icons.DeezerIcons
 import com.model.FavoriteSongs
 import com.model.albumdetail.AlbumSong
 import com.ui.FullScreenProgIndicator
+import com.ui.GIF_HEIGHT
 import com.ui.Gif
 import com.ui.MusicPlayer
 import com.ui.PlayerHeight
@@ -162,6 +165,12 @@ private fun SuccessContent(
             albumImageUrl = albumDetailsState.data.coverBig
         )
         Title()
+        Row(modifier.height(GIF_HEIGHT)) {
+            if (viewModel.isAudioPlaying) {
+                Gif(context = LocalContext.current)
+            }
+        }
+        Divider()
         SongList(
             modifier = modifier
                 .weight(3f)
@@ -209,9 +218,6 @@ private fun AlbumImage(modifier: Modifier, albumImageUrl: String) {
             imageUrl = albumImageUrl
         )
     }
-    /*Box(modifier = modifier) {
-        Gif(context = LocalContext.current)
-    }*/
 }
 
 @Composable
@@ -220,11 +226,10 @@ private fun Title() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(bottom = 16.dp),
+            .padding(bottom = 4.dp),
         text = "Songs",
         style = MaterialTheme.typography.titleLarge
     )
-    Divider()
 }
 
 @Composable

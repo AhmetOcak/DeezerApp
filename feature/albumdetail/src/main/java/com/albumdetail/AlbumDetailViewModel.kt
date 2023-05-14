@@ -41,7 +41,7 @@ class AlbumDetailViewModel @Inject constructor(
     var mediaPlayer: MediaPlayer = MediaPlayer()
         private set
 
-    var isAudioPlaying by mutableStateOf(true)
+    var isAudioPlaying by mutableStateOf(false)
         private set
 
     var databaseStatus by mutableStateOf(true)
@@ -166,6 +166,7 @@ class AlbumDetailViewModel @Inject constructor(
     }
 
     fun closeMediaPlayer() {
+        isAudioPlaying = false
         if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
             mediaPlayer.reset()
