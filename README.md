@@ -39,3 +39,6 @@ Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpac
 | Sanatçı Detay      | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/0957e4e5-e1ff-4313-978b-5c7aaf3c2a0c" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/5e9feace-77fa-4232-8ba9-c6ac4a64d82d" width="240" height="480"/>     |
 | Albüm Detay        | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/4b0425b8-b642-4562-b554-509eea88f8d2" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/4c337053-0b15-4281-b4a6-225ca1337dc5" width="240" height="480"/>     |
 | Beğenilenler       | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/e009941b-fbd4-4153-96f5-23fd49d727f3" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/f801affa-a08a-47d7-bccb-0802865fbdad" width="240" height="480"/>     |
+
+Eğer readme de bulunan video veya resimlerde bir problem oluşursa aşağıdaki linki ziyaret edebilirsiniz.
+[Outputs](https://drive.google.com/drive/folders/1rZxZvcKp_R3MLPqTzAnKoSCaf3uco6XC?usp=share_link)
