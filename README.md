@@ -1,5 +1,25 @@
 # AppcentDeezerApp
 
+<img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/20645b0d-b4ec-4581-bbd8-d79f11aac36b" width="192" height="192"/>
+
+## Tech Stack 📚
+
+* [Navigation](https://developer.android.com/jetpack/compose/navigation)
+
+* [ViewModel](https://developer.android.com/jetpack/compose/libraries#viewmodel)
+
+* [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
+
+* [Accompanist](https://google.github.io/accompanist/systemuicontroller/)
+
+* [Animations](https://developer.android.com/jetpack/compose/animation)
+
+* [Retrofit](https://square.github.io/retrofit)
+
+* [Coil](https://coil-kt.github.io/coil)
+
+* [Okhttp](https://square.github.io/okhttp/)
+
 |                    | Dark | Light |
 |--------------------|------|-------|
 | Müzik Kategorileri | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/d36bf472-1347-4fe7-a21f-6c1cbc143f9e" width="240" height="480"/>     | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/f79c86ab-1fd5-4319-a95e-401d686c67db" width="240" height="480"/>      |
