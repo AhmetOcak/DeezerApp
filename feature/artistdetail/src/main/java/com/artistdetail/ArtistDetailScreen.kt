@@ -1,6 +1,7 @@
 package com.artistdetail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,19 +23,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerCircularProgressIndicator
 import com.designsystem.components.DeezerTopAppBar
-import com.designsystem.components.onLoadState
-import com.designsystem.components.rememberLazyListState
 import com.designsystem.icons.DeezerIcons
-import com.model.TrackData
+import com.model.ArtistAlbumsData
 import com.ui.AlbumCard
+import com.ui.FullScreenProgIndicator
 
 private val ARTIST_IMG_SIZE = 224.dp
 
@@ -47,7 +46,8 @@ fun ArtistDetailScreen(
 
     val gradient = Brush.verticalGradient(
         colors = listOf(
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+            if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.6f)
+            else Color.Black.copy(alpha = 0.6f),
             MaterialTheme.colorScheme.background
         )
     )
@@ -90,7 +90,7 @@ private fun ArtistDetailScreenContent(
                 modifier = modifier
                     .weight(3f)
                     .fillMaxSize(),
-                viewModel = viewModel,
+                artistAlbumsState = viewModel.artistAlbumsState.collectAsState().value,
                 onAlbumClicked = onAlbumClicked
             )
         }
@@ -108,9 +108,6 @@ private fun TopBar(artistName: String, onNavigateBackClicked: () -> Unit) {
     )
 }
 
-/*
-Todo: Error eklenecek
- */
 @Composable
 private fun ArtistImageSection(
     modifier: Modifier,
@@ -146,54 +143,48 @@ private fun ArtistImage(artistImage: String) {
     )
 }
 
-/*
-Todo: trackList'ten albumler ayıklaancak
- */
 @Composable
 private fun AlbumsSection(
     modifier: Modifier,
-    viewModel: ArtistDetailViewModel,
+    artistAlbumsState: ArtistAlbumsState,
     onAlbumClicked: (Int) -> Unit
 ) {
-
     Column(modifier = modifier) {
-        AlbumsSectionTitle()
-        AlbumsList(
-            trackList = viewModel.trackList.collectAsLazyPagingItems(),
-            onAlbumClicked = onAlbumClicked
-        )
+        when (artistAlbumsState) {
+            is ArtistAlbumsState.Loading -> {
+                FullScreenProgIndicator()
+            }
+
+            is ArtistAlbumsState.Success -> {
+                AlbumsSectionTitle()
+                AlbumsList(
+                    artistAlbums = artistAlbumsState.data.data,
+                    onAlbumClicked = onAlbumClicked
+                )
+            }
+
+            is ArtistAlbumsState.Error -> {}
+        }
     }
 }
 
 @Composable
-private fun AlbumsList(trackList: LazyPagingItems<TrackData>, onAlbumClicked: (Int) -> Unit) {
+private fun AlbumsList(artistAlbums: ArrayList<ArtistAlbumsData>, onAlbumClicked: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 16.dp),
-        state = trackList.rememberLazyListState(),
+        contentPadding = PaddingValues(vertical = 16.dp)
     ) {
-        items(trackList, key = { it.id }) { trackData ->
+        items(artistAlbums, key = { it.id }) { albums ->
             AlbumCard(
-                albumImage = trackData?.album?.coverBig ?: "",
-                albumName = trackData?.album?.title ?: "",
-                albumId = trackData?.album?.id ?: 0,
+                albumImage = albums.coverBig,
+                albumName = albums.title,
+                albumId = albums.id,
+                albumReleaseDate = albums.releaseDate,
                 onAlbumClicked = {
-                    if (trackData != null) {
-                        onAlbumClicked(trackData.album.id)
-                    }
+                    onAlbumClicked(albums.id)
                 }
             )
         }
-
-        onLoadState(
-            modifier = Modifier,
-            loadState = trackList.loadState.append
-        )
-
-        onLoadState(
-            modifier = Modifier,
-            loadState = trackList.loadState.refresh
-        )
     }
 }
 

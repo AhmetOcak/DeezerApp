@@ -54,7 +54,4 @@ dependencies {
 
     // Okhttp
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
-
-    // Paging 3
-    implementation("androidx.paging:paging-runtime:3.1.1")
 }

@@ -64,10 +64,6 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     kapt("com.google.dagger:hilt-compiler:2.45")
 
-    // Paging 3
-    implementation("androidx.paging:paging-runtime:3.1.1")
-    implementation("androidx.paging:paging-compose:1.0.0-alpha18")
-
     implementation(project(":feature:designsystem"))
     implementation(project(":feature:ui"))
 

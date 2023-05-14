@@ -1,6 +1,8 @@
 package com.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +28,7 @@ fun AlbumCard(
     albumImage: String,
     albumName: String,
     albumId: Int,
+    albumReleaseDate: String,
     onAlbumClicked: (Int) -> Unit,
     albumHeight: Dp = ALBUM_IMG_HEIGHT
 ) {
@@ -43,11 +46,12 @@ fun AlbumCard(
                 .fillMaxSize(),
             albumUrl = albumImage
         )
-        AlbumName(
+        AlbumDetails(
             modifier = modifier
                 .weight(2f)
                 .padding(horizontal = 32.dp),
-            albumName = albumName
+            albumName = albumName,
+            date = albumReleaseDate
         )
     }
 }
@@ -63,11 +67,27 @@ private fun AlbumImage(modifier: Modifier, albumUrl: String) {
 }
 
 @Composable
-private fun AlbumName(modifier: Modifier, albumName: String) {
+private fun AlbumDetails(modifier: Modifier, albumName: String, date: String) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
+        AlbumName(albumName = albumName)
+        AlbumReleaseDate(date = date)
+    }
+}
+
+@Composable
+private fun AlbumName(albumName: String) {
     Text(
-        modifier = modifier,
         text = albumName,
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Start,
         style = MaterialTheme.typography.displayLarge
+    )
+}
+
+@Composable
+private fun AlbumReleaseDate(date: String) {
+    Text(
+        text = date.replace('-', '.'),
+        textAlign = TextAlign.Start,
+        style = MaterialTheme.typography.displayMedium
     )
 }
