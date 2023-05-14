@@ -1,25 +1,18 @@
 package com.favorites
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,10 +28,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
+import com.ui.DeezerSubTitle
 import com.ui.EmptyListBox
 import com.ui.FullScreenProgIndicator
-import com.ui.GIF_HEIGHT
-import com.ui.Gif
 import com.ui.MusicPlayer
 import com.ui.PlayerHeight
 import com.ui.SongCard
@@ -99,13 +91,10 @@ private fun FavoritesScreenContent(
                     .weight(2f)
                     .fillMaxSize()
             )
-            Title()
-            Row(modifier.height(GIF_HEIGHT)) {
-                if (viewModel.isAudioPlaying) {
-                    Gif(context = LocalContext.current)
-                }
-            }
-            Divider()
+            DeezerSubTitle(
+                isAudioPlaying = viewModel.isAudioPlaying,
+                title = "My Favorite Songs"
+            )
             FavoriteSongsList(
                 modifier = modifier
                     .weight(4f)
@@ -218,18 +207,6 @@ private fun FavoriteSongsList(
 
         }
     }
-}
-
-@Composable
-private fun Title() {
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(bottom = 16.dp),
-        text = "My Favorite Songs",
-        style = MaterialTheme.typography.titleLarge
-    )
 }
 
 @Composable
