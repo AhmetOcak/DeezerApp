@@ -40,5 +40,27 @@ Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpac
 | Albüm Detay        | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/4b0425b8-b642-4562-b554-509eea88f8d2" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/4c337053-0b15-4281-b4a6-225ca1337dc5" width="240" height="480"/>     |
 | Beğenilenler       | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/e009941b-fbd4-4153-96f5-23fd49d727f3" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/f801affa-a08a-47d7-bccb-0802865fbdad" width="240" height="480"/>     |
 
+
+## Modularization 📦
+
+<img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/221dc659-3513-4e37-9574-f1a1b08fb82f"/>
+ 
+* ``:app`` Navigasyondan sorumlu modül.
+* ``:feature:albumdetail``,``:feature:artistdetail`` ,``:feature:artists`` ,``:feature:favorites`` ,``:feature:musicgenres`` Her modül bir ekranı temsil ediyor.
+* ``:feature:designsystem`` Uygulamada bulunan componentleri ve iconları barındırır. Uygulamanın temasını ayarlar.
+* ``:feature:designsystem`` Ekranların ortak olarak kullandıkları componentleri barındırır.
+* ``:domain:model`` Ui tarafında kullanılacak modelleri barındırır.
+* ``:domain:usecases`` Usecaseleri barındırır. Data katmanındaki repository ler ile ui arasında köprü görevi görür.
+* ``:data:albumdetail``,``:data:artistdetail`` ,``:data:artists`` ,``:data:favoritesongs`` ,``:data:musicgenres`` Kaynaklardan verileri alır ve ``:domain:usecase`` modülü aracılığıyla Ui tarafına gönderir.
+ 
+* ``:data:network`` API lere istek gönderir ve dönen yanıtları işler.
+* ``:data:database`` Room kullanarak verileri local bir database de depolar.
+
+## Architecture 🏗
+Uygulamada MVVM [Model-View-ViewModel] mimarisi kullanılmıştır
+
+![mvvm](https://user-images.githubusercontent.com/73544434/197416569-d42a6bbe-126e-4776-9c8f-2791925f738c.png)
+
+## Uyarı ⚠
 Eğer readme de bulunan video veya resimlerde bir problem oluşursa aşağıdaki linki ziyaret edebilirsiniz.
 [Outputs](https://drive.google.com/drive/folders/1rZxZvcKp_R3MLPqTzAnKoSCaf3uco6XC?usp=share_link)
