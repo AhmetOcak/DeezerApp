@@ -1,6 +1,6 @@
 # Appcent Deezer App (Apptern Case Study)
 
-<img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/20645b0d-b4ec-4581-bbd8-d79f11aac36b" width="192" height="192"/>
+<img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/67ff2e4b-c548-4d98-8eb1-cbd76cb9cae0" width="192" height="192"/>
 
 Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpack Compose kullanılmıştır. Uygulamada açılan ilk ekranda müzik türleri listelenmiştir. Aynı sayfada <b>Beğenilenler</b> sayfasına giden bir kalp iconu bulunmaktadır. Müzik türlerinden biri seçildiği zaman ilgili müzik türü ile alakalı sanatçıların listelendiği <b>Sanatçılar</b> sayfasına gidilir. Listelenen sanatçılardan biri seçildiği zaman ilgili sanatçının detaylarının gösterildiği ve albümlerinin listelendiği <b>Sanatçı Detay</b> sayfasına gidilir. Listelenen albümlerden biri seçildiği zaman ilgili albüme ait şarkıların listelendiği <b> Albüm Detay </b> sayfasına gidilir. Bu sayfada istenilen şarkı favorilere eklenebilir, favorilerde ekle bir şarkı var ise ilgili şarkı favorilerden kaldırabilir. Seçilen şarkıların 30 saniyelik önizlemesi çalar. Önizleme istenildiği zaman durdurulabilir. Favoriler sayfasında da eklenen şarkıların 30 saniyelik önizlemesi çalınabilir ve istenildiği zaman durdurulabilir. İstenilen şarkı favorilerden kaldırılabilir. Uygulama açık ve kapalı temalarla uyumlu bir şekilde çalışmaktadır.
 
@@ -26,7 +26,7 @@ Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpac
 
 <div>
   
-  <video src='https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/b8d8f7fa-dc5c-4ff1-a6ed-bbfb75974ef2' />
+  <video src='https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/f36bc2b5-cd8a-4d36-a056-117755c9ebe1' />
   
 </div>
 
@@ -34,8 +34,8 @@ Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpac
 
 |                    | Dark | Light |
 |--------------------|------|-------|
-| Müzik Kategorileri | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/d36bf472-1347-4fe7-a21f-6c1cbc143f9e" width="240" height="480"/>     | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/f79c86ab-1fd5-4319-a95e-401d686c67db" width="240" height="480"/>      |
-| Sanatçı Listeleme  | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/70c7ae66-55bf-4d70-a2d5-04045e6f1786" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/37662a63-ca25-40cc-aad7-60c531ef6bc8" width="240" height="480"/>     |
-| Sanatçı Detay      | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/c01fd22f-7657-4ee8-95f9-49e8a564416d" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/b705433a-41f5-49a6-9ea0-bb6f77b29f11" width="240" height="480"/>     |
-| Albüm Detay        | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/d48e80d1-bb8f-4819-912c-f2ad7fc90e4c" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/18a869d9-ad1f-488e-8114-7a7c55a9625e" width="240" height="480"/>     |
-| Beğenilenler       | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/11ff9528-543e-43d4-8926-418176aa810f" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/d8658855-5ebf-422e-af33-bdaae65703ae" width="240" height="480"/>     |
+| Müzik Kategorileri | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/cddde99e-8ea9-4867-b40d-71e709385862" width="240" height="480"/>     | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/b71db5ee-51e1-40c8-a5f9-ce0ba536192b" width="240" height="480"/>      |
+| Sanatçı Listeleme  | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/7431094e-7c76-478f-9683-c54e85791bcb" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/42e08cd0-dcc5-4c4a-a9ca-f4fcfa558ec7" width="240" height="480"/>     |
+| Sanatçı Detay      | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/0957e4e5-e1ff-4313-978b-5c7aaf3c2a0c" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/5e9feace-77fa-4232-8ba9-c6ac4a64d82d" width="240" height="480"/>     |
+| Albüm Detay        | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/4b0425b8-b642-4562-b554-509eea88f8d2" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/4c337053-0b15-4281-b4a6-225ca1337dc5" width="240" height="480"/>     |
+| Beğenilenler       | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/e009941b-fbd4-4153-96f5-23fd49d727f3" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/f801affa-a08a-47d7-bccb-0802865fbdad" width="240" height="480"/>     |
