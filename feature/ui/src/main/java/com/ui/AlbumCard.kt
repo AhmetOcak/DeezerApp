@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.designsystem.components.AnimatedImage
@@ -79,7 +80,9 @@ private fun AlbumName(albumName: String) {
     Text(
         text = albumName,
         textAlign = TextAlign.Start,
-        style = MaterialTheme.typography.displayLarge
+        style = MaterialTheme.typography.displayLarge,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
