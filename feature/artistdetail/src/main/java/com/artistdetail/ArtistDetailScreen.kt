@@ -32,6 +32,7 @@ import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.model.ArtistAlbumsData
 import com.ui.AlbumCard
+import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator
 
 private val ARTIST_IMG_SIZE = 224.dp
@@ -127,7 +128,10 @@ private fun ArtistImageSection(
             }
 
             is ArtistDetailState.Error -> {
-
+                ErrorBox(
+                    modifier = modifier,
+                    errorMessage = artistDetailState.message
+                )
             }
         }
     }
@@ -163,7 +167,12 @@ private fun AlbumsSection(
                 )
             }
 
-            is ArtistAlbumsState.Error -> {}
+            is ArtistAlbumsState.Error -> {
+                ErrorBox(
+                    modifier = modifier,
+                    errorMessage = artistAlbumsState.message
+                )
+            }
         }
     }
 }

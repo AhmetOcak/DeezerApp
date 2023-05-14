@@ -30,6 +30,7 @@ import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
 import com.ui.DeezerSubTitle
 import com.ui.EmptyListBox
+import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator
 import com.ui.MusicPlayer
 import com.ui.PlayerHeight
@@ -204,7 +205,10 @@ private fun FavoriteSongsList(
         }
 
         is FavoritesState.Error -> {
-
+            ErrorBox(
+                modifier = modifier,
+                errorMessage = favoritesState.message
+            )
         }
     }
 }

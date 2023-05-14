@@ -33,6 +33,7 @@ import com.designsystem.icons.DeezerIcons
 import com.model.FavoriteSongs
 import com.model.albumdetail.AlbumSong
 import com.ui.DeezerSubTitle
+import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator
 import com.ui.MusicPlayer
 import com.ui.PlayerHeight
@@ -121,7 +122,10 @@ private fun AlbumDetailScreenContent(
             }
 
             is AlbumDetailsState.Error -> {
-
+                ErrorBox(
+                    modifier = modifier,
+                    errorMessage = albumDetailsState.message
+                )
             }
         }
     }

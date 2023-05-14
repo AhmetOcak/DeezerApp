@@ -18,6 +18,7 @@ import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.model.ArtistData
 import com.ui.DeezerResourceCard
+import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator
 
 @Composable
@@ -73,7 +74,10 @@ private fun ArtistsScreenContent(
             }
 
             is ArtistState.Error -> {
-
+                ErrorBox(
+                    modifier = modifier.fillMaxSize(),
+                    errorMessage = artistState.message
+                )
             }
         }
     }

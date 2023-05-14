@@ -27,6 +27,7 @@ import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
 import com.model.Data
 import com.ui.DeezerResourceCard
+import com.ui.ErrorBox
 
 @Composable
 fun MusicGenresScreen(
@@ -88,7 +89,10 @@ fun MusicCategoriesScreenContent(
             }
 
             is MusicGenresState.Error -> {
-                Log.d("MUSIC GENRE ERROR", musicGenresState.message)
+                ErrorBox(
+                    modifier = modifier.fillMaxSize(),
+                    errorMessage = musicGenresState.message
+                )
             }
         }
     }
