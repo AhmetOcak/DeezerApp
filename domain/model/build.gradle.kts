@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = "com.model"
-    compileSdk = 33
+    compileSdk = ConfigData.compileSdk
 
     defaultConfig {
-        minSdk = 26
-        targetSdk = 33
+        minSdk = ConfigData.minSdk
+        targetSdk = ConfigData.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -17,7 +17,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = BuildTypes.isMinifyEnabled
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
