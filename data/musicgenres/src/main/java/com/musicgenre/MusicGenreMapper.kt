@@ -1,7 +1,7 @@
 package com.musicgenre
 
-import com.model.Data
-import com.model.MusicGenre
+import com.models.Data
+import com.models.MusicGenre
 import com.network.model.musicgenre.MusicGenreDto
 
 internal fun MusicGenreDto.toMusicGenre() : MusicGenre {

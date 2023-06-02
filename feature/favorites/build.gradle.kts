@@ -64,9 +64,10 @@ dependencies {
     implementation(Libs.Hilt.navigationCompose)
     kapt(Libs.Hilt.compiler)
 
-    implementation(project(":domain:model"))
-    implementation(project(":domain:usecases"))
-
     implementation(project(":feature:designsystem"))
     implementation(project(":feature:ui"))
+
+    implementation(project(":domain:usecases"))
+
+    implementation(project(":models"))
 }

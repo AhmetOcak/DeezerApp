@@ -2,7 +2,7 @@ package com.usecases.albumdetail
 
 import android.util.Log
 import com.albumdetail.repository.IAlbumDetailRepository
-import com.model.albumdetail.AlbumDetails
+import com.models.albumdetail.AlbumDetails
 import com.usecases.common.NO_INTERNET
 import com.usecases.common.Response
 import com.usecases.common.UNKNOWN

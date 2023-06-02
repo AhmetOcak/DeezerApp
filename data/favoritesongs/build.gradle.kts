@@ -50,5 +50,5 @@ dependencies {
     kapt(Libs.Hilt.compiler)
 
     implementation(project(":data:database"))
-    implementation(project(":domain:model"))
+    implementation(project(":models"))
 }

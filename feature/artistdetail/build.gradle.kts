@@ -68,5 +68,6 @@ dependencies {
     implementation(project(":feature:ui"))
 
     implementation(project(":domain:usecases"))
-    implementation(project(":domain:model"))
+
+    implementation(project(":models"))
 }

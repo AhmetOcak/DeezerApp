@@ -30,7 +30,7 @@ import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerCircularProgressIndicator
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
-import com.model.ArtistAlbumsData
+import com.models.ArtistAlbumsData
 import com.ui.AlbumCard
 import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator

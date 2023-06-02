@@ -21,7 +21,6 @@
             <option value="$PROJECT_DIR$/data/musicgenres" />
             <option value="$PROJECT_DIR$/data/network" />
             <option value="$PROJECT_DIR$/domain" />
-            <option value="$PROJECT_DIR$/domain/model" />
             <option value="$PROJECT_DIR$/domain/usecases" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/albumdetail" />
@@ -31,6 +30,7 @@
             <option value="$PROJECT_DIR$/feature/favorites" />
             <option value="$PROJECT_DIR$/feature/musicgenres" />
             <option value="$PROJECT_DIR$/feature/ui" />
+            <option value="$PROJECT_DIR$/models" />
           </set>
         </option>
       </GradleProjectSettings>

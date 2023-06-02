@@ -1,6 +1,6 @@
-package com.artistdetail
+package com.artistdetail.mapper
 
-import com.model.ArtistDetail
+import com.models.ArtistDetail
 import com.network.model.ArtistDetailDto
 
 internal fun ArtistDetailDto.toArtistDetail(): ArtistDetail {

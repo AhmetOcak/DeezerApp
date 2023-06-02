@@ -46,7 +46,7 @@ dependencies {
     // Javax Inject
     implementation(Libs.Javax.inject)
 
-    implementation(project(":domain:model"))
+    implementation(project(":models"))
 
     implementation(project(":data:musicgenres"))
     implementation(project(":data:artist"))

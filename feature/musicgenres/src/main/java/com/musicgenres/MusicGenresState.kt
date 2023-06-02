@@ -1,6 +1,6 @@
 package com.musicgenres
 
-import com.model.Data
+import com.models.Data
 
 sealed interface MusicGenresState {
     object Loading : MusicGenresState

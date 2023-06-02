@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
-import com.model.ArtistData
+import com.models.ArtistData
 import com.ui.DeezerResourceCard
 import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator

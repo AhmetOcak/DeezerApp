@@ -1,6 +1,7 @@
 package com.albumdetail
 
-import com.model.albumdetail.AlbumDetails
+import com.models.albumdetail.AlbumDetails
+
 
 sealed interface AlbumDetailsState {
     object Loading : AlbumDetailsState

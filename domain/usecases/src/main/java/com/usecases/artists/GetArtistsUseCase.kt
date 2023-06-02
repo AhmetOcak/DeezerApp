@@ -2,7 +2,7 @@ package com.usecases.artists
 
 import android.util.Log
 import com.artist.repository.IArtistRepository
-import com.model.Artist
+import com.models.Artist
 import com.usecases.common.NO_INTERNET
 import com.usecases.common.Response
 import com.usecases.common.UNKNOWN

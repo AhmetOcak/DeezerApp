@@ -4,8 +4,8 @@ import com.albumdetail.mapper.toAlbumDetails
 import com.albumdetail.mapper.toFavoriteSongsEntity
 import com.albumdetail.mapper.toFavoriteSongsList
 import com.database.datasource.IFavoriteSongsLocalDataSource
-import com.model.FavoriteSongs
-import com.model.albumdetail.AlbumDetails
+import com.models.FavoriteSongs
+import com.models.albumdetail.AlbumDetails
 import com.network.datasource.albumdetails.IAlbumDetailsRemoteDataSource
 import javax.inject.Inject
 

@@ -30,8 +30,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
-import com.model.FavoriteSongs
-import com.model.albumdetail.AlbumSong
+import com.models.FavoriteSongs
+import com.models.albumdetail.AlbumSong
 import com.ui.DeezerSubTitle
 import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator

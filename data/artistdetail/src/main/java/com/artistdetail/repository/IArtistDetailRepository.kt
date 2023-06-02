@@ -1,7 +1,7 @@
 package com.artistdetail.repository
 
-import com.model.ArtistAlbums
-import com.model.ArtistDetail
+import com.models.ArtistAlbums
+import com.models.ArtistDetail
 
 interface IArtistDetailRepository {
 

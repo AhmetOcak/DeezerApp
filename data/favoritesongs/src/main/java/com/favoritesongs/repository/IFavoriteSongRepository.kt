@@ -1,6 +1,7 @@
 package com.favoritesongs.repository
 
-import com.model.FavoriteSongs
+import com.models.FavoriteSongs
+
 
 interface IFavoriteSongRepository {
 

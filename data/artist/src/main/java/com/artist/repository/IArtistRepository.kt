@@ -1,6 +1,7 @@
 package com.artist.repository
 
-import com.model.Artist
+import com.models.Artist
+
 
 interface IArtistRepository {
 

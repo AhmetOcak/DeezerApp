@@ -2,7 +2,7 @@ package com.usecases.favorites
 
 import android.util.Log
 import com.favoritesongs.repository.IFavoriteSongRepository
-import com.model.FavoriteSongs
+import com.models.FavoriteSongs
 import com.usecases.common.Response
 import com.usecases.common.UNKNOWN
 import kotlinx.coroutines.flow.Flow

@@ -2,7 +2,7 @@ package com.usecases.artistdetail
 
 import android.util.Log
 import com.artistdetail.repository.IArtistDetailRepository
-import com.model.ArtistAlbums
+import com.models.ArtistAlbums
 import com.usecases.common.NO_INTERNET
 import com.usecases.common.Response
 import com.usecases.common.UNKNOWN

@@ -1,7 +1,7 @@
 package com.artist
 
-import com.model.Artist
-import com.model.ArtistData
+import com.models.Artist
+import com.models.ArtistData
 import com.network.model.ArtistDto
 
 internal fun ArtistDto.toArtist(): Artist {

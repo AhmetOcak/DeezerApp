@@ -1,6 +1,7 @@
 package com.musicgenre.repository
 
-import com.model.MusicGenre
+import com.models.MusicGenre
+
 
 interface IMusicGenreRepository {
 

@@ -1,7 +1,7 @@
 package com.artist.repository
 
 import com.artist.toArtist
-import com.model.Artist
+import com.models.Artist
 import com.network.datasource.artist.ArtistRemoteDataSourceImpl
 import javax.inject.Inject
 

@@ -1,7 +1,7 @@
 package com.artistdetail.mapper
 
-import com.model.ArtistAlbums
-import com.model.ArtistAlbumsData
+import com.models.ArtistAlbums
+import com.models.ArtistAlbumsData
 import com.network.model.ArtistAlbumsDto
 
 fun ArtistAlbumsDto.toArtistAlbums(): ArtistAlbums {

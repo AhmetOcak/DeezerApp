@@ -1,7 +1,7 @@
 package com.albumdetail.mapper
 
 import com.database.entity.FavoriteSongsEntity
-import com.model.FavoriteSongs
+import com.models.FavoriteSongs
 
 fun FavoriteSongs.toFavoriteSongsEntity(): FavoriteSongsEntity {
     return FavoriteSongsEntity(

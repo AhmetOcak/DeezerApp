@@ -1,6 +1,6 @@
 package com.musicgenre.repository
 
-import com.model.MusicGenre
+import com.models.MusicGenre
 import com.musicgenre.toMusicGenre
 import com.network.datasource.musicgenre.IMusicGenreRemoteDataSource
 import javax.inject.Inject

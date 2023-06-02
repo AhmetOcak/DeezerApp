@@ -1,6 +1,6 @@
 package com.artistdetail
 
-import com.model.ArtistAlbums
+import com.models.ArtistAlbums
 
 sealed interface ArtistAlbumsState {
     object Loading: ArtistAlbumsState

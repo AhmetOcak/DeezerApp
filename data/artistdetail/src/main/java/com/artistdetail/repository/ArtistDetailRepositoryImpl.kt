@@ -1,9 +1,9 @@
 package com.artistdetail.repository
 
 import com.artistdetail.mapper.toArtistAlbums
-import com.artistdetail.toArtistDetail
-import com.model.ArtistAlbums
-import com.model.ArtistDetail
+import com.artistdetail.mapper.toArtistDetail
+import com.models.ArtistAlbums
+import com.models.ArtistDetail
 import com.network.datasource.artistdetail.IArtistDetailRemoteDataSource
 import javax.inject.Inject
 

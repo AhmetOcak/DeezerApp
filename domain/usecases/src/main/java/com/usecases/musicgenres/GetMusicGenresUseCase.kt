@@ -1,7 +1,7 @@
 package com.usecases.musicgenres
 
 import android.util.Log
-import com.model.MusicGenre
+import com.models.MusicGenre
 import com.musicgenre.repository.IMusicGenreRepository
 import com.usecases.common.NO_INTERNET
 import com.usecases.common.Response

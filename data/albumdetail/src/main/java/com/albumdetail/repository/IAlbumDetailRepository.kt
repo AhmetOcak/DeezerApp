@@ -1,7 +1,7 @@
 package com.albumdetail.repository
 
-import com.model.FavoriteSongs
-import com.model.albumdetail.AlbumDetails
+import com.models.FavoriteSongs
+import com.models.albumdetail.AlbumDetails
 
 interface IAlbumDetailRepository {
 

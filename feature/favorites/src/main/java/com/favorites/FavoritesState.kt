@@ -1,6 +1,6 @@
 package com.favorites
 
-import com.model.FavoriteSongs
+import com.models.FavoriteSongs
 
 sealed interface FavoritesState {
     object Nothing: FavoritesState

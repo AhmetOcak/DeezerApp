@@ -2,7 +2,7 @@ package com.favoritesongs.repository
 
 import com.database.datasource.IFavoriteSongsLocalDataSource
 import com.favoritesongs.toFavoriteSongsList
-import com.model.FavoriteSongs
+import com.models.FavoriteSongs
 import javax.inject.Inject
 
 class FavoriteSongRepositoryImpl @Inject constructor(

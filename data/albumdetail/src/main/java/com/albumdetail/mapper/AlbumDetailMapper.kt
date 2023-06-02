@@ -1,6 +1,14 @@
 package com.albumdetail.mapper
 
-import com.model.albumdetail.*
+import com.models.albumdetail.AlbumArtist
+import com.models.albumdetail.AlbumArtists
+import com.models.albumdetail.AlbumContributors
+import com.models.albumdetail.AlbumDetails
+import com.models.albumdetail.AlbumGenreData
+import com.models.albumdetail.AlbumGenres
+import com.models.albumdetail.AlbumSong
+import com.models.albumdetail.AlbumTracks
+import com.models.albumdetail.Detail
 import com.network.model.albumdetail.AlbumDetailsDto
 
 internal fun AlbumDetailsDto.toAlbumDetails(): AlbumDetails {

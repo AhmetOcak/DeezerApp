@@ -1,6 +1,5 @@
 package com.musicgenres
 
-import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,7 +24,7 @@ import com.designsystem.components.DeezerCircularProgressIndicator
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
-import com.model.Data
+import com.models.Data
 import com.ui.DeezerResourceCard
 import com.ui.ErrorBox
 
