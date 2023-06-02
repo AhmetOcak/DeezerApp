@@ -43,13 +43,13 @@ Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpac
 
 ## Modularization 📦
 
-<img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/221dc659-3513-4e37-9574-f1a1b08fb82f"/>
+<img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/56ca258d-6615-495d-9744-99a4a32c3683"/>
  
 * ``:app`` Navigasyondan sorumlu modül.
 * ``:feature:albumdetail``,``:feature:artistdetail`` ,``:feature:artists`` ,``:feature:favorites`` ,``:feature:musicgenres`` Her modül bir ekranı temsil ediyor.
 * ``:feature:designsystem`` Uygulamada bulunan componentleri ve iconları barındırır. Uygulamanın temasını ayarlar.
 * ``:feature:designsystem`` Ekranların ortak olarak kullandıkları componentleri barındırır.
-* ``:domain:model`` Ui tarafında kullanılacak modelleri barındırır.
+* ``:models`` Ui tarafında kullanılacak modelleri barındırır.
 * ``:domain:usecases`` Usecaseleri barındırır. Data katmanındaki repository ler ile ui arasında köprü görevi görür.
 * ``:data:albumdetail``,``:data:artistdetail`` ,``:data:artists`` ,``:data:favoritesongs`` ,``:data:musicgenres`` Kaynaklardan verileri alır ve ``:domain:usecase`` modülü aracılığıyla Ui tarafına gönderir.
  
@@ -60,7 +60,3 @@ Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpac
 Uygulamada MVVM [Model-View-ViewModel] mimarisi kullanılmıştır
 
 ![mvvm](https://user-images.githubusercontent.com/73544434/197416569-d42a6bbe-126e-4776-9c8f-2791925f738c.png)
-
-## Uyarı ⚠
-Eğer readme de bulunan video veya resimlerde bir problem oluşursa aşağıdaki linki ziyaret edebilirsiniz.
-[Outputs](https://drive.google.com/drive/folders/1rZxZvcKp_R3MLPqTzAnKoSCaf3uco6XC?usp=share_link)
