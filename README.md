@@ -1,4 +1,4 @@
-# Appcent Deezer App (Apptern Case Study)
+# Deezer App
 
 <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/67ff2e4b-c548-4d98-8eb1-cbd76cb9cae0" width="192" height="192"/>
 
