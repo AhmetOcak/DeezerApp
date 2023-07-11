@@ -48,7 +48,7 @@ Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpac
 * ``:app`` Navigasyondan sorumlu modül.
 * ``:feature:albumdetail``,``:feature:artistdetail`` ,``:feature:artists`` ,``:feature:favorites`` ,``:feature:musicgenres`` Her modül bir ekranı temsil ediyor.
 * ``:feature:designsystem`` Uygulamada bulunan componentleri ve iconları barındırır. Uygulamanın temasını ayarlar.
-* ``:feature:designsystem`` Ekranların ortak olarak kullandıkları componentleri barındırır.
+* ``:feature:ui`` Ekranların ortak olarak kullandıkları componentleri barındırır.
 * ``:models`` Ui tarafında kullanılacak modelleri barındırır.
 * ``:domain:usecases`` Usecaseleri barındırır. Data katmanındaki repository ler ile ui arasında köprü görevi görür.
 * ``:data:albumdetail``,``:data:artistdetail`` ,``:data:artists`` ,``:data:favoritesongs`` ,``:data:musicgenres`` Kaynaklardan verileri alır ve ``:domain:usecase`` modülü aracılığıyla Ui tarafına gönderir.
