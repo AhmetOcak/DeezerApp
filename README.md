@@ -57,6 +57,6 @@ Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpac
 * ``:data:database`` Room kullanarak verileri local bir database de depolar.
 
 ## Architecture 🏗
-Uygulamada MVVM [Model-View-ViewModel] mimarisi kullanılmıştır
+The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional flow of data, separation of concern, testability, and a lot more.
 
 ![mvvm](https://user-images.githubusercontent.com/73544434/197416569-d42a6bbe-126e-4776-9c8f-2791925f738c.png)
