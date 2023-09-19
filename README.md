@@ -2,7 +2,11 @@
 
 <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/67ff2e4b-c548-4d98-8eb1-cbd76cb9cae0" width="192" height="192"/>
 
+<!--
 Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpack Compose kullanılmıştır. Uygulamada açılan ilk ekranda müzik türleri listelenmiştir. Aynı sayfada <b>Beğenilenler</b> sayfasına giden bir kalp iconu bulunmaktadır. Müzik türlerinden biri seçildiği zaman ilgili müzik türü ile alakalı sanatçıların listelendiği <b>Sanatçılar</b> sayfasına gidilir. Listelenen sanatçılardan biri seçildiği zaman ilgili sanatçının detaylarının gösterildiği ve albümlerinin listelendiği <b>Sanatçı Detay</b> sayfasına gidilir. Listelenen albümlerden biri seçildiği zaman ilgili albüme ait şarkıların listelendiği <b> Albüm Detay </b> sayfasına gidilir. Bu sayfada istenilen şarkı favorilere eklenebilir, favorilerde ekle bir şarkı var ise ilgili şarkı favorilerden kaldırabilir. Seçilen şarkıların 30 saniyelik önizlemesi çalar. Önizleme istenildiği zaman durdurulabilir. Favoriler sayfasında da eklenen şarkıların 30 saniyelik önizlemesi çalınabilir ve istenildiği zaman durdurulabilir. İstenilen şarkı favorilerden kaldırılabilir. Uygulama açık ve kapalı temalarla uyumlu bir şekilde çalışmaktadır.
+-->
+
+The application is developed using the Kotlin language and incorporates Jetpack Compose. On the initial screen of the app, music genres are listed. On the same page, there is a heart icon that leads to the 'Favorites' page. When a music genre is selected, it takes you to the 'Artists' page, which lists artists related to the chosen music genre. When you select a specific artist, it displays details about the artist and lists their albums on the 'Artist Details' page. If you select an album from the list, it takes you to the 'Album Details' page, where you can add songs to your favorites. You can also remove songs from your favorites if they are already added. A 30-second preview of the selected songs is available, and you can stop the preview whenever you like. In the 'Favorites' page, you can play 30-second previews of the added songs and stop them as needed. You can also remove songs from your favorites. The application is compatible with both light and dark themes.
 
 ## Tech Stack 📚
 
@@ -34,27 +38,27 @@ Uygulama Kotlin dili kullanılarak yazılmıştır. Uygulamanın yapımda Jetpac
 
 |                    | Dark | Light |
 |--------------------|------|-------|
-| Müzik Kategorileri | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/cddde99e-8ea9-4867-b40d-71e709385862" width="240" height="480"/>     | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/b71db5ee-51e1-40c8-a5f9-ce0ba536192b" width="240" height="480"/>      |
-| Sanatçı Listeleme  | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/7431094e-7c76-478f-9683-c54e85791bcb" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/42e08cd0-dcc5-4c4a-a9ca-f4fcfa558ec7" width="240" height="480"/>     |
-| Sanatçı Detay      | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/0957e4e5-e1ff-4313-978b-5c7aaf3c2a0c" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/5e9feace-77fa-4232-8ba9-c6ac4a64d82d" width="240" height="480"/>     |
-| Albüm Detay        | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/4b0425b8-b642-4562-b554-509eea88f8d2" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/4c337053-0b15-4281-b4a6-225ca1337dc5" width="240" height="480"/>     |
-| Beğenilenler       | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/e009941b-fbd4-4153-96f5-23fd49d727f3" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/f801affa-a08a-47d7-bccb-0802865fbdad" width="240" height="480"/>     |
+| Music Genres | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/cddde99e-8ea9-4867-b40d-71e709385862" width="240" height="480"/>     | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/b71db5ee-51e1-40c8-a5f9-ce0ba536192b" width="240" height="480"/>      |
+| Artists  | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/7431094e-7c76-478f-9683-c54e85791bcb" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/42e08cd0-dcc5-4c4a-a9ca-f4fcfa558ec7" width="240" height="480"/>     |
+| Artist Albums      | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/0957e4e5-e1ff-4313-978b-5c7aaf3c2a0c" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/5e9feace-77fa-4232-8ba9-c6ac4a64d82d" width="240" height="480"/>     |
+| Album Detail        | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/4b0425b8-b642-4562-b554-509eea88f8d2" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/4c337053-0b15-4281-b4a6-225ca1337dc5" width="240" height="480"/>     |
+| Favorites       | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/e009941b-fbd4-4153-96f5-23fd49d727f3" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/f801affa-a08a-47d7-bccb-0802865fbdad" width="240" height="480"/>     |
 
 
 ## Modularization 📦
 
 <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/56ca258d-6615-495d-9744-99a4a32c3683"/>
  
-* ``:app`` Navigasyondan sorumlu modül.
-* ``:feature:albumdetail``,``:feature:artistdetail`` ,``:feature:artists`` ,``:feature:favorites`` ,``:feature:musicgenres`` Her modül bir ekranı temsil ediyor.
-* ``:feature:designsystem`` Uygulamada bulunan componentleri ve iconları barındırır. Uygulamanın temasını ayarlar.
-* ``:feature:ui`` Ekranların ortak olarak kullandıkları componentleri barındırır.
-* ``:models`` Ui tarafında kullanılacak modelleri barındırır.
-* ``:domain:usecases`` Usecaseleri barındırır. Data katmanındaki repository ler ile ui arasında köprü görevi görür.
-* ``:data:albumdetail``,``:data:artistdetail`` ,``:data:artists`` ,``:data:favoritesongs`` ,``:data:musicgenres`` Kaynaklardan verileri alır ve ``:domain:usecase`` modülü aracılığıyla Ui tarafına gönderir.
+* ``:app`` The module responsible for navigation.
+* ``:feature:albumdetail``,``:feature:artistdetail`` ,``:feature:artists`` ,``:feature:favorites`` ,``:feature:musicgenres`` Each module represents a screen.
+* ``:feature:designsystem``  It houses the components and icons present in the application. It sets the theme of the application.
+* ``:feature:ui`` It houses the common components used by screens.
+* ``:models`` It contains the models to be used on the UI side.
+* ``:domain:usecases``  It houses use cases. It serves as a bridge between the data layer's repositories and the UI.
+* ``:data:albumdetail``,``:data:artistdetail`` ,``:data:artists`` ,``:data:favoritesongs`` ,``:data:musicgenres`` It retrieves data from sources and sends it to the UI through the ``:domain:usecase`` module. 
  
-* ``:data:network`` API lere istek gönderir ve dönen yanıtları işler.
-* ``:data:database`` Room kullanarak verileri local bir database de depolar.
+* ``:data:network``  It sends requests to APIs and processes the returned responses.
+* ``:data:database`` It stores data in a local database using Room.
 
 ## Architecture 🏗
 The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional flow of data, separation of concern, testability, and a lot more.
