@@ -31,8 +31,8 @@ import com.ui.ErrorBox
 @Composable
 fun MusicGenresScreen(
     modifier: Modifier = Modifier,
-    onNavigateArtistsScreen: (Long, String) -> Unit,
-    onNavigateFavoritesScreen: () -> Unit
+    onMusicGenreClick: (Long, String) -> Unit,
+    onFavoritesClick: () -> Unit
 ) {
     val viewModel: MusicGenreViewModel = hiltViewModel()
 
@@ -40,9 +40,9 @@ fun MusicGenresScreen(
 
     MusicCategoriesScreenContent(
         modifier = modifier,
-        onNavigateFavoritesScreen = onNavigateFavoritesScreen,
+        onNavigateFavoritesScreen = onFavoritesClick,
         onGenreClicked = { id, name ->
-            onNavigateArtistsScreen(id, name)
+            onMusicGenreClick(id, name)
         },
         musicGenresState = musicGenresState
     )
@@ -93,6 +93,8 @@ fun MusicCategoriesScreenContent(
                     errorMessage = musicGenresState.message
                 )
             }
+
+            else -> {}
         }
     }
 }

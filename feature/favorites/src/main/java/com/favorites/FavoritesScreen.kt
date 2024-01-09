@@ -40,7 +40,7 @@ import kotlin.time.Duration.Companion.seconds
 private val HEART_SIZE = 196.dp
 
 @Composable
-fun FavoritesScreen(modifier: Modifier = Modifier, onNavigateBackClicked: () -> Unit) {
+fun FavoritesScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
 
     val viewModel: FavoritesViewModel = hiltViewModel()
 
@@ -50,7 +50,7 @@ fun FavoritesScreen(modifier: Modifier = Modifier, onNavigateBackClicked: () -> 
 
     FavoritesScreenContent(
         modifier = modifier,
-        onNavigateBackClicked = onNavigateBackClicked,
+        onNavigateBackClicked = upPress,
         viewModel = viewModel,
         onFavouriteBtnClicked = { viewModel.removeFavoriteSong(it) },
         getAllFavoriteSongs = viewModel::getAllFavoriteSongs,

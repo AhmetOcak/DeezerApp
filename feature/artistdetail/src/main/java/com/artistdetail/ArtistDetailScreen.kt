@@ -40,8 +40,8 @@ private val ARTIST_IMG_SIZE = 224.dp
 @Composable
 fun ArtistDetailScreen(
     modifier: Modifier = Modifier,
-    onNavigateAlbumDetails: (Long) -> Unit,
-    onNavigateBackClicked: () -> Unit
+    onArtistClick: (Long) -> Unit,
+    upPress: () -> Unit
 ) {
     val viewModel: ArtistDetailViewModel = hiltViewModel()
 
@@ -57,12 +57,11 @@ fun ArtistDetailScreen(
         modifier = modifier,
         viewModel = viewModel,
         gradient = gradient,
-        onNavigateBackClicked = onNavigateBackClicked,
-        onAlbumClicked = { onNavigateAlbumDetails(it) }
+        onNavigateBackClicked = upPress,
+        onAlbumClicked = { onArtistClick(it) }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ArtistDetailScreenContent(
     modifier: Modifier,

@@ -24,8 +24,8 @@ import com.ui.FullScreenProgIndicator
 @Composable
 fun ArtistsScreen(
     modifier: Modifier = Modifier,
-    onNavigateArtistDetailScreen: (Long) -> Unit,
-    onNavigateBackClicked: () -> Unit,
+    onArtistClick: (Long) -> Unit,
+    upPress: () -> Unit,
     genreName: String
 ) {
     val viewModel: ArtistViewModel = hiltViewModel()
@@ -33,8 +33,8 @@ fun ArtistsScreen(
     ArtistsScreenContent(
         modifier = modifier,
         artistState = viewModel.artistState.collectAsState().value,
-        onArtistClicked = { onNavigateArtistDetailScreen(it) },
-        onNavigateBackClicked = onNavigateBackClicked,
+        onArtistClicked = { onArtistClick(it) },
+        onNavigateBackClicked = upPress,
         genreName = genreName
     )
 }

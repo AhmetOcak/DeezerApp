@@ -45,7 +45,7 @@ private val ALBUM_IMG_SIZE = 224.dp
 @Composable
 fun AlbumDetailScreen(
     modifier: Modifier = Modifier,
-    onNavigateBackClicked: () -> Unit
+    upPress: () -> Unit
 ) {
     val viewModel: AlbumDetailViewModel = hiltViewModel()
 
@@ -62,7 +62,7 @@ fun AlbumDetailScreen(
         modifier = modifier,
         albumDetailsState = albumDetailsState,
         albumName = viewModel.albumName,
-        onBackNavigateClicked = onNavigateBackClicked,
+        onBackNavigateClicked = upPress,
         viewModel = viewModel,
         isSongAvailableInFavorites = { viewModel.isSongAvailableInFavorites(it) },
         resetDatabaseState = viewModel::resetDatabaseState,

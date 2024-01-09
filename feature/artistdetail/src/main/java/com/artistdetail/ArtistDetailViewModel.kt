@@ -1,5 +1,8 @@
 package com.artistdetail
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,7 +29,7 @@ class ArtistDetailViewModel @Inject constructor(
     private val _artistAlbumsState = MutableStateFlow<ArtistAlbumsState>(ArtistAlbumsState.Loading)
     val artistAlbumsState = _artistAlbumsState.asStateFlow()
 
-    var artistName: String = ""
+    var artistName by mutableStateOf("")
         private set
 
     init {

@@ -1,4 +1,4 @@
-package com.deezerapp.helpers
+package com.deezerapp.utils
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
