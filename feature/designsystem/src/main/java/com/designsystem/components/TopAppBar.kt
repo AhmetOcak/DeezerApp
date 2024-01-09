@@ -31,7 +31,7 @@ fun DeezerTopAppBar(
     navigationIcon: ImageVector,
     navigationIconTint: Color = MaterialTheme.colorScheme.onSurface,
     navigationContentDescription: String?,
-    onNavigateClick: () -> Unit
+    upPress: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -44,7 +44,7 @@ fun DeezerTopAppBar(
         actions = actions,
         colors = colors,
         navigationIcon = {
-            IconButton(onClick = onNavigateClick) {
+            IconButton(onClick = upPress) {
                 Icon(
                     imageVector = navigationIcon,
                     contentDescription = navigationContentDescription,

@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +22,7 @@ import com.ui.DeezerResourceCard
 import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistsScreen(
     modifier: Modifier = Modifier,
@@ -30,55 +32,49 @@ fun ArtistsScreen(
 ) {
     val viewModel: ArtistViewModel = hiltViewModel()
 
-    ArtistsScreenContent(
-        modifier = modifier,
-        artistState = viewModel.artistState.collectAsState().value,
-        onArtistClicked = { onArtistClick(it) },
-        onNavigateBackClicked = upPress,
-        genreName = genreName
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ArtistsScreenContent(
-    modifier: Modifier,
-    artistState: ArtistState,
-    onArtistClicked: (Long) -> Unit,
-    onNavigateBackClicked: () -> Unit,
-    genreName: String
-) {
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         topBar = {
             DeezerTopAppBar(
                 title = genreName,
                 navigationIcon = DeezerIcons.ArrowBack,
                 navigationContentDescription = null,
-                onNavigateClick = onNavigateBackClicked
+                upPress = upPress
             )
-        },
-    ) {
-        when (artistState) {
-            is ArtistState.Loading -> {
-                FullScreenProgIndicator()
-            }
+        }
+    ) { paddingValues ->
+        ArtistsScreenContent(
+            modifier = Modifier.padding(paddingValues),
+            artistState = viewModel.artistState.collectAsState().value,
+            onArtistClicked = onArtistClick
+        )
+    }
+}
 
-            is ArtistState.Success -> {
-                ArtistList(
-                    modifier = modifier,
-                    scaffoldPadding = it,
-                    artists = artistState.data,
-                    onArtistClicked = onArtistClicked
-                )
-            }
+@Composable
+private fun ArtistsScreenContent(
+    modifier: Modifier,
+    artistState: ArtistState,
+    onArtistClicked: (Long) -> Unit
+) {
+    when (artistState) {
+        is ArtistState.Loading -> {
+            FullScreenProgIndicator()
+        }
 
-            is ArtistState.Error -> {
-                ErrorBox(
-                    modifier = modifier.fillMaxSize(),
-                    errorMessage = artistState.message
-                )
-            }
+        is ArtistState.Success -> {
+            ArtistList(
+                modifier = modifier,
+                artists = artistState.data,
+                onArtistClicked = onArtistClicked
+            )
+        }
+
+        is ArtistState.Error -> {
+            ErrorBox(
+                modifier = modifier.fillMaxSize(),
+                errorMessage = artistState.message
+            )
         }
     }
 }
@@ -86,14 +82,11 @@ private fun ArtistsScreenContent(
 @Composable
 private fun ArtistList(
     modifier: Modifier,
-    scaffoldPadding: PaddingValues,
     artists: ArrayList<ArtistData>,
     onArtistClicked: (Long) -> Unit
 ) {
     LazyVerticalGrid(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(scaffoldPadding),
+        modifier = modifier.fillMaxSize(),
         columns = GridCells.Fixed(count = 2),
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -101,8 +94,7 @@ private fun ArtistList(
     ) {
         items(artists, key = { it.id }) {
             DeezerResourceCard(
-                modifier = modifier,
-                onClick = { onArtistClicked(it.id) },
+                onClick = remember { { onArtistClicked(it.id) } },
                 resourceImgUrl = it.pictureMedium,
                 resourceName = it.name
             )

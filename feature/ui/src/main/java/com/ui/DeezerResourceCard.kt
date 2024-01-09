@@ -23,7 +23,6 @@ import com.designsystem.components.AnimatedImage
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun DeezerResourceCard(
-    modifier: Modifier,
     onClick: () -> Unit,
     resourceImgUrl: String,
     resourceName: String,
@@ -31,21 +30,21 @@ fun DeezerResourceCard(
 ) {
     ElevatedCard(
         onClick = onClick,
-        modifier = modifier
+        modifier = Modifier
             .size(LocalConfiguration.current.screenWidthDp.dp / 2 - 24.dp)
             .padding(cardPadding),
         shape = RoundedCornerShape(10)
     ) {
         Box(
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             ResourceImage(
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 categoryImgUrl = resourceImgUrl
             )
             ResourceName(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
                 name = resourceName

@@ -22,17 +22,19 @@ class MusicGenreViewModel @Inject constructor(
     init {
         getMusicGenres()
     }
-    private fun getMusicGenres() = viewModelScope.launch(Dispatchers.IO) {
-        getMusicGenresUseCase().collect() { response ->
-            when(response) {
-                is Response.Loading -> {
-                    _musicGenresState.value = MusicGenresState.Loading
-                }
-                is Response.Success -> {
-                    _musicGenresState.value = MusicGenresState.Success(data = response.data.data)
-                }
-                is Response.Error -> {
-                    _musicGenresState.value = MusicGenresState.Error(message = response.errorMessage)
+    private fun getMusicGenres() {
+        viewModelScope.launch(Dispatchers.IO) {
+            getMusicGenresUseCase().collect { response ->
+                when(response) {
+                    is Response.Loading -> {
+                        _musicGenresState.value = MusicGenresState.Loading
+                    }
+                    is Response.Success -> {
+                        _musicGenresState.value = MusicGenresState.Success(data = response.data.data)
+                    }
+                    is Response.Error -> {
+                        _musicGenresState.value = MusicGenresState.Error(message = response.errorMessage)
+                    }
                 }
             }
         }

@@ -26,23 +26,25 @@ class ArtistViewModel @Inject constructor(
         getArtists(genreId = checkNotNull(savedStateHandle.get<Long>("genre_id")))
     }
 
-    private fun getArtists(genreId: Long) = viewModelScope.launch(Dispatchers.IO) {
-        getArtistsUseCase(genreId)
-            .flowOn(Dispatchers.IO)
-            .collect() { response ->
-                when (response) {
-                    is Response.Loading -> {
-                        _artistState.value = ArtistState.Loading
-                    }
+    private fun getArtists(genreId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getArtistsUseCase(genreId)
+                .flowOn(Dispatchers.IO)
+                .collect { response ->
+                    when (response) {
+                        is Response.Loading -> {
+                            _artistState.value = ArtistState.Loading
+                        }
 
-                    is Response.Success -> {
-                        _artistState.value = ArtistState.Success(data = response.data.data)
-                    }
+                        is Response.Success -> {
+                            _artistState.value = ArtistState.Success(data = response.data.data)
+                        }
 
-                    is Response.Error -> {
-                        _artistState.value = ArtistState.Error(message = response.errorMessage)
+                        is Response.Error -> {
+                            _artistState.value = ArtistState.Error(message = response.errorMessage)
+                        }
                     }
                 }
-            }
+        }
     }
 }

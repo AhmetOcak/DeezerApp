@@ -42,6 +42,7 @@ import kotlin.time.Duration.Companion.seconds
 
 private val ALBUM_IMG_SIZE = 224.dp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumDetailScreen(
     modifier: Modifier = Modifier,
@@ -58,29 +59,36 @@ fun AlbumDetailScreen(
         )
     }
 
-    AlbumDetailScreenContent(
+    Scaffold(
         modifier = modifier,
-        albumDetailsState = albumDetailsState,
-        albumName = viewModel.albumName,
-        onBackNavigateClicked = upPress,
-        viewModel = viewModel,
-        isSongAvailableInFavorites = { viewModel.isSongAvailableInFavorites(it) },
-        resetDatabaseState = viewModel::resetDatabaseState,
-        addFavoriteSong = { viewModel.addFavoriteSong(it) },
-        removeFavoriteSong = { viewModel.removeFavoriteSong(it) },
-        onPlayAudio = { viewModel.playAudio(it) },
-        onPauseAudio = viewModel::pauseAudio,
-        onDestroyAudio = viewModel::closeMediaPlayer
-    )
+        topBar = {
+            DeezerTopAppBar(
+                title = viewModel.albumName,
+                navigationIcon = DeezerIcons.ArrowBack,
+                navigationContentDescription = null,
+                upPress = upPress
+            )
+        }
+    ) { paddingValues ->
+        AlbumDetailScreenContent(
+            modifier = Modifier.padding(paddingValues),
+            albumDetailsState = albumDetailsState,
+            viewModel = viewModel,
+            isSongAvailableInFavorites = remember(viewModel) { viewModel::isSongAvailableInFavorites },
+            resetDatabaseState = remember(viewModel)  { viewModel::resetDatabaseState },
+            addFavoriteSong = remember(viewModel)  { viewModel::addFavoriteSong },
+            removeFavoriteSong = remember(viewModel)  { viewModel::removeFavoriteSong },
+            onPlayAudio = remember(viewModel)  { viewModel::playAudio },
+            onPauseAudio = remember(viewModel)  { viewModel::pauseAudio },
+            onDestroyAudio = remember(viewModel)  { viewModel::closeMediaPlayer }
+        )
+    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AlbumDetailScreenContent(
     modifier: Modifier,
     albumDetailsState: AlbumDetailsState,
-    albumName: String,
-    onBackNavigateClicked: () -> Unit,
     isSongAvailableInFavorites: (Long) -> Boolean,
     resetDatabaseState: () -> Unit,
     viewModel: AlbumDetailViewModel,
@@ -90,43 +98,31 @@ private fun AlbumDetailScreenContent(
     onPauseAudio: () -> Unit,
     onDestroyAudio: () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            DeezerTopAppBar(
-                title = albumName,
-                navigationIcon = DeezerIcons.ArrowBack,
-                navigationContentDescription = null,
-                onNavigateClick = onBackNavigateClicked
+    when (albumDetailsState) {
+        is AlbumDetailsState.Loading -> {
+            FullScreenProgIndicator()
+        }
+
+        is AlbumDetailsState.Success -> {
+            SuccessContent(
+                modifier = modifier,
+                albumDetailsState = albumDetailsState,
+                viewModel = viewModel,
+                isSongAvailableInFavorites = isSongAvailableInFavorites,
+                resetDatabaseState = resetDatabaseState,
+                addFavoriteSong = addFavoriteSong,
+                removeFavoriteSong = removeFavoriteSong,
+                onPlayAudio = onPlayAudio,
+                onPauseAudio = onPauseAudio,
+                onDestroyAudio = onDestroyAudio
             )
         }
-    ) {
-        when (albumDetailsState) {
-            is AlbumDetailsState.Loading -> {
-                FullScreenProgIndicator()
-            }
 
-            is AlbumDetailsState.Success -> {
-                SuccessContent(
-                    modifier = modifier,
-                    it = it,
-                    albumDetailsState = albumDetailsState,
-                    viewModel = viewModel,
-                    isSongAvailableInFavorites = isSongAvailableInFavorites,
-                    resetDatabaseState = resetDatabaseState,
-                    addFavoriteSong = addFavoriteSong,
-                    removeFavoriteSong = removeFavoriteSong,
-                    onPlayAudio = onPlayAudio,
-                    onPauseAudio = onPauseAudio,
-                    onDestroyAudio = onDestroyAudio
-                )
-            }
-
-            is AlbumDetailsState.Error -> {
-                ErrorBox(
-                    modifier = modifier,
-                    errorMessage = albumDetailsState.message
-                )
-            }
+        is AlbumDetailsState.Error -> {
+            ErrorBox(
+                modifier = modifier,
+                errorMessage = albumDetailsState.message
+            )
         }
     }
 }
@@ -134,7 +130,6 @@ private fun AlbumDetailScreenContent(
 @Composable
 private fun SuccessContent(
     modifier: Modifier,
-    it: PaddingValues,
     albumDetailsState: AlbumDetailsState.Success,
     viewModel: AlbumDetailViewModel,
     isSongAvailableInFavorites: (Long) -> Boolean,
@@ -150,13 +145,9 @@ private fun SuccessContent(
     var playingSongName by remember { mutableStateOf("") }
     var playingSongArtist by remember { mutableStateOf("") }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(it)
-    ) {
+    Column(modifier = modifier.fillMaxSize()) {
         AlbumImage(
-            modifier = modifier
+            modifier = Modifier
                 .weight(2f)
                 .fillMaxSize(),
             albumImageUrl = albumDetailsState.data.coverBig
@@ -166,19 +157,21 @@ private fun SuccessContent(
             title = "Songs"
         )
         SongList(
-            modifier = modifier
+            modifier = Modifier
                 .weight(3f)
                 .fillMaxSize()
                 .padding(bottom = if (showMusicPlayer) PlayerHeight else 0.dp),
             songs = albumDetailsState.data.tracks.data,
-            onSongClicked = { musicUrl, songName, songArtist ->
-                onPlayAudio(musicUrl)
+            onSongClicked = remember {
+                { musicUrl, songName, songArtist ->
+                    onPlayAudio(musicUrl)
 
-                playingSongName = songName
-                playingSongArtist = songArtist
+                    playingSongName = songName
+                    playingSongArtist = songArtist
 
-                if (!showMusicPlayer) {
-                    showMusicPlayer = true
+                    if (!showMusicPlayer) {
+                        showMusicPlayer = true
+                    }
                 }
             },
             databaseState = viewModel.databaseState.collectAsState().value,
@@ -192,9 +185,11 @@ private fun SuccessContent(
         MusicPlayer(
             songName = playingSongName,
             songArtist = playingSongArtist,
-            onCloseClicked = {
-                onDestroyAudio()
-                showMusicPlayer = false
+            onCloseClicked = remember {
+                {
+                    onDestroyAudio()
+                    showMusicPlayer = false
+                }
             },
             onPlayButtonClicked = { onPauseAudio() },
             isAudioPlaying = viewModel.isAudioPlaying
@@ -236,8 +231,8 @@ private fun SongList(
                 songImageUrl = it.album.coverBig,
                 songName = it.title,
                 duration = "${it.duration.toDouble().seconds}",
-                onSongClicked = {
-                    onSongClicked(it.preview, it.title, it.artist.name)
+                onSongClicked = remember {
+                    { onSongClicked(it.preview, it.title, it.artist.name) }
                 },
                 onFavouriteBtnClicked = {
                     if (isSongAvailableInFavorites(it.id)) {

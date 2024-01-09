@@ -10,11 +10,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,6 +28,7 @@ import com.models.Data
 import com.ui.DeezerResourceCard
 import com.ui.ErrorBox
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusicGenresScreen(
     modifier: Modifier = Modifier,
@@ -38,63 +39,53 @@ fun MusicGenresScreen(
 
     val musicGenresState by viewModel.musicGenresState.collectAsState()
 
-    MusicCategoriesScreenContent(
-        modifier = modifier,
-        onNavigateFavoritesScreen = onFavoritesClick,
-        onGenreClicked = { id, name ->
-            onMusicGenreClick(id, name)
-        },
-        musicGenresState = musicGenresState
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MusicCategoriesScreenContent(
-    modifier: Modifier,
-    onNavigateFavoritesScreen: () -> Unit,
-    onGenreClicked: (Long, String) -> Unit,
-    musicGenresState: MusicGenresState,
-    darkTheme: Boolean = isSystemInDarkTheme()
-) {
     Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background,
+        modifier = modifier,
         topBar = {
             DeezerTopAppBar(
                 actionIcon = DeezerIcons.Favorite,
                 actionIconTint = HeartRed,
-                logoId = if (darkTheme) R.drawable.deezer_logo_dark else R.drawable.deezer_logo_light,
+                logoId = if (isSystemInDarkTheme()) R.drawable.deezer_logo_dark else R.drawable.deezer_logo_light,
                 logoContentDescription = null,
                 actionContentDescription = null,
-                onActionClick = onNavigateFavoritesScreen
+                onActionClick = onFavoritesClick
             )
         }
-    ) {
-        when (musicGenresState) {
-            is MusicGenresState.Loading -> {
-                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    DeezerCircularProgressIndicator()
-                }
-            }
+    ) { paddingValues ->
+        MusicCategoriesScreenContent(
+            modifier = Modifier.padding(paddingValues),
+            onGenreClicked = onMusicGenreClick,
+            musicGenresState = musicGenresState
+        )
+    }
+}
 
-            is MusicGenresState.Success -> {
-                CategoryList(
-                    modifier = modifier,
-                    padding = it,
-                    onGenreClicked = onGenreClicked,
-                    musicGenres = musicGenresState.data
-                )
+@Composable
+fun MusicCategoriesScreenContent(
+    modifier: Modifier,
+    onGenreClicked: (Long, String) -> Unit,
+    musicGenresState: MusicGenresState,
+) {
+    when (musicGenresState) {
+        is MusicGenresState.Loading -> {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                DeezerCircularProgressIndicator()
             }
+        }
 
-            is MusicGenresState.Error -> {
-                ErrorBox(
-                    modifier = modifier.fillMaxSize(),
-                    errorMessage = musicGenresState.message
-                )
-            }
+        is MusicGenresState.Success -> {
+            CategoryList(
+                modifier = modifier,
+                onGenreClicked = onGenreClicked,
+                musicGenres = musicGenresState.data
+            )
+        }
 
-            else -> {}
+        is MusicGenresState.Error -> {
+            ErrorBox(
+                modifier = modifier.fillMaxSize(),
+                errorMessage = musicGenresState.message
+            )
         }
     }
 }
@@ -102,14 +93,11 @@ fun MusicCategoriesScreenContent(
 @Composable
 private fun CategoryList(
     modifier: Modifier,
-    padding: PaddingValues,
     onGenreClicked: (Long, String) -> Unit,
     musicGenres: ArrayList<Data>
 ) {
     LazyVerticalGrid(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(padding),
+        modifier = modifier.fillMaxSize(),
         columns = GridCells.Fixed(count = 2),
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -117,8 +105,7 @@ private fun CategoryList(
     ) {
         items(musicGenres, key = { it.id }) {
             DeezerResourceCard(
-                modifier = modifier,
-                onClick = { onGenreClicked(it.id, it.name) },
+                onClick = remember { { onGenreClicked(it.id, it.name) } },
                 resourceImgUrl = it.pictureMedium,
                 resourceName = it.name
             )

@@ -39,6 +39,7 @@ import kotlin.time.Duration.Companion.seconds
 
 private val HEART_SIZE = 196.dp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
 
@@ -48,24 +49,33 @@ fun FavoritesScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
 
     ShowDeleteMessage(deleteState, viewModel)
 
-    FavoritesScreenContent(
+    Scaffold(
         modifier = modifier,
-        onNavigateBackClicked = upPress,
-        viewModel = viewModel,
-        onFavouriteBtnClicked = { viewModel.removeFavoriteSong(it) },
-        getAllFavoriteSongs = viewModel::getAllFavoriteSongs,
-        onPlayAudio = { viewModel.playAudio(it) },
-        onPauseAudio = viewModel::pauseAudio,
-        onDestroyAudio = viewModel::closeMediaPlayer
-    )
+        topBar = {
+            DeezerTopAppBar(
+                title = "Favorites",
+                navigationIcon = DeezerIcons.ArrowBack,
+                navigationContentDescription = null,
+                upPress = upPress
+            )
+        }
+    ) { paddingValues ->
+        FavoritesScreenContent(
+            modifier = Modifier.padding(paddingValues),
+            viewModel = viewModel,
+            onFavouriteBtnClicked = remember(viewModel) { viewModel::removeFavoriteSong },
+            getAllFavoriteSongs = remember(viewModel) { viewModel::getAllFavoriteSongs },
+            onPlayAudio = remember(viewModel) { viewModel::playAudio },
+            onPauseAudio = remember(viewModel) { viewModel::pauseAudio },
+            onDestroyAudio = remember(viewModel) { viewModel::closeMediaPlayer }
+        )
+    }
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FavoritesScreenContent(
     modifier: Modifier,
-    onNavigateBackClicked: () -> Unit,
     viewModel: FavoritesViewModel,
     onFavouriteBtnClicked: (Long) -> Unit,
     getAllFavoriteSongs: () -> Unit,
@@ -78,68 +88,50 @@ private fun FavoritesScreenContent(
     var playingArtistName by remember { mutableStateOf("") }
     var playingSongName by remember { mutableStateOf("") }
 
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = { TopBar(onNavigateBackClicked) }
+    Column(
+        modifier = modifier.fillMaxSize()
     ) {
-        Column(
-            modifier = modifier
+        LikesBoard(
+            modifier = Modifier
+                .weight(2f)
                 .fillMaxSize()
-                .padding(it)
-        ) {
-            LikesBoard(
-                modifier = modifier
-                    .weight(2f)
-                    .fillMaxSize()
-            )
-            DeezerSubTitle(
-                isAudioPlaying = viewModel.isAudioPlaying,
-                title = "My Favorite Songs"
-            )
-            FavoriteSongsList(
-                modifier = modifier
-                    .weight(4f)
-                    .fillMaxSize()
-                    .padding(bottom = if (showMusicPlayer) PlayerHeight else 0.dp),
-                onSongClicked = { musicUrl, artistName, songName ->
-                    onPlayAudio(musicUrl)
+        )
+        DeezerSubTitle(
+            isAudioPlaying = viewModel.isAudioPlaying,
+            title = "My Favorite Songs"
+        )
+        FavoriteSongsList(
+            modifier = Modifier
+                .weight(4f)
+                .fillMaxSize()
+                .padding(bottom = if (showMusicPlayer) PlayerHeight else 0.dp),
+            onSongClicked = { musicUrl, artistName, songName ->
+                onPlayAudio(musicUrl)
 
-                    playingArtistName = artistName
-                    playingSongName = songName
+                playingArtistName = artistName
+                playingSongName = songName
 
-                    if (!showMusicPlayer) {
-                        showMusicPlayer = true
-                    }
-                },
-                favoritesState = viewModel.favoritesState.collectAsState().value,
-                onFavouriteBtnClicked = onFavouriteBtnClicked,
-                getAllFavoriteSongs = getAllFavoriteSongs
-            )
-        }
-        if (showMusicPlayer) {
-            MusicPlayer(
-                songName = playingSongName,
-                songArtist = playingArtistName,
-                onCloseClicked = {
+                if (!showMusicPlayer) {
+                    showMusicPlayer = true
+                }
+            },
+            favoritesState = viewModel.favoritesState.collectAsState().value,
+            onFavouriteBtnClicked = onFavouriteBtnClicked,
+            getAllFavoriteSongs = getAllFavoriteSongs
+        )
+    }
+    if (showMusicPlayer) {
+        MusicPlayer(
+            songName = playingSongName,
+            songArtist = playingArtistName,
+            onCloseClicked = remember { {
                     onDestroyAudio()
                     showMusicPlayer = false
-                },
-                onPlayButtonClicked = { onPauseAudio() },
-                isAudioPlaying = viewModel.isAudioPlaying
-            )
-        }
+                } },
+            onPlayButtonClicked = remember { { onPauseAudio() } },
+            isAudioPlaying = viewModel.isAudioPlaying
+        )
     }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun TopBar(onNavigateBackClicked: () -> Unit) {
-    DeezerTopAppBar(
-        title = "Favorites",
-        navigationIcon = DeezerIcons.ArrowBack,
-        navigationContentDescription = null,
-        onNavigateClick = onNavigateBackClicked
-    )
 }
 
 @Composable

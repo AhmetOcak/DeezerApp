@@ -37,37 +37,41 @@ class ArtistDetailViewModel @Inject constructor(
         getArtistAlbums(checkNotNull(savedStateHandle.get<Long>("artist_id")))
     }
 
-    private fun getArtistDetails(artistId: Long) = viewModelScope.launch(Dispatchers.IO) {
-        getArtistDetailUseCase(artistId).collect() { response ->
-            when (response) {
-                is Response.Loading -> {
-                    _artistDetailState.value = ArtistDetailState.Loading
-                }
+    private fun getArtistDetails(artistId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getArtistDetailUseCase(artistId).collect { response ->
+                when (response) {
+                    is Response.Loading -> {
+                        _artistDetailState.value = ArtistDetailState.Loading
+                    }
 
-                is Response.Success -> {
-                    artistName = response.data.name
+                    is Response.Success -> {
+                        artistName = response.data.name
 
-                    _artistDetailState.value = ArtistDetailState.Success(data = response.data)
-                }
+                        _artistDetailState.value = ArtistDetailState.Success(data = response.data)
+                    }
 
-                is Response.Error -> {
-                    _artistDetailState.value = ArtistDetailState.Error(message = response.errorMessage)
+                    is Response.Error -> {
+                        _artistDetailState.value = ArtistDetailState.Error(message = response.errorMessage)
+                    }
                 }
             }
         }
     }
 
-    private fun getArtistAlbums(artistId: Long) = viewModelScope.launch(Dispatchers.IO) {
-        getArtistAlbumsUseCase(artistId).collect() { response ->
-            when(response) {
-                is Response.Loading -> {
-                    _artistAlbumsState.value = ArtistAlbumsState.Loading
-                }
-                is Response.Success -> {
-                    _artistAlbumsState.value = ArtistAlbumsState.Success(data = response.data)
-                }
-                is Response.Error -> {
-                    _artistAlbumsState.value = ArtistAlbumsState.Error(message = response.errorMessage)
+    private fun getArtistAlbums(artistId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getArtistAlbumsUseCase(artistId).collect { response ->
+                when(response) {
+                    is Response.Loading -> {
+                        _artistAlbumsState.value = ArtistAlbumsState.Loading
+                    }
+                    is Response.Success -> {
+                        _artistAlbumsState.value = ArtistAlbumsState.Success(data = response.data)
+                    }
+                    is Response.Error -> {
+                        _artistAlbumsState.value = ArtistAlbumsState.Error(message = response.errorMessage)
+                    }
                 }
             }
         }

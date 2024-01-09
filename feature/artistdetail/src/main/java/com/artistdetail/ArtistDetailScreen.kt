@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +38,7 @@ import com.ui.FullScreenProgIndicator
 
 private val ARTIST_IMG_SIZE = 224.dp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistDetailScreen(
     modifier: Modifier = Modifier,
@@ -53,13 +55,24 @@ fun ArtistDetailScreen(
         )
     )
 
-    ArtistDetailScreenContent(
+    Scaffold(
         modifier = modifier,
-        viewModel = viewModel,
-        gradient = gradient,
-        onNavigateBackClicked = upPress,
-        onAlbumClicked = { onArtistClick(it) }
-    )
+        topBar = {
+            DeezerTopAppBar(
+                title = viewModel.artistName,
+                navigationIcon = DeezerIcons.ArrowBack,
+                navigationContentDescription = null,
+                upPress = upPress
+            )
+        }
+    ) { paddingValues ->
+        ArtistDetailScreenContent(
+            modifier = Modifier.padding(paddingValues),
+            viewModel = viewModel,
+            gradient = gradient,
+            onAlbumClicked = onArtistClick
+        )
+    }
 }
 
 @Composable
@@ -67,45 +80,26 @@ private fun ArtistDetailScreenContent(
     modifier: Modifier,
     viewModel: ArtistDetailViewModel,
     gradient: Brush,
-    onNavigateBackClicked: () -> Unit,
     onAlbumClicked: (Long) -> Unit
 ) {
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = { TopBar(viewModel.artistName, onNavigateBackClicked) }
+    Column(
+        modifier = modifier.fillMaxSize()
     ) {
-        Column(
-            modifier = modifier
+        ArtistImageSection(
+            modifier = Modifier
+                .weight(2f)
                 .fillMaxSize()
-                .padding(it)
-        ) {
-            ArtistImageSection(
-                modifier = modifier
-                    .weight(2f)
-                    .fillMaxSize()
-                    .background(gradient),
-                artistDetailState = viewModel.artistDetailState.collectAsState().value
-            )
-            AlbumsSection(
-                modifier = modifier
-                    .weight(3f)
-                    .fillMaxSize(),
-                artistAlbumsState = viewModel.artistAlbumsState.collectAsState().value,
-                onAlbumClicked = onAlbumClicked
-            )
-        }
+                .background(gradient),
+            artistDetailState = viewModel.artistDetailState.collectAsState().value
+        )
+        AlbumsSection(
+            modifier = Modifier
+                .weight(3f)
+                .fillMaxSize(),
+            artistAlbumsState = viewModel.artistAlbumsState.collectAsState().value,
+            onAlbumClicked = onAlbumClicked
+        )
     }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun TopBar(artistName: String, onNavigateBackClicked: () -> Unit) {
-    DeezerTopAppBar(
-        title = artistName,
-        navigationIcon = DeezerIcons.ArrowBack,
-        navigationContentDescription = null,
-        onNavigateClick = onNavigateBackClicked
-    )
 }
 
 @Composable
@@ -188,9 +182,7 @@ private fun AlbumsList(artistAlbums: ArrayList<ArtistAlbumsData>, onAlbumClicked
                 albumName = albums.title,
                 albumId = albums.id,
                 albumReleaseDate = albums.releaseDate,
-                onAlbumClicked = {
-                    onAlbumClicked(albums.id)
-                }
+                onAlbumClicked = onAlbumClicked
             )
         }
     }

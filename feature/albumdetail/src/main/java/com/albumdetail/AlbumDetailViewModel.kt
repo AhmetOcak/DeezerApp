@@ -60,64 +60,72 @@ class AlbumDetailViewModel @Inject constructor(
         )
     }
 
-    private fun getAlbumDetails(albumId: Long) = viewModelScope.launch(Dispatchers.IO) {
-        getAlbumDetailsUseCase(albumId).collect() { response ->
-            when(response) {
-                is Response.Loading -> {
-                    _albumDetailsState.value = AlbumDetailsState.Loading
-                }
-                is Response.Success -> {
-                    albumName = response.data.title
-                    _albumDetailsState.value = AlbumDetailsState.Success(data = response.data)
-                }
-                is Response.Error ->  {
-                    _albumDetailsState.value = AlbumDetailsState.Error(message = response.errorMessage)
-                }
-            }
-        }
-    }
-
-    private fun getAllFavoriteSongs() = viewModelScope.launch(Dispatchers.IO) {
-        getAllFavoriteSongsUseCase().collect() { response ->
-            when(response) {
-                is Response.Loading -> {}
-                is Response.Success -> {
-                    favoriteSongs = response.data
-                }
-                is Response.Error -> {
-                    databaseStatus = false
+    private fun getAlbumDetails(albumId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getAlbumDetailsUseCase(albumId).collect { response ->
+                when(response) {
+                    is Response.Loading -> {
+                        _albumDetailsState.value = AlbumDetailsState.Loading
+                    }
+                    is Response.Success -> {
+                        albumName = response.data.title
+                        _albumDetailsState.value = AlbumDetailsState.Success(data = response.data)
+                    }
+                    is Response.Error ->  {
+                        _albumDetailsState.value = AlbumDetailsState.Error(message = response.errorMessage)
+                    }
                 }
             }
         }
     }
 
-    fun addFavoriteSong(favoriteSongs: FavoriteSongs) = viewModelScope.launch(Dispatchers.IO) {
-        addFavoriteSongUseCase(favoriteSongs).collect() { response ->
-            when(response) {
-                is Response.Loading -> {
-                    _databaseState.value = DatabaseState.Loading
-                }
-                is Response.Success -> {
-                    _databaseState.value = DatabaseState.Success("The song has been successfully added to favorites.")
-                }
-                is Response.Error -> {
-                    _databaseState.value = DatabaseState.Error(response.errorMessage)
+    private fun getAllFavoriteSongs() {
+        viewModelScope.launch(Dispatchers.IO) {
+            getAllFavoriteSongsUseCase().collect { response ->
+                when(response) {
+                    is Response.Loading -> {}
+                    is Response.Success -> {
+                        favoriteSongs = response.data
+                    }
+                    is Response.Error -> {
+                        databaseStatus = false
+                    }
                 }
             }
         }
     }
 
-    fun removeFavoriteSong(songId: Long) = viewModelScope.launch(Dispatchers.IO) {
-        deleteFavoriteSongUseCase(songId).collect() { response ->
-            when(response) {
-                is Response.Loading -> {
-                    _databaseState.value = DatabaseState.Loading
+    fun addFavoriteSong(favoriteSongs: FavoriteSongs) {
+        viewModelScope.launch(Dispatchers.IO) {
+            addFavoriteSongUseCase(favoriteSongs).collect { response ->
+                when(response) {
+                    is Response.Loading -> {
+                        _databaseState.value = DatabaseState.Loading
+                    }
+                    is Response.Success -> {
+                        _databaseState.value = DatabaseState.Success("The song has been successfully added to favorites.")
+                    }
+                    is Response.Error -> {
+                        _databaseState.value = DatabaseState.Error(response.errorMessage)
+                    }
                 }
-                is Response.Success -> {
-                    _databaseState.value = DatabaseState.Success("The song has been successfully removed from favorites.")
-                }
-                is Response.Error -> {
-                    _databaseState.value = DatabaseState.Error(response.errorMessage)
+            }
+        }
+    }
+
+    fun removeFavoriteSong(songId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteFavoriteSongUseCase(songId).collect() { response ->
+                when(response) {
+                    is Response.Loading -> {
+                        _databaseState.value = DatabaseState.Loading
+                    }
+                    is Response.Success -> {
+                        _databaseState.value = DatabaseState.Success("The song has been successfully removed from favorites.")
+                    }
+                    is Response.Error -> {
+                        _databaseState.value = DatabaseState.Error(response.errorMessage)
+                    }
                 }
             }
         }

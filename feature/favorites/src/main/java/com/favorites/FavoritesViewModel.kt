@@ -47,33 +47,37 @@ class FavoritesViewModel @Inject constructor(
         )
     }
 
-    fun getAllFavoriteSongs() = viewModelScope.launch(Dispatchers.IO) {
-        getAllFavoriteSongsUseCase().collect() { response ->
-            when (response) {
-                is Response.Loading -> {
-                    _favoritesState.value = FavoritesState.Loading
-                }
+    fun getAllFavoriteSongs() {
+        viewModelScope.launch(Dispatchers.IO) {
+            getAllFavoriteSongsUseCase().collect { response ->
+                when (response) {
+                    is Response.Loading -> {
+                        _favoritesState.value = FavoritesState.Loading
+                    }
 
-                is Response.Success -> {
-                    _favoritesState.value = FavoritesState.Success(data = response.data)
-                }
+                    is Response.Success -> {
+                        _favoritesState.value = FavoritesState.Success(data = response.data)
+                    }
 
-                is Response.Error -> {
-                    _favoritesState.value = FavoritesState.Error(message = response.errorMessage)
+                    is Response.Error -> {
+                        _favoritesState.value = FavoritesState.Error(message = response.errorMessage)
+                    }
                 }
             }
         }
     }
 
-    fun removeFavoriteSong(songId: Long) = viewModelScope.launch(Dispatchers.IO) {
-         deleteFavoriteSongUseCase(songId).collect() { response ->
-            when(response) {
-                is Response.Loading -> {}
-                is Response.Success -> {
-                    _deleteState.value = DeleteState.Success("The song has been successfully removed from favorites.")
-                }
-                is Response.Error -> {
-                    _deleteState.value = DeleteState.Error(response.errorMessage)
+    fun removeFavoriteSong(songId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteFavoriteSongUseCase(songId).collect { response ->
+                when(response) {
+                    is Response.Loading -> {}
+                    is Response.Success -> {
+                        _deleteState.value = DeleteState.Success("The song has been successfully removed from favorites.")
+                    }
+                    is Response.Error -> {
+                        _deleteState.value = DeleteState.Error(response.errorMessage)
+                    }
                 }
             }
         }
