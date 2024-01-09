@@ -1,45 +1,29 @@
 package com.deezerapp.navigation
 
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.albumdetail.AlbumDetailScreen
 import com.artistdetail.ArtistDetailScreen
 import com.artists.ArtistsScreen
 import com.deezerapp.helpers.encodeForSafe
 import com.favorites.FavoritesScreen
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.musicgenres.MusicGenresScreen
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DeezerNavHost(
     startDestination: String = NavScreen.MusicGenres.route,
-    navController: NavHostController = rememberAnimatedNavController()
+    navController: NavHostController = rememberNavController()
 ) {
-    AnimatedNavHost(
+    NavHost(
         navController = navController,
-        startDestination = startDestination,
-        enterTransition = {
-            slideIntoContainer(
-                AnimatedContentScope.SlideDirection.Right,
-                animationSpec = tween(250)
-            )
-        },
-        exitTransition = {
-            slideOutOfContainer(
-                AnimatedContentScope.SlideDirection.Left,
-                animationSpec = tween(250)
-            )
-        }
+        startDestination = startDestination
     ) {
         composable(route = NavScreen.MusicGenres.route) {
             MusicGenresScreen(

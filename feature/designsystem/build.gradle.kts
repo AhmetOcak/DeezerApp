@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -41,26 +41,28 @@ android {
 
 dependencies {
 
-    implementation(Libs.AndroidX.coreKtx)
-    implementation(Libs.AndroidX.appcompat)
-    implementation(Libs.AndroidX.material)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.material.icons.extended)
 
-    implementation(Libs.AndroidX.runtimeKtx)
-    implementation(Libs.AndroidX.activityCompose)
-    implementation(platform(Libs.AndroidX.composeBom))
-    implementation(Libs.AndroidX.composeUi)
-    implementation(Libs.AndroidX.composeUiGraphics)
-    implementation(Libs.AndroidX.composeUiToolingPreview)
-    implementation(Libs.AndroidX.composeMaterial3)
-    implementation(Libs.AndroidX.materialIconsExtended)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
-    testImplementation(Libs.Test.junit)
-    androidTestImplementation(Libs.Test.AnroidX.junit)
-    androidTestImplementation(Libs.Test.AnroidX.espresso)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    implementation(Libs.Accompanist.systemUiController)
-
+    implementation(libs.accompanist.systemuicontroller)
+    
     // Coil
-    implementation(Libs.Coil.coil)
-    implementation(Libs.Coil.coilCompose)
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
 }

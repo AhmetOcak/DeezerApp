@@ -1,8 +1,8 @@
 
 object ConfigData {
     const val minSdk = 26
-    const val targetSdk = 33
-    const val compileSdk = 33
+    const val targetSdk = 34
+    const val compileSdk = 34
     const val applicationId = "com.deezerapp"
     const val versionCode = 1
     const val versionName = "1.0"

@@ -1,7 +1,7 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt.android)
     id("kotlin-kapt")
 }
 
@@ -37,17 +37,15 @@ android {
 
 dependencies {
 
-    implementation(Libs.AndroidX.coreKtx)
-    implementation(Libs.AndroidX.appcompat)
-    implementation(Libs.AndroidX.material)
+    implementation(libs.androidx.core.ktx)
 
-    testImplementation(Libs.Test.junit)
-    androidTestImplementation(Libs.Test.AnroidX.junit)
-    androidTestImplementation(Libs.Test.AnroidX.espresso)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
     // Hilt
-    implementation(Libs.Hilt.daggerHilt)
-    kapt(Libs.Hilt.compiler)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
 
     implementation(project(":data:network"))
     implementation(project(":models"))

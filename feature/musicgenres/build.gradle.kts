@@ -1,7 +1,7 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt.android)
     id("kotlin-kapt")
 }
 
@@ -43,26 +43,28 @@ android {
 
 dependencies {
 
-    implementation(Libs.AndroidX.coreKtx)
-    implementation(Libs.AndroidX.appcompat)
-    implementation(Libs.AndroidX.material)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.preview)
+    implementation(libs.androidx.compose.material3)
 
-    implementation(Libs.AndroidX.runtimeKtx)
-    implementation(Libs.AndroidX.activityCompose)
-    implementation(platform(Libs.AndroidX.composeBom))
-    implementation(Libs.AndroidX.composeUi)
-    implementation(Libs.AndroidX.composeUiGraphics)
-    implementation(Libs.AndroidX.composeUiToolingPreview)
-    implementation(Libs.AndroidX.composeMaterial3)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
-    testImplementation(Libs.Test.junit)
-    androidTestImplementation(Libs.Test.AnroidX.junit)
-    androidTestImplementation(Libs.Test.AnroidX.espresso)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Hilt
-    implementation(Libs.Hilt.daggerHilt)
-    implementation(Libs.Hilt.navigationCompose)
-    kapt(Libs.Hilt.compiler)
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.android.compiler)
 
     implementation(project(":feature:designsystem"))
     implementation(project(":feature:ui"))
