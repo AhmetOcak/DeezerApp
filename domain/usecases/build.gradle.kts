@@ -43,6 +43,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // Paging 3
+    implementation(libs.androidx.paging.runtime)
+
     implementation(project(":models"))
 
     implementation(project(":data:musicgenres"))

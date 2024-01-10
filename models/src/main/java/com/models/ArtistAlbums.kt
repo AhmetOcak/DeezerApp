@@ -1,11 +1,6 @@
 package com.models
 
 data class ArtistAlbums(
-    val data: ArrayList<ArtistAlbumsData>,
-    val total: Int
-)
-
-data class ArtistAlbumsData(
     val id: Long,
     val title: String,
     val link: String,

@@ -53,4 +53,7 @@ dependencies {
 
     // Okhttp
     implementation(libs.okhttp)
+
+    // Paging 3
+    implementation(libs.androidx.paging.runtime)
 }

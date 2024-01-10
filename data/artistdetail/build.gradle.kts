@@ -47,6 +47,9 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
+    // Paging 3
+    implementation(libs.androidx.paging.runtime)
+
     implementation(project(":data:network"))
     implementation(project(":models"))
 }

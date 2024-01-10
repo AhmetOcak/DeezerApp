@@ -66,6 +66,10 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.android.compiler)
 
+    // Paging 3
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+
     implementation(project(":feature:designsystem"))
     implementation(project(":feature:ui"))
 

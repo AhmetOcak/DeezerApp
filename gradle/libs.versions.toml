@@ -21,6 +21,8 @@ jetbrainsKotlinAndroid = "1.8.20"
 jetbrainsKotlinxCoroutines = "1.7.3"
 googleDaggerHiltAndroid = "2.48"
 javax-inject = "1"
+paging = "3.2.1"
+paging-compose = "3.2.1"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemuicontroller" }
@@ -39,6 +41,8 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-runtime-ktx" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging-compose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-runtime" }
 androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-runtime" }

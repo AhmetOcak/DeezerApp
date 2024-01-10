@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,12 +26,17 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
+import com.designsystem.UiText
 import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerCircularProgressIndicator
 import com.designsystem.components.DeezerScaffold
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
-import com.models.ArtistAlbumsData
+import com.models.ArtistAlbums
 import com.ui.AlbumCard
 import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator
@@ -71,8 +76,8 @@ fun ArtistDetailScreen(
             modifier = Modifier.padding(paddingValues),
             gradient = gradient,
             onAlbumClicked = onArtistClick,
-            albumsState = uiState.albumsState,
-            detailState = uiState.detailState
+            detailState = uiState.detailState,
+            albums = uiState.albumsList?.collectAsLazyPagingItems()
         )
     }
 }
@@ -83,7 +88,7 @@ private fun ArtistDetailScreenContent(
     gradient: Brush,
     onAlbumClicked: (Long) -> Unit,
     detailState: DetailState,
-    albumsState: AlbumsState
+    albums: LazyPagingItems<ArtistAlbums>?
 ) {
     Column(
         modifier = modifier.fillMaxSize()
@@ -99,8 +104,8 @@ private fun ArtistDetailScreenContent(
             modifier = Modifier
                 .weight(3f)
                 .fillMaxSize(),
-            albumsState = albumsState,
-            onAlbumClicked = onAlbumClicked
+            onAlbumClicked = onAlbumClicked,
+            albums = albums
         )
     }
 }
@@ -146,60 +151,85 @@ private fun ArtistImage(artistImage: String) {
 @Composable
 private fun AlbumsSection(
     modifier: Modifier,
-    albumsState: AlbumsState,
-    onAlbumClicked: (Long) -> Unit
+    onAlbumClicked: (Long) -> Unit,
+    albums: LazyPagingItems<ArtistAlbums>?
 ) {
     Column(modifier = modifier) {
-        when (albumsState) {
-            is AlbumsState.Loading -> {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp),
+            text = "Albums",
+            style = MaterialTheme.typography.titleLarge
+        )
+        Divider()
+        if (albums != null) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(vertical = 16.dp)
+            ) {
+                items(albums.itemCount, key = albums.itemKey { it.id }) { index ->
+                    albums[index]?.let { album ->
+                        AlbumCard(
+                            albumImage = album.coverBig,
+                            albumName = album.title,
+                            albumId = album.id,
+                            albumReleaseDate = album.releaseDate,
+                            onAlbumClicked = onAlbumClicked
+                        )
+                    }
+                }
+
+                onLoadStateRefresh(albums.loadState.refresh)
+                onLoadStateAppend(albums.loadState.append)
+            }
+        }
+    }
+}
+
+private fun LazyListScope.onLoadStateRefresh(loadState: LoadState) {
+    when (loadState) {
+        is LoadState.Error -> {
+            item {
+                ErrorBox(
+                    errorMessage = loadState.error.message
+                        ?: UiText.DynamicString(
+                            "Something went wrong. Please try again later!!"
+                        ).asString()
+                )
+            }
+        }
+
+        is LoadState.Loading -> {
+            item {
                 FullScreenProgIndicator()
             }
+        }
 
-            is AlbumsState.Success -> {
-                AlbumsSectionTitle()
-                AlbumsList(
-                    artistAlbums = albumsState.albumsList.data,
-                    onAlbumClicked = onAlbumClicked
-                )
-            }
+        else -> {}
+    }
+}
 
-            is AlbumsState.Error -> {
+private fun LazyListScope.onLoadStateAppend(loadState: LoadState) {
+    when (loadState) {
+        is LoadState.Error -> {
+            item {
                 ErrorBox(
-                    modifier = modifier,
-                    errorMessage = albumsState.message.asString()
+                    errorMessage = loadState.error.message
+                        ?: UiText.DynamicString(
+                            "Something went wrong. Please try again later!!"
+                        ).asString()
                 )
             }
         }
-    }
-}
 
-@Composable
-private fun AlbumsList(artistAlbums: ArrayList<ArtistAlbumsData>, onAlbumClicked: (Long) -> Unit) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 16.dp)
-    ) {
-        items(artistAlbums, key = { it.id }) { albums ->
-            AlbumCard(
-                albumImage = albums.coverBig,
-                albumName = albums.title,
-                albumId = albums.id,
-                albumReleaseDate = albums.releaseDate,
-                onAlbumClicked = onAlbumClicked
-            )
+        is LoadState.Loading -> {
+            item {
+                FullScreenProgIndicator()
+            }
         }
-    }
-}
 
-@Composable
-private fun AlbumsSectionTitle() {
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(bottom = 16.dp),
-        text = "Albums",
-        style = MaterialTheme.typography.titleLarge
-    )
-    Divider()
+        else -> {}
+    }
 }

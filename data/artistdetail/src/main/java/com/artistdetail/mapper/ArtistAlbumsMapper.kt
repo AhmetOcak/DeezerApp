@@ -1,31 +1,25 @@
 package com.artistdetail.mapper
 
 import com.models.ArtistAlbums
-import com.models.ArtistAlbumsData
-import com.network.model.ArtistAlbumsDto
+import com.network.model.AlbumsDto
 
-fun ArtistAlbumsDto.toArtistAlbums(): ArtistAlbums {
+fun AlbumsDto.toArtistAlbums(): ArtistAlbums {
     return ArtistAlbums(
-        data = data.map {
-            ArtistAlbumsData(
-                id = it.id ?: -1,
-                title = it.title ?: "",
-                link = it.link ?: "",
-                cover = it.cover ?: "",
-                coverSmall = it.coverSmall ?: "",
-                coverMedium = it.coverMedium ?: "",
-                coverBig = it.coverBig ?: "",
-                coverXl = it.coverXl ?: "",
-                md5Image = it.md5Image ?: "",
-                genreId = it.genreId ?: -1,
-                fans = it.fans ?: -1,
-                releaseDate = it.releaseDate ?: "",
-                recordType = it.recordType ?: "",
-                trackList = it.trackList ?: "",
-                explicitLyrics = it.explicitLyrics ?: false,
-                type = it.type ?: "",
-            )
-        } as ArrayList<ArtistAlbumsData>,
-        total = total ?: 0
+        id = id ?: 0,
+        title = title ?: "",
+        link = link ?: "",
+        cover = cover ?: "",
+        coverSmall = coverSmall ?: "",
+        coverMedium = coverMedium ?: "",
+        coverBig = coverBig ?: "",
+        coverXl = coverXl ?: "",
+        md5Image = md5Image ?: "",
+        genreId = genreId ?: 0,
+        fans = fans ?: 0,
+        releaseDate = releaseDate ?: "",
+        recordType = recordType ?: "",
+        trackList = trackList ?: "",
+        explicitLyrics = explicitLyrics ?: false,
+        type = type ?: ""
     )
 }

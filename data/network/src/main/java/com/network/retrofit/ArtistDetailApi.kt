@@ -5,6 +5,7 @@ import com.network.model.ArtistAlbumsDto
 import com.network.model.ArtistDetailDto
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ArtistDetailApi {
 
@@ -15,6 +16,7 @@ interface ArtistDetailApi {
 
     @GET(EndPoint.ARTIST_TRACK_LIST)
      suspend fun getArtistAlbums(
-        @Path("artist_id") artist_id: Long
+        @Path("artist_id") artistId: Long,
+        @Query("index") index: Int
     ) : ArtistAlbumsDto
 }

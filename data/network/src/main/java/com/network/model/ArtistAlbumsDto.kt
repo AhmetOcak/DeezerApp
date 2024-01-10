@@ -4,13 +4,19 @@ import com.google.gson.annotations.SerializedName
 
 data class ArtistAlbumsDto(
     @SerializedName("data")
-    val data: ArrayList<ArtistAlbumsDataDto> = arrayListOf(),
+    val data: ArrayList<AlbumsDto> = arrayListOf(),
 
     @SerializedName("total")
     val total: Int? = null,
+
+    @SerializedName("next")
+    val next: String? = null,
+
+    @SerializedName("prev")
+    val prev: String? = null
 )
 
-data class ArtistAlbumsDataDto(
+data class AlbumsDto(
     @SerializedName("id")
     val id: Long? = null,
 
