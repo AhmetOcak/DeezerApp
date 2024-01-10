@@ -26,6 +26,8 @@ The application is developed using the Kotlin language and incorporates Jetpack 
 
 * [Okhttp](https://square.github.io/okhttp/)
 
+* [Paging 3](https://developer.android.com/topic/libraries/architecture/paging/v3-overview?hl=en)
+
 ## Video from app 📱
 
 <div>
