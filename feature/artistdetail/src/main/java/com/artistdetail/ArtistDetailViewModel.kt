@@ -3,11 +3,12 @@ package com.artistdetail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.designsystem.UiText
 import com.models.ArtistAlbums
 import com.models.ArtistDetail
 import com.usecases.artistdetail.GetArtistAlbumsUseCase
 import com.usecases.artistdetail.GetArtistDetailUseCase
-import com.usecases.common.Response
+import com.usecases.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,14 +35,11 @@ class ArtistDetailViewModel @Inject constructor(
 
     private fun getArtistDetails(artistId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update {
+                it.copy(detailState = DetailState.Loading)
+            }
             getArtistDetailUseCase(artistId).collect { response ->
                 when (response) {
-                    is Response.Loading -> {
-                        _uiState.update {
-                            it.copy(detailState = DetailState.Loading)
-                        }
-                    }
-
                     is Response.Success -> {
                         _uiState.update {
                             it.copy(
@@ -53,7 +51,13 @@ class ArtistDetailViewModel @Inject constructor(
 
                     is Response.Error -> {
                         _uiState.update {
-                            it.copy(detailState = DetailState.Error(message = response.errorMessage))
+                            it.copy(
+                                detailState = DetailState.Error(
+                                    message = UiText.StringResource(
+                                        response.errorMessageId
+                                    )
+                                )
+                            )
                         }
                     }
                 }
@@ -63,21 +67,26 @@ class ArtistDetailViewModel @Inject constructor(
 
     private fun getArtistAlbums(artistId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update {
+                it.copy(albumsState = AlbumsState.Loading)
+            }
             getArtistAlbumsUseCase(artistId).collect { response ->
-                when(response) {
-                    is Response.Loading -> {
-                        _uiState.update {
-                            it.copy(albumsState = AlbumsState.Loading)
-                        }
-                    }
+                when (response) {
                     is Response.Success -> {
                         _uiState.update {
                             it.copy(albumsState = AlbumsState.Success(albumsList = response.data))
                         }
                     }
+
                     is Response.Error -> {
                         _uiState.update {
-                            it.copy(albumsState = AlbumsState.Error(message = response.errorMessage))
+                            it.copy(
+                                albumsState = AlbumsState.Error(
+                                    message = UiText.StringResource(
+                                        response.errorMessageId
+                                    )
+                                )
+                            )
                         }
                     }
                 }
@@ -95,11 +104,11 @@ data class ArtistDetailUiState(
 sealed interface DetailState {
     object Loading : DetailState
     data class Success(val data: ArtistDetail) : DetailState
-    data class Error(val message: String) : DetailState
+    data class Error(val message: UiText) : DetailState
 }
 
 sealed interface AlbumsState {
-    object Loading: AlbumsState
-    data class Success(val albumsList: ArtistAlbums): AlbumsState
-    data class Error(val message: String): AlbumsState
+    object Loading : AlbumsState
+    data class Success(val albumsList: ArtistAlbums) : AlbumsState
+    data class Error(val message: UiText) : AlbumsState
 }

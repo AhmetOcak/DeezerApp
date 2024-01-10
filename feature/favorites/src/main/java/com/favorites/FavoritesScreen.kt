@@ -49,7 +49,7 @@ fun FavoritesScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
     if (uiState.userMessages.isNotEmpty()) {
         Toast.makeText(
             LocalContext.current,
-            uiState.userMessages.first(),
+            uiState.userMessages.first().asString(),
             Toast.LENGTH_SHORT
         ).show()
         viewModel.consumedUserMessages()

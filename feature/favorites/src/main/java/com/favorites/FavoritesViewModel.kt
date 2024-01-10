@@ -5,8 +5,9 @@ import android.media.MediaPlayer
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.designsystem.UiText
 import com.models.FavoriteSongs
-import com.usecases.common.Response
+import com.usecases.utils.Response
 import com.usecases.favorites.DeleteFavoriteSongUseCase
 import com.usecases.favorites.GetAllFavoriteSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,8 +45,6 @@ class FavoritesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             getAllFavoriteSongsUseCase().collect { response ->
                 when (response) {
-                    is Response.Loading -> {}
-
                     is Response.Success -> {
                         _uiState.update {
                             it.copy(favoriteSongsList = response.data)
@@ -54,7 +53,7 @@ class FavoritesViewModel @Inject constructor(
 
                     is Response.Error -> {
                         _uiState.update {
-                            it.copy(userMessages = listOf(response.errorMessage))
+                            it.copy(userMessages = listOf(UiText.StringResource(response.errorMessageId)))
                         }
                     }
                 }
@@ -66,16 +65,15 @@ class FavoritesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             deleteFavoriteSongUseCase(songId).collect { response ->
                 when (response) {
-                    is Response.Loading -> {}
                     is Response.Success -> {
                         _uiState.update {
-                            it.copy(userMessages = listOf("The song has been successfully removed from favorites."))
+                            it.copy(userMessages = listOf(UiText.StringResource(R.string.fav_song_removed_message)))
                         }
                     }
 
                     is Response.Error -> {
                         _uiState.update {
-                            it.copy(userMessages = listOf(response.errorMessage))
+                            it.copy(userMessages = listOf(UiText.StringResource(response.errorMessageId)))
                         }
                     }
                 }
@@ -151,6 +149,6 @@ class FavoritesViewModel @Inject constructor(
 
 data class FavoritesUiState(
     val isAudioPlaying: Boolean = false,
-    val userMessages: List<String> = listOf(),
+    val userMessages: List<UiText> = listOf(),
     val favoriteSongsList: List<FavoriteSongs> = listOf()
 )

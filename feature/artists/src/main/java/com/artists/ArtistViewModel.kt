@@ -3,14 +3,14 @@ package com.artists
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.designsystem.UiText
 import com.models.ArtistData
 import com.usecases.artists.GetArtistsUseCase
-import com.usecases.common.Response
+import com.usecases.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,23 +29,19 @@ class ArtistViewModel @Inject constructor(
 
     private fun getArtists(genreId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            getArtistsUseCase(genreId)
-                .flowOn(Dispatchers.IO)
-                .collect { response ->
-                    when (response) {
-                        is Response.Loading -> {
-                            _uiState.value = ArtistUiState.Loading
-                        }
+            _uiState.value = ArtistUiState.Loading
+            getArtistsUseCase(genreId).collect { response ->
+                when (response) {
+                    is Response.Success -> {
+                        _uiState.value = ArtistUiState.Success(artistList = response.data.data)
+                    }
 
-                        is Response.Success -> {
-                            _uiState.value = ArtistUiState.Success(artistList = response.data.data)
-                        }
-
-                        is Response.Error -> {
-                            _uiState.value = ArtistUiState.Error(message = response.errorMessage)
-                        }
+                    is Response.Error -> {
+                        _uiState.value =
+                            ArtistUiState.Error(message = UiText.StringResource(response.errorMessageId))
                     }
                 }
+            }
         }
     }
 }
@@ -53,5 +49,5 @@ class ArtistViewModel @Inject constructor(
 sealed interface ArtistUiState {
     object Loading : ArtistUiState
     data class Success(val artistList: List<ArtistData>) : ArtistUiState
-    data class Error(val message: String) : ArtistUiState
+    data class Error(val message: UiText) : ArtistUiState
 }

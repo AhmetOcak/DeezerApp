@@ -127,7 +127,7 @@ private fun ArtistImageSection(
             is DetailState.Error -> {
                 ErrorBox(
                     modifier = modifier,
-                    errorMessage = detailState.message
+                    errorMessage = detailState.message.asString()
                 )
             }
         }
@@ -167,7 +167,7 @@ private fun AlbumsSection(
             is AlbumsState.Error -> {
                 ErrorBox(
                     modifier = modifier,
-                    errorMessage = albumsState.message
+                    errorMessage = albumsState.message.asString()
                 )
             }
         }

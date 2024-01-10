@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fav_song_removed_message">The song has been successfully removed from favorites.</string>
+</resources>

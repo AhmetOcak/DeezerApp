@@ -62,7 +62,7 @@ fun ArtistsScreen(
             is ArtistUiState.Error -> {
                 ErrorBox(
                     modifier = modifier.fillMaxSize().padding(paddingValues),
-                    errorMessage = state.message
+                    errorMessage = state.message.asString()
                 )
             }
         }

@@ -68,7 +68,7 @@ fun MusicGenresScreen(
             is MusicGenresUiState.Error -> {
                 ErrorBox(
                     modifier = modifier.fillMaxSize().padding(paddingValues),
-                    errorMessage = state.message
+                    errorMessage = state.message.asString()
                 )
             }
         }

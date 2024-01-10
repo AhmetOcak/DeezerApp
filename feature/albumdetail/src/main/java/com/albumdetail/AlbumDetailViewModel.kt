@@ -6,13 +6,14 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.designsystem.UiText
 import com.models.FavoriteSongs
 import com.models.albumdetail.AlbumDetails
 import com.usecases.albumdetail.AddFavoriteSongUseCase
 import com.usecases.albumdetail.DeleteFavoriteSongUseCase
 import com.usecases.albumdetail.GetAlbumDetailsUseCase
 import com.usecases.albumdetail.GetAllFavoriteSongsUseCase
-import com.usecases.common.Response
+import com.usecases.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,14 +51,11 @@ class AlbumDetailViewModel @Inject constructor(
 
     private fun getAlbumDetails(albumId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update {
+                it.copy(detailState = DetailsState.Loading)
+            }
             getAlbumDetailsUseCase(albumId).collect { response ->
                 when (response) {
-                    is Response.Loading -> {
-                        _uiState.update {
-                            it.copy(detailState = DetailsState.Loading)
-                        }
-                    }
-
                     is Response.Success -> {
                         _uiState.update {
                             it.copy(
@@ -69,7 +67,13 @@ class AlbumDetailViewModel @Inject constructor(
 
                     is Response.Error -> {
                         _uiState.update {
-                            it.copy(detailState = DetailsState.Error(message = response.errorMessage))
+                            it.copy(
+                                detailState = DetailsState.Error(
+                                    message = UiText.StringResource(
+                                        response.errorMessageId
+                                    )
+                                )
+                            )
                         }
                     }
                 }
@@ -81,7 +85,6 @@ class AlbumDetailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             getAllFavoriteSongsUseCase().collect { response ->
                 when (response) {
-                    is Response.Loading -> {}
                     is Response.Success -> {
                         _uiState.update {
                             it.copy(favoriteSongs = response.data)
@@ -102,17 +105,15 @@ class AlbumDetailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             addFavoriteSongUseCase(favoriteSongs).collect { response ->
                 when (response) {
-                    is Response.Loading -> {}
-
                     is Response.Success -> {
                         _uiState.update {
-                            it.copy(userMessages = listOf("The song has been successfully added to favorites."))
+                            it.copy(userMessages = listOf())
                         }
                     }
 
                     is Response.Error -> {
                         _uiState.update {
-                            it.copy(errorMessages = listOf(response.errorMessage))
+                            it.copy(errorMessages = listOf(UiText.StringResource(response.errorMessageId)))
                         }
                     }
                 }
@@ -124,17 +125,15 @@ class AlbumDetailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             deleteFavoriteSongUseCase(songId).collect { response ->
                 when (response) {
-                    is Response.Loading -> {}
-
                     is Response.Success -> {
                         _uiState.update {
-                            it.copy(userMessages = listOf("The song has been successfully removed from favorites."))
+                            it.copy(userMessages = listOf(UiText.StringResource(R.string.fav_song_added_message)))
                         }
                     }
 
                     is Response.Error -> {
                         _uiState.update {
-                            it.copy(errorMessages = listOf(response.errorMessage))
+                            it.copy(errorMessages = listOf(UiText.StringResource(response.errorMessageId)))
                         }
                     }
                 }
@@ -171,7 +170,11 @@ class AlbumDetailViewModel @Inject constructor(
         } catch (e: IOException) {
             Log.e("MEDIA PLAYER", e.stackTraceToString())
             _uiState.update {
-                it.copy(errorMessages = listOf(e.message ?: "Something went wrong"))
+                it.copy(
+                    errorMessages = listOf(
+                        UiText.DynamicString(e.message ?: "Something went wrong")
+                    )
+                )
             }
         }
     }
@@ -228,8 +231,8 @@ class AlbumDetailViewModel @Inject constructor(
 
 data class AlbumDetailsUiState(
     val isAudioPlaying: Boolean = false,
-    val errorMessages: List<String> = listOf(),
-    val userMessages: List<String> = listOf(),
+    val errorMessages: List<UiText> = listOf(),
+    val userMessages: List<UiText> = listOf(),
     val favoriteSongs: List<FavoriteSongs> = listOf(),
     val albumName: String = "",
     val isDatabaseAvailable: Boolean = true,
@@ -239,5 +242,5 @@ data class AlbumDetailsUiState(
 sealed interface DetailsState {
     object Loading : DetailsState
     data class Success(val data: AlbumDetails) : DetailsState
-    data class Error(val message: String) : DetailsState
+    data class Error(val message: UiText) : DetailsState
 }

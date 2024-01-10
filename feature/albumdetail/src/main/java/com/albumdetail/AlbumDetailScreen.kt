@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.designsystem.components.AnimatedImage
@@ -55,14 +56,14 @@ fun AlbumDetailScreen(
     if (!uiState.isDatabaseAvailable) {
         showMessage(
             context = LocalContext.current,
-            message = "Favorite songs could not be found. Please try again later."
+            message = stringResource(id = R.string.db_error_message)
         )
     }
 
     if (uiState.errorMessages.isNotEmpty()) {
         showMessage(
             context = LocalContext.current,
-            message = uiState.errorMessages.first()
+            message = uiState.errorMessages.first().asString()
         )
         viewModel.consumedErrorMessages()
     }
@@ -70,7 +71,7 @@ fun AlbumDetailScreen(
     if (uiState.userMessages.isNotEmpty()) {
         showMessage(
             context = LocalContext.current,
-            message = uiState.userMessages.first()
+            message = uiState.userMessages.first().asString()
         )
         viewModel.consumedUserMessages()
     }
@@ -109,7 +110,7 @@ fun AlbumDetailScreen(
             is DetailsState.Error -> {
                 ErrorBox(
                     modifier = modifier,
-                    errorMessage = state.message
+                    errorMessage = state.message.asString()
                 )
             }
         }

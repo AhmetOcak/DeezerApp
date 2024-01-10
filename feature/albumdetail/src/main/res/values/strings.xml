@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fav_song_added_message">The song has been successfully added to favorites.</string>
+    <string name="db_error_message">Favorite songs could not be found. Please try again later.</string>
+</resources>

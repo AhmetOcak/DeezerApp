@@ -1,23 +1,13 @@
 package com.usecases.albumdetail
 
-import android.util.Log
 import com.albumdetail.repository.IAlbumDetailRepository
-import com.usecases.common.Response
-import com.usecases.common.UNKNOWN
+import com.usecases.utils.Response
+import com.usecases.utils.dbCall
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class DeleteFavoriteSongUseCase @Inject constructor(private val repository: IAlbumDetailRepository) {
 
-    suspend operator fun invoke(songId: Long): Flow<Response<Unit>> = flow {
-        try {
-            emit(Response.Loading)
-
-            emit(Response.Success(repository.removeFavoriteSong(songId)))
-        } catch (e: Exception) {
-            Log.e("DeleteFavoriteSongUseCase", e.stackTraceToString())
-            emit(Response.Error(errorMessage = e.message ?: UNKNOWN))
-        }
-    }
+    suspend operator fun invoke(songId: Long): Flow<Response<Unit>> =
+        dbCall { repository.removeFavoriteSong(songId) }
 }

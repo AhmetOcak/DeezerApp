@@ -2,9 +2,10 @@ package com.musicgenres
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.designsystem.UiText
 import com.models.Data
 import com.usecases.musicgenres.GetMusicGenresUseCase
-import com.usecases.common.Response
+import com.usecases.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,19 +28,17 @@ class MusicGenreViewModel @Inject constructor(
 
     private fun getMusicGenres() {
         viewModelScope.launch(Dispatchers.IO) {
+            _uiState.value = MusicGenresUiState.Loading
             getMusicGenresUseCase().collect { response ->
                 when (response) {
-                    is Response.Loading -> {
-                        _uiState.value = MusicGenresUiState.Loading
-                    }
-
                     is Response.Success -> {
                         _uiState.value =
                             MusicGenresUiState.Success(musicGenresList = response.data.data)
                     }
 
                     is Response.Error -> {
-                        _uiState.value = MusicGenresUiState.Error(message = response.errorMessage)
+                        _uiState.value =
+                            MusicGenresUiState.Error(message = UiText.StringResource(response.errorMessageId))
                     }
                 }
             }
@@ -50,5 +49,5 @@ class MusicGenreViewModel @Inject constructor(
 sealed interface MusicGenresUiState {
     object Loading : MusicGenresUiState
     data class Success(val musicGenresList: List<Data>) : MusicGenresUiState
-    data class Error(val message: String) : MusicGenresUiState
+    data class Error(val message: UiText) : MusicGenresUiState
 }
