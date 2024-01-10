@@ -29,10 +29,9 @@ fun ArtistsScreen(
     modifier: Modifier = Modifier,
     onArtistClick: (Long) -> Unit,
     upPress: () -> Unit,
-    genreName: String
+    genreName: String,
+    viewModel: ArtistViewModel = hiltViewModel()
 ) {
-    val viewModel: ArtistViewModel = hiltViewModel()
-
     val uiState by viewModel.uiState.collectAsState()
 
     DeezerScaffold(
@@ -61,7 +60,9 @@ fun ArtistsScreen(
 
             is ArtistUiState.Error -> {
                 ErrorBox(
-                    modifier = modifier.fillMaxSize().padding(paddingValues),
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
                     errorMessage = state.message.asString()
                 )
             }

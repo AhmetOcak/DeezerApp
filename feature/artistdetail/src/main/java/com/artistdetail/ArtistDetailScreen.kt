@@ -43,10 +43,9 @@ private val ARTIST_IMG_SIZE = 224.dp
 fun ArtistDetailScreen(
     modifier: Modifier = Modifier,
     onArtistClick: (Long) -> Unit,
-    upPress: () -> Unit
+    upPress: () -> Unit,
+    viewModel: ArtistDetailViewModel = hiltViewModel()
 ) {
-    val viewModel: ArtistDetailViewModel = hiltViewModel()
-
     val uiState by viewModel.uiState.collectAsState()
 
     val gradient = Brush.verticalGradient(

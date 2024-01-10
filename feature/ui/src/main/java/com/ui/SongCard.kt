@@ -45,7 +45,6 @@ private val cardHeight = 96.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongCard(
-    modifier: Modifier = Modifier,
     songImageUrl: String,
     songName: String,
     duration: String,
@@ -65,7 +64,7 @@ fun SongCard(
         exit = slideOutHorizontally()
     ) {
         ElevatedCard(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .height(cardHeight)
                 .padding(horizontal = 16.dp)
@@ -73,22 +72,25 @@ fun SongCard(
             shape = cardShape,
             onClick = onSongClicked
         ) {
-            Row(modifier = modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                 SongImage(
-                    modifier = modifier
+                    modifier = Modifier
                         .weight(1f)
-                        .fillMaxSize(), songImageUrl = songImageUrl
+                        .fillMaxSize(),
+                    songImageUrl = songImageUrl
                 )
                 SongDetail(
-                    modifier = modifier
+                    modifier = Modifier
                         .weight(2f)
                         .fillMaxSize(),
                     songName = songName,
                     duration = duration,
-                    onFavouriteBtnClicked = {
-                        onFavouriteBtnClicked()
-                        if (deleteAnimation) {
-                            state.targetState = false
+                    onFavouriteBtnClicked = remember {
+                        {
+                            onFavouriteBtnClicked()
+                            if (deleteAnimation) {
+                                state.targetState = false
+                            }
                         }
                     },
                     favoriteIconInitVal = favoriteIconInitVal,

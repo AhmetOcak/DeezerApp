@@ -47,10 +47,9 @@ private val ALBUM_IMG_SIZE = 224.dp
 @Composable
 fun AlbumDetailScreen(
     modifier: Modifier = Modifier,
-    upPress: () -> Unit
+    upPress: () -> Unit,
+    viewModel: AlbumDetailViewModel = hiltViewModel()
 ) {
-    val viewModel: AlbumDetailViewModel = hiltViewModel()
-
     val uiState by viewModel.uiState.collectAsState()
 
     if (!uiState.isDatabaseAvailable) {
@@ -213,7 +212,6 @@ private fun SongList(
     ) {
         items(songs, key = { it.id }) {
             SongCard(
-                modifier = Modifier,
                 songImageUrl = it.album.coverBig,
                 songName = it.title,
                 duration = "${it.duration.toDouble().seconds}",

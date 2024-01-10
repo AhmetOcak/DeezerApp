@@ -40,10 +40,11 @@ private val HEART_SIZE = 196.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoritesScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
-
-    val viewModel: FavoritesViewModel = hiltViewModel()
-
+fun FavoritesScreen(
+    modifier: Modifier = Modifier,
+    upPress: () -> Unit,
+    viewModel: FavoritesViewModel = hiltViewModel()
+) {
     val uiState by viewModel.uiState.collectAsState()
 
     if (uiState.userMessages.isNotEmpty()) {
@@ -113,14 +114,16 @@ private fun FavoritesScreenContent(
                 .weight(4f)
                 .fillMaxSize()
                 .padding(bottom = if (showMusicPlayer) PlayerHeight else 0.dp),
-            onSongClicked = { musicUrl, artistName, songName ->
-                onPlayAudio(musicUrl)
+            onSongClicked = remember {
+                { musicUrl, artistName, songName ->
+                    onPlayAudio(musicUrl)
 
-                playingArtistName = artistName
-                playingSongName = songName
+                    playingArtistName = artistName
+                    playingSongName = songName
 
-                if (!showMusicPlayer) {
-                    showMusicPlayer = true
+                    if (!showMusicPlayer) {
+                        showMusicPlayer = true
+                    }
                 }
             },
             favoriteSongsList = favoriteSongsList,
@@ -132,10 +135,12 @@ private fun FavoritesScreenContent(
         MusicPlayer(
             songName = playingSongName,
             songArtist = playingArtistName,
-            onCloseClicked = remember { {
+            onCloseClicked = remember {
+                {
                     onDestroyAudio()
                     showMusicPlayer = false
-                } },
+                }
+            },
             onPlayButtonClicked = remember { { onPauseAudio() } },
             isAudioPlaying = isAudioPlaying
         )
@@ -173,15 +178,16 @@ private fun FavoriteSongsList(
         ) {
             items(favoriteSongsList, key = { it.id }) {
                 SongCard(
-                    modifier = Modifier,
                     songImageUrl = it.songImgUrl,
                     songName = it.songName,
                     duration = "${it.duration.toDouble().seconds}",
                     favoriteIconInitVal = true,
-                    onSongClicked = {
-                        onSongClicked(it.audioUrl, it.artistName, it.songName)
+                    onSongClicked = remember {
+                        { onSongClicked(it.audioUrl, it.artistName, it.songName) }
                     },
-                    onFavouriteBtnClicked = { onFavouriteBtnClicked(it.id) },
+                    onFavouriteBtnClicked = remember {
+                        { onFavouriteBtnClicked(it.id) }
+                    },
                     showAlbum = true,
                     albumName = it.albumName,
                     deleteAnimation = true,

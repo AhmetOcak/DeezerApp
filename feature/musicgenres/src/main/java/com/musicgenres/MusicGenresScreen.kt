@@ -33,10 +33,9 @@ import com.ui.ErrorBox
 fun MusicGenresScreen(
     modifier: Modifier = Modifier,
     onMusicGenreClick: (Long, String) -> Unit,
-    onFavoritesClick: () -> Unit
+    onFavoritesClick: () -> Unit,
+    viewModel: MusicGenreViewModel = hiltViewModel()
 ) {
-    val viewModel: MusicGenreViewModel = hiltViewModel()
-
     val uiState by viewModel.uiState.collectAsState()
 
     DeezerScaffold(
