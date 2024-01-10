@@ -37,7 +37,7 @@ fun MusicGenresScreen(
 ) {
     val viewModel: MusicGenreViewModel = hiltViewModel()
 
-    val musicGenresState by viewModel.musicGenresState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     DeezerScaffold(
         modifier = modifier,
@@ -52,40 +52,25 @@ fun MusicGenresScreen(
             )
         }
     ) { paddingValues ->
-        MusicCategoriesScreenContent(
-            modifier = Modifier.padding(paddingValues),
-            onGenreClicked = onMusicGenreClick,
-            musicGenresState = musicGenresState
-        )
-    }
-}
-
-@Composable
-fun MusicCategoriesScreenContent(
-    modifier: Modifier,
-    onGenreClicked: (Long, String) -> Unit,
-    musicGenresState: MusicGenresState,
-) {
-    when (musicGenresState) {
-        is MusicGenresState.Loading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                DeezerCircularProgressIndicator()
+        when (val state = uiState) {
+            is MusicGenresUiState.Loading -> {
+                Box(modifier = modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
+                    DeezerCircularProgressIndicator()
+                }
             }
-        }
-
-        is MusicGenresState.Success -> {
-            CategoryList(
-                modifier = modifier,
-                onGenreClicked = onGenreClicked,
-                musicGenres = musicGenresState.data
-            )
-        }
-
-        is MusicGenresState.Error -> {
-            ErrorBox(
-                modifier = modifier.fillMaxSize(),
-                errorMessage = musicGenresState.message
-            )
+            is MusicGenresUiState.Success -> {
+                CategoryList(
+                    modifier = modifier.padding(paddingValues),
+                    onGenreClicked = onMusicGenreClick,
+                    musicGenres = state.musicGenresList
+                )
+            }
+            is MusicGenresUiState.Error -> {
+                ErrorBox(
+                    modifier = modifier.fillMaxSize().padding(paddingValues),
+                    errorMessage = state.message
+                )
+            }
         }
     }
 }
@@ -94,7 +79,7 @@ fun MusicCategoriesScreenContent(
 private fun CategoryList(
     modifier: Modifier,
     onGenreClicked: (Long, String) -> Unit,
-    musicGenres: ArrayList<Data>
+    musicGenres: List<Data>
 ) {
     LazyVerticalGrid(
         modifier = modifier.fillMaxSize(),

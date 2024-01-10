@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +47,8 @@ fun ArtistDetailScreen(
 ) {
     val viewModel: ArtistDetailViewModel = hiltViewModel()
 
+    val uiState by viewModel.uiState.collectAsState()
+
     val gradient = Brush.verticalGradient(
         colors = listOf(
             if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.6f)
@@ -58,7 +61,7 @@ fun ArtistDetailScreen(
         modifier = modifier,
         topBar = {
             DeezerTopAppBar(
-                title = viewModel.artistName,
+                title = uiState.artistName,
                 navigationIcon = DeezerIcons.ArrowBack,
                 navigationContentDescription = null,
                 upPress = upPress
@@ -67,9 +70,10 @@ fun ArtistDetailScreen(
     ) { paddingValues ->
         ArtistDetailScreenContent(
             modifier = Modifier.padding(paddingValues),
-            viewModel = viewModel,
             gradient = gradient,
-            onAlbumClicked = onArtistClick
+            onAlbumClicked = onArtistClick,
+            albumsState = uiState.albumsState,
+            detailState = uiState.detailState
         )
     }
 }
@@ -77,9 +81,10 @@ fun ArtistDetailScreen(
 @Composable
 private fun ArtistDetailScreenContent(
     modifier: Modifier,
-    viewModel: ArtistDetailViewModel,
     gradient: Brush,
-    onAlbumClicked: (Long) -> Unit
+    onAlbumClicked: (Long) -> Unit,
+    detailState: DetailState,
+    albumsState: AlbumsState
 ) {
     Column(
         modifier = modifier.fillMaxSize()
@@ -89,13 +94,13 @@ private fun ArtistDetailScreenContent(
                 .weight(2f)
                 .fillMaxSize()
                 .background(gradient),
-            artistDetailState = viewModel.artistDetailState.collectAsState().value
+            detailState = detailState
         )
         AlbumsSection(
             modifier = Modifier
                 .weight(3f)
                 .fillMaxSize(),
-            artistAlbumsState = viewModel.artistAlbumsState.collectAsState().value,
+            albumsState = albumsState,
             onAlbumClicked = onAlbumClicked
         )
     }
@@ -104,25 +109,25 @@ private fun ArtistDetailScreenContent(
 @Composable
 private fun ArtistImageSection(
     modifier: Modifier,
-    artistDetailState: ArtistDetailState
+    detailState: DetailState
 ) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        when (artistDetailState) {
-            is ArtistDetailState.Loading -> {
+        when (detailState) {
+            is DetailState.Loading -> {
                 DeezerCircularProgressIndicator()
             }
 
-            is ArtistDetailState.Success -> {
-                ArtistImage(artistImage = artistDetailState.data.pictureBig)
+            is DetailState.Success -> {
+                ArtistImage(artistImage = detailState.data.pictureBig)
             }
 
-            is ArtistDetailState.Error -> {
+            is DetailState.Error -> {
                 ErrorBox(
                     modifier = modifier,
-                    errorMessage = artistDetailState.message
+                    errorMessage = detailState.message
                 )
             }
         }
@@ -142,27 +147,27 @@ private fun ArtistImage(artistImage: String) {
 @Composable
 private fun AlbumsSection(
     modifier: Modifier,
-    artistAlbumsState: ArtistAlbumsState,
+    albumsState: AlbumsState,
     onAlbumClicked: (Long) -> Unit
 ) {
     Column(modifier = modifier) {
-        when (artistAlbumsState) {
-            is ArtistAlbumsState.Loading -> {
+        when (albumsState) {
+            is AlbumsState.Loading -> {
                 FullScreenProgIndicator()
             }
 
-            is ArtistAlbumsState.Success -> {
+            is AlbumsState.Success -> {
                 AlbumsSectionTitle()
                 AlbumsList(
-                    artistAlbums = artistAlbumsState.data.data,
+                    artistAlbums = albumsState.albumsList.data,
                     onAlbumClicked = onAlbumClicked
                 )
             }
 
-            is ArtistAlbumsState.Error -> {
+            is AlbumsState.Error -> {
                 ErrorBox(
                     modifier = modifier,
-                    errorMessage = artistAlbumsState.message
+                    errorMessage = albumsState.message
                 )
             }
         }

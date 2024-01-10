@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,8 @@ fun ArtistsScreen(
 ) {
     val viewModel: ArtistViewModel = hiltViewModel()
 
+    val uiState by viewModel.uiState.collectAsState()
+
     DeezerScaffold(
         modifier = modifier,
         topBar = {
@@ -43,38 +46,25 @@ fun ArtistsScreen(
             )
         }
     ) { paddingValues ->
-        ArtistsScreenContent(
-            modifier = Modifier.padding(paddingValues),
-            artistState = viewModel.artistState.collectAsState().value,
-            onArtistClicked = onArtistClick
-        )
-    }
-}
+        when (val state = uiState) {
+            is ArtistUiState.Loading -> {
+                FullScreenProgIndicator()
+            }
 
-@Composable
-private fun ArtistsScreenContent(
-    modifier: Modifier,
-    artistState: ArtistState,
-    onArtistClicked: (Long) -> Unit
-) {
-    when (artistState) {
-        is ArtistState.Loading -> {
-            FullScreenProgIndicator()
-        }
+            is ArtistUiState.Success -> {
+                ArtistList(
+                    modifier = modifier.padding(paddingValues),
+                    artists = state.artistList,
+                    onArtistClicked = onArtistClick
+                )
+            }
 
-        is ArtistState.Success -> {
-            ArtistList(
-                modifier = modifier,
-                artists = artistState.data,
-                onArtistClicked = onArtistClicked
-            )
-        }
-
-        is ArtistState.Error -> {
-            ErrorBox(
-                modifier = modifier.fillMaxSize(),
-                errorMessage = artistState.message
-            )
+            is ArtistUiState.Error -> {
+                ErrorBox(
+                    modifier = modifier.fillMaxSize().padding(paddingValues),
+                    errorMessage = state.message
+                )
+            }
         }
     }
 }
@@ -82,7 +72,7 @@ private fun ArtistsScreenContent(
 @Composable
 private fun ArtistList(
     modifier: Modifier,
-    artists: ArrayList<ArtistData>,
+    artists: List<ArtistData>,
     onArtistClicked: (Long) -> Unit
 ) {
     LazyVerticalGrid(

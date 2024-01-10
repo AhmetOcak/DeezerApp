@@ -3,6 +3,7 @@ package com.artists
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.models.ArtistData
 import com.usecases.artists.GetArtistsUseCase
 import com.usecases.common.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,8 +20,8 @@ class ArtistViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _artistState = MutableStateFlow<ArtistState>(ArtistState.Loading)
-    val artistState = _artistState.asStateFlow()
+    private val _uiState = MutableStateFlow<ArtistUiState>(ArtistUiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     init {
         getArtists(genreId = checkNotNull(savedStateHandle.get<Long>("genre_id")))
@@ -33,18 +34,24 @@ class ArtistViewModel @Inject constructor(
                 .collect { response ->
                     when (response) {
                         is Response.Loading -> {
-                            _artistState.value = ArtistState.Loading
+                            _uiState.value = ArtistUiState.Loading
                         }
 
                         is Response.Success -> {
-                            _artistState.value = ArtistState.Success(data = response.data.data)
+                            _uiState.value = ArtistUiState.Success(artistList = response.data.data)
                         }
 
                         is Response.Error -> {
-                            _artistState.value = ArtistState.Error(message = response.errorMessage)
+                            _uiState.value = ArtistUiState.Error(message = response.errorMessage)
                         }
                     }
                 }
         }
     }
+}
+
+sealed interface ArtistUiState {
+    object Loading : ArtistUiState
+    data class Success(val artistList: List<ArtistData>) : ArtistUiState
+    data class Error(val message: String) : ArtistUiState
 }

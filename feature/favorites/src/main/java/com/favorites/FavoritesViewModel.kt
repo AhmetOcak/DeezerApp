@@ -3,18 +3,18 @@ package com.favorites
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.models.FavoriteSongs
+import com.usecases.common.Response
 import com.usecases.favorites.DeleteFavoriteSongUseCase
 import com.usecases.favorites.GetAllFavoriteSongsUseCase
-import com.usecases.common.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -25,17 +25,10 @@ class FavoritesViewModel @Inject constructor(
     private val deleteFavoriteSongUseCase: DeleteFavoriteSongUseCase
 ) : ViewModel() {
 
-    private val _favoritesState = MutableStateFlow<FavoritesState>(FavoritesState.Nothing)
-    val favoritesState = _favoritesState.asStateFlow()
+    private val _uiState = MutableStateFlow(FavoritesUiState())
+    val uiState: StateFlow<FavoritesUiState> = _uiState.asStateFlow()
 
-    private val _deleteState = MutableStateFlow<DeleteState>(DeleteState.Nothing)
-    val deleteState = _deleteState.asStateFlow()
-
-    var mediaPlayer: MediaPlayer = MediaPlayer()
-        private set
-
-    var isAudioPlaying by mutableStateOf(false)
-        private set
+    private var mediaPlayer: MediaPlayer = MediaPlayer()
 
     init {
         getAllFavoriteSongs()
@@ -51,16 +44,18 @@ class FavoritesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             getAllFavoriteSongsUseCase().collect { response ->
                 when (response) {
-                    is Response.Loading -> {
-                        _favoritesState.value = FavoritesState.Loading
-                    }
+                    is Response.Loading -> {}
 
                     is Response.Success -> {
-                        _favoritesState.value = FavoritesState.Success(data = response.data)
+                        _uiState.update {
+                            it.copy(favoriteSongsList = response.data)
+                        }
                     }
 
                     is Response.Error -> {
-                        _favoritesState.value = FavoritesState.Error(message = response.errorMessage)
+                        _uiState.update {
+                            it.copy(userMessages = listOf(response.errorMessage))
+                        }
                     }
                 }
             }
@@ -70,13 +65,18 @@ class FavoritesViewModel @Inject constructor(
     fun removeFavoriteSong(songId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             deleteFavoriteSongUseCase(songId).collect { response ->
-                when(response) {
+                when (response) {
                     is Response.Loading -> {}
                     is Response.Success -> {
-                        _deleteState.value = DeleteState.Success("The song has been successfully removed from favorites.")
+                        _uiState.update {
+                            it.copy(userMessages = listOf("The song has been successfully removed from favorites."))
+                        }
                     }
+
                     is Response.Error -> {
-                        _deleteState.value = DeleteState.Error(response.errorMessage)
+                        _uiState.update {
+                            it.copy(userMessages = listOf(response.errorMessage))
+                        }
                     }
                 }
             }
@@ -86,7 +86,7 @@ class FavoritesViewModel @Inject constructor(
     fun playAudio(audioUrl: String) {
         try {
             if (mediaPlayer.isPlaying) {
-                isAudioPlaying = true
+                setAudioPlaying()
 
                 mediaPlayer.stop()
                 mediaPlayer.reset()
@@ -94,7 +94,7 @@ class FavoritesViewModel @Inject constructor(
                 mediaPlayer.prepare()
                 mediaPlayer.start()
             } else {
-                isAudioPlaying = true
+                setAudioPlaying()
 
                 mediaPlayer.reset()
                 mediaPlayer.setDataSource(audioUrl)
@@ -108,23 +108,39 @@ class FavoritesViewModel @Inject constructor(
 
     fun pauseAudio() {
         if (mediaPlayer.isPlaying) {
-            isAudioPlaying = false
+            setAudioNotPlaying()
             mediaPlayer.pause()
         } else {
-            isAudioPlaying = true
+            setAudioPlaying()
             mediaPlayer.start()
         }
     }
 
     fun closeMediaPlayer() {
-        isAudioPlaying = false
+        setAudioNotPlaying()
         if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
             mediaPlayer.reset()
         }
     }
 
-    fun resetDeleteState() { _deleteState.value = DeleteState.Nothing }
+    fun consumedUserMessages() {
+        _uiState.update {
+            it.copy(userMessages = listOf())
+        }
+    }
+
+    private fun setAudioPlaying() {
+        _uiState.update {
+            it.copy(isAudioPlaying = true)
+        }
+    }
+
+    private fun setAudioNotPlaying() {
+        _uiState.update {
+            it.copy(isAudioPlaying = false)
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -132,3 +148,9 @@ class FavoritesViewModel @Inject constructor(
         mediaPlayer.release()
     }
 }
+
+data class FavoritesUiState(
+    val isAudioPlaying: Boolean = false,
+    val userMessages: List<String> = listOf(),
+    val favoriteSongsList: List<FavoriteSongs> = listOf()
+)

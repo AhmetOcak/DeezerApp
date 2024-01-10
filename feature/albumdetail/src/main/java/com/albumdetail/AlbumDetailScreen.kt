@@ -50,79 +50,68 @@ fun AlbumDetailScreen(
 ) {
     val viewModel: AlbumDetailViewModel = hiltViewModel()
 
-    val albumDetailsState by viewModel.albumDetailsState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-    if (!viewModel.databaseStatus) {
+    if (!uiState.isDatabaseAvailable) {
         showMessage(
             context = LocalContext.current,
             message = "Favorite songs could not be found. Please try again later."
         )
     }
 
+    if (uiState.errorMessages.isNotEmpty()) {
+        showMessage(
+            context = LocalContext.current,
+            message = uiState.errorMessages.first()
+        )
+        viewModel.consumedErrorMessages()
+    }
+
+    if (uiState.userMessages.isNotEmpty()) {
+        showMessage(
+            context = LocalContext.current,
+            message = uiState.userMessages.first()
+        )
+        viewModel.consumedUserMessages()
+    }
+
     DeezerScaffold(
         modifier = modifier,
         topBar = {
             DeezerTopAppBar(
-                title = viewModel.albumName,
+                title = uiState.albumName,
                 navigationIcon = DeezerIcons.ArrowBack,
                 navigationContentDescription = null,
                 upPress = upPress
             )
         }
     ) { paddingValues ->
-        AlbumDetailScreenContent(
-            modifier = Modifier.padding(paddingValues),
-            albumDetailsState = albumDetailsState,
-            viewModel = viewModel,
-            isSongAvailableInFavorites = remember(viewModel) { viewModel::isSongAvailableInFavorites },
-            resetDatabaseState = remember(viewModel)  { viewModel::resetDatabaseState },
-            addFavoriteSong = remember(viewModel)  { viewModel::addFavoriteSong },
-            removeFavoriteSong = remember(viewModel)  { viewModel::removeFavoriteSong },
-            onPlayAudio = remember(viewModel)  { viewModel::playAudio },
-            onPauseAudio = remember(viewModel)  { viewModel::pauseAudio },
-            onDestroyAudio = remember(viewModel)  { viewModel::closeMediaPlayer }
-        )
-    }
-}
+        when (val state = uiState.detailState) {
+            is DetailsState.Loading -> {
+                FullScreenProgIndicator()
+            }
 
-@Composable
-private fun AlbumDetailScreenContent(
-    modifier: Modifier,
-    albumDetailsState: AlbumDetailsState,
-    isSongAvailableInFavorites: (Long) -> Boolean,
-    resetDatabaseState: () -> Unit,
-    viewModel: AlbumDetailViewModel,
-    addFavoriteSong: (FavoriteSongs) -> Unit,
-    removeFavoriteSong: (Long) -> Unit,
-    onPlayAudio: (String) -> Unit,
-    onPauseAudio: () -> Unit,
-    onDestroyAudio: () -> Unit
-) {
-    when (albumDetailsState) {
-        is AlbumDetailsState.Loading -> {
-            FullScreenProgIndicator()
-        }
+            is DetailsState.Success -> {
+                SuccessContent(
+                    modifier = Modifier.padding(paddingValues),
+                    isSongAvailableInFavorites = remember(viewModel) { viewModel::isSongAvailableInFavorites },
+                    addFavoriteSong = remember(viewModel) { viewModel::addFavoriteSong },
+                    removeFavoriteSong = remember(viewModel) { viewModel::removeFavoriteSong },
+                    onPlayAudio = remember(viewModel) { viewModel::playAudio },
+                    onPauseAudio = remember(viewModel) { viewModel::pauseAudio },
+                    onDestroyAudio = remember(viewModel) { viewModel::closeMediaPlayer },
+                    isAudioPlaying = uiState.isAudioPlaying,
+                    albumImgUrl = state.data.coverBig,
+                    tracks = state.data.tracks.data
+                )
+            }
 
-        is AlbumDetailsState.Success -> {
-            SuccessContent(
-                modifier = modifier,
-                albumDetailsState = albumDetailsState,
-                viewModel = viewModel,
-                isSongAvailableInFavorites = isSongAvailableInFavorites,
-                resetDatabaseState = resetDatabaseState,
-                addFavoriteSong = addFavoriteSong,
-                removeFavoriteSong = removeFavoriteSong,
-                onPlayAudio = onPlayAudio,
-                onPauseAudio = onPauseAudio,
-                onDestroyAudio = onDestroyAudio
-            )
-        }
-
-        is AlbumDetailsState.Error -> {
-            ErrorBox(
-                modifier = modifier,
-                errorMessage = albumDetailsState.message
-            )
+            is DetailsState.Error -> {
+                ErrorBox(
+                    modifier = modifier,
+                    errorMessage = state.message
+                )
+            }
         }
     }
 }
@@ -130,15 +119,15 @@ private fun AlbumDetailScreenContent(
 @Composable
 private fun SuccessContent(
     modifier: Modifier,
-    albumDetailsState: AlbumDetailsState.Success,
-    viewModel: AlbumDetailViewModel,
     isSongAvailableInFavorites: (Long) -> Boolean,
-    resetDatabaseState: () -> Unit,
     addFavoriteSong: (FavoriteSongs) -> Unit,
     removeFavoriteSong: (Long) -> Unit,
     onPlayAudio: (String) -> Unit,
     onPauseAudio: () -> Unit,
-    onDestroyAudio: () -> Unit
+    onDestroyAudio: () -> Unit,
+    isAudioPlaying: Boolean,
+    albumImgUrl: String,
+    tracks: List<AlbumSong>
 ) {
     var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
 
@@ -150,10 +139,10 @@ private fun SuccessContent(
             modifier = Modifier
                 .weight(2f)
                 .fillMaxSize(),
-            albumImageUrl = albumDetailsState.data.coverBig
+            albumImageUrl = albumImgUrl
         )
         DeezerSubTitle(
-            isAudioPlaying = viewModel.isAudioPlaying,
+            isAudioPlaying = isAudioPlaying,
             title = "Songs"
         )
         SongList(
@@ -161,7 +150,7 @@ private fun SuccessContent(
                 .weight(3f)
                 .fillMaxSize()
                 .padding(bottom = if (showMusicPlayer) PlayerHeight else 0.dp),
-            songs = albumDetailsState.data.tracks.data,
+            songs = tracks,
             onSongClicked = remember {
                 { musicUrl, songName, songArtist ->
                     onPlayAudio(musicUrl)
@@ -174,9 +163,7 @@ private fun SuccessContent(
                     }
                 }
             },
-            databaseState = viewModel.databaseState.collectAsState().value,
             isSongAvailableInFavorites = isSongAvailableInFavorites,
-            resetDatabaseState = resetDatabaseState,
             addFavoriteSong = addFavoriteSong,
             removeFavoriteSong = removeFavoriteSong
         )
@@ -192,7 +179,7 @@ private fun SuccessContent(
                 }
             },
             onPlayButtonClicked = { onPauseAudio() },
-            isAudioPlaying = viewModel.isAudioPlaying
+            isAudioPlaying = isAudioPlaying
         )
     }
 }
@@ -212,11 +199,9 @@ private fun AlbumImage(modifier: Modifier, albumImageUrl: String) {
 @Composable
 private fun SongList(
     modifier: Modifier,
-    songs: ArrayList<AlbumSong>,
+    songs: List<AlbumSong>,
     onSongClicked: (String, String, String) -> Unit,
-    databaseState: DatabaseState,
     isSongAvailableInFavorites: (Long) -> Boolean,
-    resetDatabaseState: () -> Unit,
     addFavoriteSong: (FavoriteSongs) -> Unit,
     removeFavoriteSong: (Long) -> Unit
 ) {
@@ -253,19 +238,6 @@ private fun SongList(
                 },
                 favoriteIconInitVal = isSongAvailableInFavorites(it.id)
             )
-        }
-    }
-    when (databaseState) {
-        is DatabaseState.Nothing -> {}
-        is DatabaseState.Loading -> {}
-        is DatabaseState.Success -> {
-            showMessage(context = LocalContext.current, message = databaseState.message)
-            resetDatabaseState()
-        }
-
-        is DatabaseState.Error -> {
-            showMessage(context = LocalContext.current, message = databaseState.message)
-            resetDatabaseState()
         }
     }
 }

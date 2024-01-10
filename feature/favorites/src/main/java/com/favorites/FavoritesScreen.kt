@@ -28,10 +28,9 @@ import com.designsystem.components.DeezerScaffold
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
+import com.models.FavoriteSongs
 import com.ui.DeezerSubTitle
 import com.ui.EmptyListBox
-import com.ui.ErrorBox
-import com.ui.FullScreenProgIndicator
 import com.ui.MusicPlayer
 import com.ui.PlayerHeight
 import com.ui.SongCard
@@ -45,9 +44,16 @@ fun FavoritesScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
 
     val viewModel: FavoritesViewModel = hiltViewModel()
 
-    val deleteState by viewModel.deleteState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-    ShowDeleteMessage(deleteState, viewModel)
+    if (uiState.userMessages.isNotEmpty()) {
+        Toast.makeText(
+            LocalContext.current,
+            uiState.userMessages.first(),
+            Toast.LENGTH_SHORT
+        ).show()
+        viewModel.consumedUserMessages()
+    }
 
     DeezerScaffold(
         modifier = modifier,
@@ -62,12 +68,13 @@ fun FavoritesScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
     ) { paddingValues ->
         FavoritesScreenContent(
             modifier = Modifier.padding(paddingValues),
-            viewModel = viewModel,
             onFavouriteBtnClicked = remember(viewModel) { viewModel::removeFavoriteSong },
             getAllFavoriteSongs = remember(viewModel) { viewModel::getAllFavoriteSongs },
             onPlayAudio = remember(viewModel) { viewModel::playAudio },
             onPauseAudio = remember(viewModel) { viewModel::pauseAudio },
-            onDestroyAudio = remember(viewModel) { viewModel::closeMediaPlayer }
+            onDestroyAudio = remember(viewModel) { viewModel::closeMediaPlayer },
+            isAudioPlaying = uiState.isAudioPlaying,
+            favoriteSongsList = uiState.favoriteSongsList
         )
     }
 }
@@ -76,12 +83,13 @@ fun FavoritesScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
 @Composable
 private fun FavoritesScreenContent(
     modifier: Modifier,
-    viewModel: FavoritesViewModel,
     onFavouriteBtnClicked: (Long) -> Unit,
     getAllFavoriteSongs: () -> Unit,
     onPlayAudio: (String) -> Unit,
     onPauseAudio: () -> Unit,
-    onDestroyAudio: () -> Unit
+    onDestroyAudio: () -> Unit,
+    isAudioPlaying: Boolean,
+    favoriteSongsList: List<FavoriteSongs>
 ) {
     var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
 
@@ -97,7 +105,7 @@ private fun FavoritesScreenContent(
                 .fillMaxSize()
         )
         DeezerSubTitle(
-            isAudioPlaying = viewModel.isAudioPlaying,
+            isAudioPlaying = isAudioPlaying,
             title = "My Favorite Songs"
         )
         FavoriteSongsList(
@@ -115,7 +123,7 @@ private fun FavoritesScreenContent(
                     showMusicPlayer = true
                 }
             },
-            favoritesState = viewModel.favoritesState.collectAsState().value,
+            favoriteSongsList = favoriteSongsList,
             onFavouriteBtnClicked = onFavouriteBtnClicked,
             getAllFavoriteSongs = getAllFavoriteSongs
         )
@@ -129,7 +137,7 @@ private fun FavoritesScreenContent(
                     showMusicPlayer = false
                 } },
             onPlayButtonClicked = remember { { onPauseAudio() } },
-            isAudioPlaying = viewModel.isAudioPlaying
+            isAudioPlaying = isAudioPlaying
         )
     }
 }
@@ -153,81 +161,38 @@ private fun LikesBoard(modifier: Modifier) {
 private fun FavoriteSongsList(
     modifier: Modifier,
     onSongClicked: (String, String, String) -> Unit,
-    favoritesState: FavoritesState,
+    favoriteSongsList: List<FavoriteSongs>,
     onFavouriteBtnClicked: (Long) -> Unit,
-    getAllFavoriteSongs: () -> Unit
+    getAllFavoriteSongs: () -> Unit,
 ) {
-    when (favoritesState) {
-        is FavoritesState.Nothing -> {}
-        is FavoritesState.Loading -> {
-            FullScreenProgIndicator()
-        }
-
-        is FavoritesState.Success -> {
-            if (favoritesState.data.isNotEmpty()) {
-                LazyColumn(
-                    modifier = modifier,
-                    contentPadding = PaddingValues(vertical = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(favoritesState.data, key = { it.id }) {
-                        SongCard(
-                            modifier = Modifier,
-                            songImageUrl = it.songImgUrl,
-                            songName = it.songName,
-                            duration = "${it.duration.toDouble().seconds}",
-                            favoriteIconInitVal = true,
-                            onSongClicked = {
-                                onSongClicked(it.audioUrl, it.artistName, it.songName)
-                            },
-                            onFavouriteBtnClicked = { onFavouriteBtnClicked(it.id) },
-                            showAlbum = true,
-                            albumName = it.albumName,
-                            deleteAnimation = true,
-                            sourceOfData = getAllFavoriteSongs
-                        )
-                    }
-                }
-            } else {
-                EmptyListBox(
-                    modifier = modifier.fillMaxSize(),
-                    message = "You don't have any favorite song."
+    if (favoriteSongsList.isNotEmpty()) {
+        LazyColumn(
+            modifier = modifier,
+            contentPadding = PaddingValues(vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(favoriteSongsList, key = { it.id }) {
+                SongCard(
+                    modifier = Modifier,
+                    songImageUrl = it.songImgUrl,
+                    songName = it.songName,
+                    duration = "${it.duration.toDouble().seconds}",
+                    favoriteIconInitVal = true,
+                    onSongClicked = {
+                        onSongClicked(it.audioUrl, it.artistName, it.songName)
+                    },
+                    onFavouriteBtnClicked = { onFavouriteBtnClicked(it.id) },
+                    showAlbum = true,
+                    albumName = it.albumName,
+                    deleteAnimation = true,
+                    sourceOfData = getAllFavoriteSongs
                 )
             }
         }
-
-        is FavoritesState.Error -> {
-            ErrorBox(
-                modifier = modifier,
-                errorMessage = favoritesState.message
-            )
-        }
-    }
-}
-
-@Composable
-private fun ShowDeleteMessage(
-    deleteState: DeleteState,
-    viewModel: FavoritesViewModel
-) {
-    when (deleteState) {
-        is DeleteState.Nothing -> {}
-        is DeleteState.Success -> {
-            Toast.makeText(
-                LocalContext.current,
-                deleteState.message,
-                Toast.LENGTH_SHORT
-            ).show()
-            viewModel.resetDeleteState()
-        }
-
-        is DeleteState.Error -> {
-            Toast.makeText(
-                LocalContext.current,
-                deleteState.error,
-                Toast.LENGTH_SHORT
-            ).show()
-            viewModel.resetDeleteState()
-        }
+    } else {
+        EmptyListBox(
+            modifier = modifier.fillMaxSize(),
+            message = "You don't have any favorite song."
+        )
     }
 }

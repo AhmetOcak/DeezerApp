@@ -3,19 +3,22 @@ package com.albumdetail
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.models.FavoriteSongs
-import com.usecases.albumdetail.*
+import com.models.albumdetail.AlbumDetails
+import com.usecases.albumdetail.AddFavoriteSongUseCase
+import com.usecases.albumdetail.DeleteFavoriteSongUseCase
+import com.usecases.albumdetail.GetAlbumDetailsUseCase
+import com.usecases.albumdetail.GetAllFavoriteSongsUseCase
 import com.usecases.common.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -29,25 +32,10 @@ class AlbumDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _albumDetailsState = MutableStateFlow<AlbumDetailsState>(AlbumDetailsState.Loading)
-    val albumDetailsState = _albumDetailsState.asStateFlow()
+    private var mediaPlayer: MediaPlayer = MediaPlayer()
 
-    private val _databaseState = MutableStateFlow<DatabaseState>(DatabaseState.Nothing)
-    val databaseState = _databaseState.asStateFlow()
-
-    private var favoriteSongs: List<FavoriteSongs> = mutableListOf()
-
-    var mediaPlayer: MediaPlayer = MediaPlayer()
-        private set
-
-    var isAudioPlaying by mutableStateOf(false)
-        private set
-
-    var databaseStatus by mutableStateOf(true)
-        private set
-
-    var albumName: String = ""
-        private set
+    private val _uiState = MutableStateFlow(AlbumDetailsUiState())
+    val uiState: StateFlow<AlbumDetailsUiState> = _uiState.asStateFlow()
 
     init {
         getAllFavoriteSongs()
@@ -63,16 +51,26 @@ class AlbumDetailViewModel @Inject constructor(
     private fun getAlbumDetails(albumId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             getAlbumDetailsUseCase(albumId).collect { response ->
-                when(response) {
+                when (response) {
                     is Response.Loading -> {
-                        _albumDetailsState.value = AlbumDetailsState.Loading
+                        _uiState.update {
+                            it.copy(detailState = DetailsState.Loading)
+                        }
                     }
+
                     is Response.Success -> {
-                        albumName = response.data.title
-                        _albumDetailsState.value = AlbumDetailsState.Success(data = response.data)
+                        _uiState.update {
+                            it.copy(
+                                albumName = response.data.title,
+                                detailState = DetailsState.Success(response.data)
+                            )
+                        }
                     }
-                    is Response.Error ->  {
-                        _albumDetailsState.value = AlbumDetailsState.Error(message = response.errorMessage)
+
+                    is Response.Error -> {
+                        _uiState.update {
+                            it.copy(detailState = DetailsState.Error(message = response.errorMessage))
+                        }
                     }
                 }
             }
@@ -82,13 +80,18 @@ class AlbumDetailViewModel @Inject constructor(
     private fun getAllFavoriteSongs() {
         viewModelScope.launch(Dispatchers.IO) {
             getAllFavoriteSongsUseCase().collect { response ->
-                when(response) {
+                when (response) {
                     is Response.Loading -> {}
                     is Response.Success -> {
-                        favoriteSongs = response.data
+                        _uiState.update {
+                            it.copy(favoriteSongs = response.data)
+                        }
                     }
+
                     is Response.Error -> {
-                        databaseStatus = false
+                        _uiState.update {
+                            it.copy(isDatabaseAvailable = false)
+                        }
                     }
                 }
             }
@@ -98,15 +101,19 @@ class AlbumDetailViewModel @Inject constructor(
     fun addFavoriteSong(favoriteSongs: FavoriteSongs) {
         viewModelScope.launch(Dispatchers.IO) {
             addFavoriteSongUseCase(favoriteSongs).collect { response ->
-                when(response) {
-                    is Response.Loading -> {
-                        _databaseState.value = DatabaseState.Loading
-                    }
+                when (response) {
+                    is Response.Loading -> {}
+
                     is Response.Success -> {
-                        _databaseState.value = DatabaseState.Success("The song has been successfully added to favorites.")
+                        _uiState.update {
+                            it.copy(userMessages = listOf("The song has been successfully added to favorites."))
+                        }
                     }
+
                     is Response.Error -> {
-                        _databaseState.value = DatabaseState.Error(response.errorMessage)
+                        _uiState.update {
+                            it.copy(errorMessages = listOf(response.errorMessage))
+                        }
                     }
                 }
             }
@@ -115,16 +122,20 @@ class AlbumDetailViewModel @Inject constructor(
 
     fun removeFavoriteSong(songId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            deleteFavoriteSongUseCase(songId).collect() { response ->
-                when(response) {
-                    is Response.Loading -> {
-                        _databaseState.value = DatabaseState.Loading
-                    }
+            deleteFavoriteSongUseCase(songId).collect { response ->
+                when (response) {
+                    is Response.Loading -> {}
+
                     is Response.Success -> {
-                        _databaseState.value = DatabaseState.Success("The song has been successfully removed from favorites.")
+                        _uiState.update {
+                            it.copy(userMessages = listOf("The song has been successfully removed from favorites."))
+                        }
                     }
+
                     is Response.Error -> {
-                        _databaseState.value = DatabaseState.Error(response.errorMessage)
+                        _uiState.update {
+                            it.copy(errorMessages = listOf(response.errorMessage))
+                        }
                     }
                 }
             }
@@ -132,8 +143,8 @@ class AlbumDetailViewModel @Inject constructor(
     }
 
     fun isSongAvailableInFavorites(songId: Long): Boolean {
-        return if (databaseStatus) {
-            favoriteSongs.any { it.id == songId }
+        return if (_uiState.value.isDatabaseAvailable) {
+            _uiState.value.favoriteSongs.any { it.id == songId }
         } else {
             false
         }
@@ -142,7 +153,7 @@ class AlbumDetailViewModel @Inject constructor(
     fun playAudio(audioUrl: String) {
         try {
             if (mediaPlayer.isPlaying) {
-                isAudioPlaying = true
+                setAudioPlaying()
 
                 mediaPlayer.stop()
                 mediaPlayer.reset()
@@ -150,7 +161,7 @@ class AlbumDetailViewModel @Inject constructor(
                 mediaPlayer.prepare()
                 mediaPlayer.start()
             } else {
-                isAudioPlaying = true
+                setAudioPlaying()
 
                 mediaPlayer.reset()
                 mediaPlayer.setDataSource(audioUrl)
@@ -159,28 +170,53 @@ class AlbumDetailViewModel @Inject constructor(
             }
         } catch (e: IOException) {
             Log.e("MEDIA PLAYER", e.stackTraceToString())
+            _uiState.update {
+                it.copy(errorMessages = listOf(e.message ?: "Something went wrong"))
+            }
         }
     }
 
     fun pauseAudio() {
         if (mediaPlayer.isPlaying) {
-            isAudioPlaying = false
+            setAudioNotPlaying()
             mediaPlayer.pause()
         } else {
-            isAudioPlaying = true
+            setAudioPlaying()
             mediaPlayer.start()
         }
     }
 
     fun closeMediaPlayer() {
-        isAudioPlaying = false
+        setAudioNotPlaying()
         if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
             mediaPlayer.reset()
         }
     }
 
-    fun resetDatabaseState() { _databaseState.value = DatabaseState.Nothing }
+    private fun setAudioPlaying() {
+        _uiState.update {
+            it.copy(isAudioPlaying = true)
+        }
+    }
+
+    private fun setAudioNotPlaying() {
+        _uiState.update {
+            it.copy(isAudioPlaying = false)
+        }
+    }
+
+    fun consumedErrorMessages() {
+        _uiState.update {
+            it.copy(errorMessages = listOf())
+        }
+    }
+
+    fun consumedUserMessages() {
+        _uiState.update {
+            it.copy(userMessages = listOf())
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -188,4 +224,20 @@ class AlbumDetailViewModel @Inject constructor(
         mediaPlayer.release()
     }
 
+}
+
+data class AlbumDetailsUiState(
+    val isAudioPlaying: Boolean = false,
+    val errorMessages: List<String> = listOf(),
+    val userMessages: List<String> = listOf(),
+    val favoriteSongs: List<FavoriteSongs> = listOf(),
+    val albumName: String = "",
+    val isDatabaseAvailable: Boolean = true,
+    val detailState: DetailsState = DetailsState.Loading
+)
+
+sealed interface DetailsState {
+    object Loading : DetailsState
+    data class Success(val data: AlbumDetails) : DetailsState
+    data class Error(val message: String) : DetailsState
 }
