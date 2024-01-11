@@ -3,7 +3,7 @@ package com.artists
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.designsystem.UiText
+import com.designsystem.utils.UiText
 import com.models.ArtistData
 import com.usecases.artists.GetArtistsUseCase
 import com.usecases.utils.Response

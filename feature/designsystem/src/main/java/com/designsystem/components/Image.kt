@@ -1,5 +1,6 @@
 package com.designsystem.components
 
+import android.graphics.drawable.Drawable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -35,23 +36,26 @@ import com.designsystem.theme.DeepOrange
 fun AnimatedImage(
     modifier: Modifier = Modifier,
     imageUrl: String,
-    contentScale: ContentScale = ContentScale.Crop
+    contentScale: ContentScale = ContentScale.Crop,
+    onPainterStateSuccess: (Drawable) -> Unit = {}
 ) {
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(imageUrl)
             .size(Size.ORIGINAL)
+            .allowHardware(false)
             .build()
     )
 
     val transition by animateFloatAsState(
-        targetValue = if (painter.state is AsyncImagePainter.State.Success) 1f else 0f
+        targetValue = if (painter.state is AsyncImagePainter.State.Success) 1f else 0f,
+        label = "image transition animation"
     )
 
     val matrix = ColorMatrix()
     matrix.setToSaturation(transition)
 
-    when (painter.state) {
+    when (val image = painter.state) {
         is AsyncImagePainter.State.Loading -> {
             Box(modifier = modifier, contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(color = DeepOrange)
@@ -66,36 +70,20 @@ fun AnimatedImage(
             EmptyImage(modifier)
         }
 
-        else -> {
+        is AsyncImagePainter.State.Success -> {
+            onPainterStateSuccess(image.result.drawable)
             Image(
-                modifier,
-                transition,
-                painter,
-                matrix,
-                contentScale
+                modifier = modifier
+                    .scale(.8f + (.2f * transition))
+                    .graphicsLayer { rotationX = (1f - transition) * 5f }
+                    .alpha(1f.coerceAtMost(transition / .2f)),
+                painter = painter,
+                contentDescription = "Artist image",
+                contentScale = contentScale,
+                colorFilter = ColorFilter.colorMatrix(colorMatrix = matrix)
             )
         }
     }
-}
-
-@Composable
-private fun Image(
-    modifier: Modifier,
-    transition: Float,
-    painter: AsyncImagePainter,
-    matrix: ColorMatrix,
-    contentScale: ContentScale
-) {
-    Image(
-        modifier = modifier
-            .scale(.8f + (.2f * transition))
-            .graphicsLayer { rotationX = (1f - transition) * 5f }
-            .alpha(1f.coerceAtMost(transition / .2f)),
-        painter = painter,
-        contentDescription = "Artist image",
-        contentScale = contentScale,
-        colorFilter = ColorFilter.colorMatrix(colorMatrix = matrix)
-    )
 }
 
 @Composable

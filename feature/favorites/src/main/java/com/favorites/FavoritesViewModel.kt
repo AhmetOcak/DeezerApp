@@ -5,7 +5,7 @@ import android.media.MediaPlayer
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.designsystem.UiText
+import com.designsystem.utils.UiText
 import com.models.FavoriteSongs
 import com.usecases.utils.Response
 import com.usecases.favorites.DeleteFavoriteSongUseCase

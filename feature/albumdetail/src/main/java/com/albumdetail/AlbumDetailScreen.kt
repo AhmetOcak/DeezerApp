@@ -1,18 +1,23 @@
 package com.albumdetail
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,9 +28,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerScaffold
@@ -33,7 +40,6 @@ import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.models.FavoriteSongs
 import com.models.albumdetail.AlbumSong
-import com.ui.DeezerSubTitle
 import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator
 import com.ui.MusicPlayer
@@ -55,7 +61,7 @@ fun AlbumDetailScreen(
     if (!uiState.isDatabaseAvailable) {
         showMessage(
             context = LocalContext.current,
-            message = stringResource(id = R.string.db_error_message)
+            message = "Favorite songs could not be found. Please try again later."
         )
     }
 
@@ -92,7 +98,7 @@ fun AlbumDetailScreen(
             }
 
             is DetailsState.Success -> {
-                SuccessContent(
+                AlbumDetailScreenContent(
                     modifier = Modifier.padding(paddingValues),
                     isSongAvailableInFavorites = remember(viewModel) { viewModel::isSongAvailableInFavorites },
                     addFavoriteSong = remember(viewModel) { viewModel::addFavoriteSong },
@@ -102,7 +108,11 @@ fun AlbumDetailScreen(
                     onDestroyAudio = remember(viewModel) { viewModel::closeMediaPlayer },
                     isAudioPlaying = uiState.isAudioPlaying,
                     albumImgUrl = state.data.coverBig,
-                    tracks = state.data.tracks.data
+                    tracks = state.data.tracks.data,
+                    gradientColorList = uiState.imageColor,
+                    onPainterStateSuccess = remember(viewModel) {
+                        { viewModel.createPalette(it.toBitmap()) }
+                    }
                 )
             }
 
@@ -117,7 +127,7 @@ fun AlbumDetailScreen(
 }
 
 @Composable
-private fun SuccessContent(
+private fun AlbumDetailScreenContent(
     modifier: Modifier,
     isSongAvailableInFavorites: (Long) -> Boolean,
     addFavoriteSong: (FavoriteSongs) -> Unit,
@@ -127,7 +137,9 @@ private fun SuccessContent(
     onDestroyAudio: () -> Unit,
     isAudioPlaying: Boolean,
     albumImgUrl: String,
-    tracks: List<AlbumSong>
+    tracks: List<AlbumSong>,
+    gradientColorList: List<Color>,
+    onPainterStateSuccess: (Drawable) -> Unit
 ) {
     var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
 
@@ -135,15 +147,28 @@ private fun SuccessContent(
     var playingSongArtist by remember { mutableStateOf("") }
 
     Column(modifier = modifier.fillMaxSize()) {
-        AlbumImage(
+        Box(
             modifier = Modifier
                 .weight(2f)
-                .fillMaxSize(),
-            albumImageUrl = albumImgUrl
-        )
-        DeezerSubTitle(
-            isAudioPlaying = isAudioPlaying,
-            title = "Songs"
+                .fillMaxSize()
+                .background(Brush.linearGradient(gradientColorList)),
+            contentAlignment = Alignment.Center
+        ) {
+            AnimatedImage(
+                modifier = Modifier
+                    .size(ALBUM_IMG_SIZE)
+                    .clip(RoundedCornerShape(20)),
+                imageUrl = albumImgUrl,
+                onPainterStateSuccess = onPainterStateSuccess
+            )
+        }
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+                .padding(vertical = 16.dp),
+            text = "Songs",
+            style = MaterialTheme.typography.titleLarge
         )
         SongList(
             modifier = Modifier
@@ -180,18 +205,6 @@ private fun SuccessContent(
             },
             onPlayButtonClicked = { onPauseAudio() },
             isAudioPlaying = isAudioPlaying
-        )
-    }
-}
-
-@Composable
-private fun AlbumImage(modifier: Modifier, albumImageUrl: String) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        AnimatedImage(
-            modifier = Modifier
-                .size(ALBUM_IMG_SIZE)
-                .clip(RoundedCornerShape(20)),
-            imageUrl = albumImageUrl
         )
     }
 }

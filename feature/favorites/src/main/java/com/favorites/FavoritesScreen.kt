@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,7 +32,6 @@ import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
 import com.models.FavoriteSongs
-import com.ui.DeezerSubTitle
 import com.ui.EmptyListBox
 import com.ui.MusicPlayer
 import com.ui.PlayerHeight
@@ -105,9 +107,13 @@ private fun FavoritesScreenContent(
                 .weight(2f)
                 .fillMaxSize()
         )
-        DeezerSubTitle(
-            isAudioPlaying = isAudioPlaying,
-            title = "My Favorite Songs"
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp),
+            text = "My Favorite Songs",
+            style = MaterialTheme.typography.titleLarge
         )
         FavoriteSongsList(
             modifier = Modifier

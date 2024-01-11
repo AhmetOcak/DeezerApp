@@ -1,7 +1,7 @@
 package com.artistdetail
 
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,18 +19,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.designsystem.UiText
+import com.designsystem.utils.UiText
 import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerCircularProgressIndicator
 import com.designsystem.components.DeezerScaffold
@@ -53,14 +55,6 @@ fun ArtistDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    val gradient = Brush.verticalGradient(
-        colors = listOf(
-            if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.6f)
-            else Color.Black.copy(alpha = 0.6f),
-            MaterialTheme.colorScheme.background
-        )
-    )
-
     DeezerScaffold(
         modifier = modifier,
         topBar = {
@@ -74,10 +68,13 @@ fun ArtistDetailScreen(
     ) { paddingValues ->
         ArtistDetailScreenContent(
             modifier = Modifier.padding(paddingValues),
-            gradient = gradient,
             onAlbumClicked = onArtistClick,
             detailState = uiState.detailState,
-            albums = uiState.albumsList?.collectAsLazyPagingItems()
+            albums = uiState.albumsList?.collectAsLazyPagingItems(),
+            onPainterStateSuccess = remember(viewModel) {
+                { viewModel.createPalette(it.toBitmap()) }
+            },
+            gradientColorList = uiState.imageColors
         )
     }
 }
@@ -85,10 +82,11 @@ fun ArtistDetailScreen(
 @Composable
 private fun ArtistDetailScreenContent(
     modifier: Modifier,
-    gradient: Brush,
+    gradientColorList: List<Color>,
     onAlbumClicked: (Long) -> Unit,
     detailState: DetailState,
-    albums: LazyPagingItems<ArtistAlbums>?
+    albums: LazyPagingItems<ArtistAlbums>?,
+    onPainterStateSuccess: (Drawable) -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxSize()
@@ -97,8 +95,9 @@ private fun ArtistDetailScreenContent(
             modifier = Modifier
                 .weight(2f)
                 .fillMaxSize()
-                .background(gradient),
-            detailState = detailState
+                .background(Brush.linearGradient(gradientColorList)),
+            detailState = detailState,
+            onPainterStateSuccess = onPainterStateSuccess
         )
         AlbumsSection(
             modifier = Modifier
@@ -113,7 +112,8 @@ private fun ArtistDetailScreenContent(
 @Composable
 private fun ArtistImageSection(
     modifier: Modifier,
-    detailState: DetailState
+    detailState: DetailState,
+    onPainterStateSuccess: (Drawable) -> Unit
 ) {
     Box(
         modifier = modifier,
@@ -125,7 +125,13 @@ private fun ArtistImageSection(
             }
 
             is DetailState.Success -> {
-                ArtistImage(artistImage = detailState.data.pictureBig)
+                AnimatedImage(
+                    modifier = Modifier
+                        .size(ARTIST_IMG_SIZE)
+                        .clip(RoundedCornerShape(20)),
+                    imageUrl = detailState.data.pictureBig,
+                    onPainterStateSuccess = onPainterStateSuccess
+                )
             }
 
             is DetailState.Error -> {
@@ -139,16 +145,6 @@ private fun ArtistImageSection(
 }
 
 @Composable
-private fun ArtistImage(artistImage: String) {
-    AnimatedImage(
-        modifier = Modifier
-            .size(ARTIST_IMG_SIZE)
-            .clip(RoundedCornerShape(20)),
-        imageUrl = artistImage
-    )
-}
-
-@Composable
 private fun AlbumsSection(
     modifier: Modifier,
     onAlbumClicked: (Long) -> Unit,
@@ -158,8 +154,8 @@ private fun AlbumsSection(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp),
+                .padding(horizontal = 8.dp)
+                .padding(vertical = 16.dp),
             text = "Albums",
             style = MaterialTheme.typography.titleLarge
         )

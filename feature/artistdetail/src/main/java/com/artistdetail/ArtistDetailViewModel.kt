@@ -1,11 +1,14 @@
 package com.artistdetail
 
+import android.graphics.Bitmap
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.designsystem.UiText
+import com.designsystem.utils.UiText
+import com.designsystem.utils.generatePaletteFromImage
 import com.models.ArtistAlbums
 import com.models.ArtistDetail
 import com.usecases.artistdetail.GetArtistAlbumsUseCase
@@ -71,12 +74,27 @@ class ArtistDetailViewModel @Inject constructor(
             }
         }
     }
+
+    fun createPalette(bitmap: Bitmap) {
+        generatePaletteFromImage(
+            bitmap,
+            onResult = { colorList ->
+                _uiState.update {
+                    it.copy(imageColors = colorList)
+                }
+            }
+        )
+    }
 }
 
 data class ArtistDetailUiState(
     val artistName: String = "",
     val detailState: DetailState = DetailState.Loading,
-    val albumsList: Flow<PagingData<ArtistAlbums>>? = null
+    val albumsList: Flow<PagingData<ArtistAlbums>>? = null,
+    val imageColors: List<Color> = listOf(
+        Color.Transparent,
+        Color.Transparent
+    )
 )
 
 sealed interface DetailState {

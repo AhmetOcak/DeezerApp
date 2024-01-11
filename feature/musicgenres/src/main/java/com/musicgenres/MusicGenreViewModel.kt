@@ -2,7 +2,7 @@ package com.musicgenres
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.designsystem.UiText
+import com.designsystem.utils.UiText
 import com.models.Data
 import com.usecases.musicgenres.GetMusicGenresUseCase
 import com.usecases.utils.Response

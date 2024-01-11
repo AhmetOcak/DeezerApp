@@ -65,4 +65,7 @@ dependencies {
     // Coil
     implementation(libs.coil)
     implementation(libs.coil.compose)
+
+    // Palette API
+    implementation(libs.androidx.palette)
 }

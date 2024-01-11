@@ -1,12 +1,15 @@
 package com.albumdetail
 
+import android.graphics.Bitmap
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.designsystem.UiText
+import com.designsystem.utils.UiText
+import com.designsystem.utils.generatePaletteFromImage
 import com.models.FavoriteSongs
 import com.models.albumdetail.AlbumDetails
 import com.usecases.albumdetail.AddFavoriteSongUseCase
@@ -127,7 +130,7 @@ class AlbumDetailViewModel @Inject constructor(
                 when (response) {
                     is Response.Success -> {
                         _uiState.update {
-                            it.copy(userMessages = listOf(UiText.StringResource(R.string.fav_song_added_message)))
+                            it.copy(userMessages = listOf(UiText.DynamicString("The song has been successfully added to favorites.")))
                         }
                     }
 
@@ -227,6 +230,16 @@ class AlbumDetailViewModel @Inject constructor(
         mediaPlayer.release()
     }
 
+    fun createPalette(bitmap: Bitmap) {
+        generatePaletteFromImage(
+            bitmap,
+            onResult = { colorList ->
+                _uiState.update {
+                    it.copy(imageColor = colorList)
+                }
+            }
+        )
+    }
 }
 
 data class AlbumDetailsUiState(
@@ -236,7 +249,11 @@ data class AlbumDetailsUiState(
     val favoriteSongs: List<FavoriteSongs> = listOf(),
     val albumName: String = "",
     val isDatabaseAvailable: Boolean = true,
-    val detailState: DetailsState = DetailsState.Loading
+    val detailState: DetailsState = DetailsState.Loading,
+    val imageColor: List<Color> = listOf(
+        Color.Transparent,
+        Color.Transparent
+    )
 )
 
 sealed interface DetailsState {

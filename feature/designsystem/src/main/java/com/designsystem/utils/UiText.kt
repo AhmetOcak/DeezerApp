@@ -1,4 +1,4 @@
-package com.designsystem
+package com.designsystem.utils
 
 import android.content.Context
 import androidx.annotation.StringRes
