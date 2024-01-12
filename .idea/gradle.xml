@@ -39,6 +39,7 @@
             <option value="$PROJECT_DIR$/feature/designsystem" />
             <option value="$PROJECT_DIR$/feature/favorites" />
             <option value="$PROJECT_DIR$/feature/musicgenres" />
+            <option value="$PROJECT_DIR$/feature/playmusic" />
             <option value="$PROJECT_DIR$/feature/ui" />
             <option value="$PROJECT_DIR$/models" />
           </set>

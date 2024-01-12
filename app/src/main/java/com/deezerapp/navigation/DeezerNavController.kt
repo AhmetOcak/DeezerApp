@@ -19,6 +19,7 @@ object MainDestinations {
     const val GENRE_NAME_KEY = "genre_name"
     const val ARTIST_ID_KEY = "artist_id"
     const val ALBUM_ID_KEY = "album_id"
+    const val PLAY_MUSIC_ROUTE = "play_music_route"
 }
 
 @Composable
@@ -56,6 +57,12 @@ class DeezerNavController(val navController: NavHostController) {
     fun navigateAlbumDetails(id: Long, from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
             navController.navigate("${MainDestinations.ALBUM_DETAILS_ROUTE}/$id")
+        }
+    }
+
+    fun navigatePlayMusic(from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate(MainDestinations.PLAY_MUSIC_ROUTE)
         }
     }
 }

@@ -30,7 +30,7 @@ fun DeezerTopAppBar(
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
     navigationIcon: ImageVector,
     navigationIconTint: Color = MaterialTheme.colorScheme.onSurface,
-    navigationContentDescription: String?,
+    navigationContentDescription: String? = null,
     upPress: () -> Unit
 ) {
     CenterAlignedTopAppBar(

@@ -1,31 +1,28 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     id("kotlin-kapt")
 }
 
 android {
-    namespace = "com.deezerapp"
+    namespace = "com.playmusic"
     compileSdk = ConfigData.compileSdk
 
     defaultConfig {
-        applicationId = "com.deezerapp"
         minSdk = ConfigData.minSdk
-        targetSdk = ConfigData.targetSdk
-        versionCode = ConfigData.versionCode
-        versionName = ConfigData.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
             isMinifyEnabled = BuildTypes.isMinifyEnabled
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -40,11 +37,6 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = ComposeOptions.kotlinCompilerExtensionVersion
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
     }
 }
 
@@ -68,19 +60,11 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    // Navigation
-    implementation(libs.androidx.navigation.compose)
-
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.android.compiler)
 
-    implementation(project(":feature:musicgenres"))
-    implementation(project(":feature:albumdetail"))
-    implementation(project(":feature:artistdetail"))
-    implementation(project(":feature:favorites"))
-    implementation(project(":feature:artists"))
     implementation(project(":feature:designsystem"))
-    implementation(project(":feature:playmusic"))
+    implementation(project(":feature:ui"))
 }

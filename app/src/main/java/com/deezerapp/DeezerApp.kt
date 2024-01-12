@@ -15,6 +15,7 @@ import com.deezerapp.navigation.MainDestinations
 import com.deezerapp.navigation.rememberDeezerNavController
 import com.favorites.FavoritesScreen
 import com.musicgenres.MusicGenresScreen
+import com.playmusic.PlayMusicScreen
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -23,7 +24,7 @@ fun DeezerApp() {
     val deezerNavController = rememberDeezerNavController()
     NavHost(
         navController = deezerNavController.navController,
-        startDestination = MainDestinations.MUSIC_GENRES_ROUTE
+        startDestination = MainDestinations.PLAY_MUSIC_ROUTE
     ) {
         deezerGraph(
             onFavoritesClick = deezerNavController::navigateFavorites,
@@ -83,5 +84,8 @@ private fun NavGraphBuilder.deezerGraph(
     }
     composable(route = MainDestinations.FAVORITES_ROUTE) {
         FavoritesScreen(upPress = remember { { upPress() } })
+    }
+    composable(route = MainDestinations.PLAY_MUSIC_ROUTE) {
+        PlayMusicScreen(upPress = remember { { upPress() } })
     }
 }
