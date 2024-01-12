@@ -1,6 +1,7 @@
 package com.playmusic
 
 import android.graphics.drawable.Drawable
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,6 +50,15 @@ fun PlayMusicScreen(
     viewModel: PlayMusicViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    if (uiState.errorMessages.isNotEmpty()) {
+        Toast.makeText(
+            LocalContext.current,
+            uiState.errorMessages.first().asString(),
+            Toast.LENGTH_SHORT
+        ).show()
+        viewModel.consumedErrorMessages()
+    }
 
     Box(
         modifier = Modifier
@@ -76,7 +87,13 @@ fun PlayMusicScreen(
             onPainterStateSuccess = remember(viewModel) { { viewModel.createPalette(it.toBitmap()) } },
             songName = "This is song name",
             artistName = "Artist",
-            playIconTint = uiState.imageColors.first()
+            playIconTint = uiState.imageColors.first(),
+            onPlayClick = remember(viewModel) { {
+                viewModel.onPlayClick()
+            } },
+            onSkipPreviousClick = {},
+            onSkipNextClick = {},
+            isAudioPlaying = uiState.isAudioPlaying
         )
     }
 }
@@ -88,7 +105,11 @@ private fun PlayMusicContent(
     onPainterStateSuccess: (Drawable) -> Unit,
     songName: String,
     artistName: String,
-    playIconTint: Color
+    playIconTint: Color,
+    onPlayClick: () -> Unit,
+    onSkipPreviousClick: () -> Unit,
+    onSkipNextClick: () -> Unit,
+    isAudioPlaying: Boolean
 ) {
     Column(
         modifier = modifier
@@ -125,19 +146,31 @@ private fun PlayMusicContent(
         Column {
             MusicSlider()
         }
-        PlayerSection(playIconTint = playIconTint)
+        PlayerSection(
+            playIconTint = playIconTint,
+            onPlayClick = onPlayClick,
+            onSkipPreviousClick = onSkipPreviousClick,
+            onSkipNextClick = onSkipNextClick,
+            isAudioPlaying = isAudioPlaying
+        )
     }
 }
 
 @Composable
-private fun PlayerSection(playIconTint: Color) {
+private fun PlayerSection(
+    playIconTint: Color,
+    onPlayClick: () -> Unit,
+    onSkipPreviousClick: () -> Unit,
+    onSkipNextClick: () -> Unit,
+    isAudioPlaying: Boolean
+) {
     val iconSize = 36.dp
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = onSkipPreviousClick) {
             Icon(
                 modifier = Modifier.size(iconSize),
                 imageVector = DeezerIcons.SkipPrevious,
@@ -146,7 +179,7 @@ private fun PlayerSection(playIconTint: Color) {
             )
         }
         OutlinedButton(
-            onClick = { /*TODO*/ },
+            onClick = onPlayClick,
             shape = CircleShape,
             contentPadding = PaddingValues(16.dp),
             colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
@@ -154,12 +187,12 @@ private fun PlayerSection(playIconTint: Color) {
         ) {
             Icon(
                 modifier = Modifier.size(iconSize),
-                imageVector = DeezerIcons.Play,
+                imageVector = if (isAudioPlaying) DeezerIcons.Pause else DeezerIcons.Play,
                 contentDescription = null,
                 tint = playIconTint
             )
         }
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = onSkipNextClick) {
             Icon(
                 modifier = Modifier.size(iconSize),
                 imageVector = DeezerIcons.SkipNext,
@@ -208,7 +241,11 @@ private fun PlayMusicPreview() {
             onPainterStateSuccess = {},
             songName = "This is a preview music name",
             artistName = "Preview artist",
-            playIconTint = Color.Red
+            playIconTint = Color.Red,
+            onPlayClick = {},
+            onSkipPreviousClick = {},
+            onSkipNextClick = {},
+            isAudioPlaying = false
         )
     }
 }
