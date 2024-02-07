@@ -13,6 +13,7 @@ import com.artistdetail.ArtistDetailScreen
 import com.artists.ArtistsScreen
 import com.deezerapp.navigation.MainDestinations
 import com.deezerapp.navigation.rememberDeezerNavController
+import com.designsystem.utils.Music
 import com.favorites.FavoritesScreen
 import com.musicgenres.MusicGenresScreen
 import com.playmusic.PlayMusicScreen
@@ -24,13 +25,14 @@ fun DeezerApp() {
     val deezerNavController = rememberDeezerNavController()
     NavHost(
         navController = deezerNavController.navController,
-        startDestination = MainDestinations.PLAY_MUSIC_ROUTE
+        startDestination = MainDestinations.MUSIC_GENRES_ROUTE
     ) {
         deezerGraph(
             onFavoritesClick = deezerNavController::navigateFavorites,
             onMusicGenreClick = deezerNavController::navigateToArtists,
             onArtistClick = deezerNavController::navigateArtistDetail,
             onAlbumClick = deezerNavController::navigateAlbumDetails,
+            onSongClick = deezerNavController::navigatePlayMusic,
             upPress = deezerNavController::upPress
         )
     }
@@ -41,6 +43,7 @@ private fun NavGraphBuilder.deezerGraph(
     onMusicGenreClick: (Long, String, NavBackStackEntry) -> Unit,
     onArtistClick: (Long, NavBackStackEntry) -> Unit,
     onAlbumClick: (Long, NavBackStackEntry) -> Unit,
+    onSongClick: (Music, NavBackStackEntry) -> Unit,
     upPress: () -> Unit
 ) {
     composable(route = MainDestinations.MUSIC_GENRES_ROUTE) { from ->
@@ -79,13 +82,29 @@ private fun NavGraphBuilder.deezerGraph(
         arguments = listOf(
             navArgument(MainDestinations.ALBUM_ID_KEY) { type = NavType.LongType }
         )
+    ) { from ->
+        AlbumDetailScreen(
+            upPress = remember { { upPress() } },
+            onSongClicked = remember { {
+                onSongClick(it, from)
+            } }
+        )
+    }
+    composable(route = MainDestinations.FAVORITES_ROUTE) { from ->
+        FavoritesScreen(
+            upPress = remember { { upPress() } },
+            onSongClicked = remember { {
+                onSongClick(it, from)
+            } }
+        )
+    }
+    composable(
+        route = MainDestinations.PLAY_MUSIC_ROUTE +
+                "/{${MainDestinations.PLAY_MUSIC_IMG_KEY}}" +
+                "/{${MainDestinations.PLAY_MUSIC_NAME_KEY}}" +
+                "/{${MainDestinations.PLAY_MUSIC_ARTIST_KEY}}" +
+                "/{${MainDestinations.PLAY_MUSIC_AUDIO_URL_KEY}}"
     ) {
-        AlbumDetailScreen(upPress = remember { { upPress() } })
-    }
-    composable(route = MainDestinations.FAVORITES_ROUTE) {
-        FavoritesScreen(upPress = remember { { upPress() } })
-    }
-    composable(route = MainDestinations.PLAY_MUSIC_ROUTE) {
         PlayMusicScreen(upPress = remember { { upPress() } })
     }
 }

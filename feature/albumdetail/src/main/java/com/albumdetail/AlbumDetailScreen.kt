@@ -21,10 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,12 +35,11 @@ import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerScaffold
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
+import com.designsystem.utils.Music
 import com.models.FavoriteSongs
 import com.models.albumdetail.AlbumSong
 import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator
-import com.ui.MusicPlayer
-import com.ui.PlayerHeight
 import com.ui.SongCard
 import kotlin.time.Duration.Companion.seconds
 
@@ -54,7 +50,8 @@ private val ALBUM_IMG_SIZE = 224.dp
 fun AlbumDetailScreen(
     modifier: Modifier = Modifier,
     upPress: () -> Unit,
-    viewModel: AlbumDetailViewModel = hiltViewModel()
+    viewModel: AlbumDetailViewModel = hiltViewModel(),
+    onSongClicked: (Music) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -103,16 +100,13 @@ fun AlbumDetailScreen(
                     isSongAvailableInFavorites = remember(viewModel) { viewModel::isSongAvailableInFavorites },
                     addFavoriteSong = remember(viewModel) { viewModel::addFavoriteSong },
                     removeFavoriteSong = remember(viewModel) { viewModel::removeFavoriteSong },
-                    onPlayAudio = remember(viewModel) { viewModel::playAudio },
-                    onPauseAudio = remember(viewModel) { viewModel::pauseAudio },
-                    onDestroyAudio = remember(viewModel) { viewModel::closeMediaPlayer },
-                    isAudioPlaying = uiState.isAudioPlaying,
                     albumImgUrl = state.data.coverBig,
                     tracks = state.data.tracks.data,
                     gradientColorList = uiState.imageColor,
                     onPainterStateSuccess = remember(viewModel) {
                         { viewModel.createPalette(it.toBitmap()) }
-                    }
+                    },
+                    onSongClicked = onSongClicked
                 )
             }
 
@@ -132,20 +126,12 @@ private fun AlbumDetailScreenContent(
     isSongAvailableInFavorites: (Long) -> Boolean,
     addFavoriteSong: (FavoriteSongs) -> Unit,
     removeFavoriteSong: (Long) -> Unit,
-    onPlayAudio: (String) -> Unit,
-    onPauseAudio: () -> Unit,
-    onDestroyAudio: () -> Unit,
-    isAudioPlaying: Boolean,
     albumImgUrl: String,
     tracks: List<AlbumSong>,
     gradientColorList: List<Color>,
-    onPainterStateSuccess: (Drawable) -> Unit
+    onPainterStateSuccess: (Drawable) -> Unit,
+    onSongClicked: (Music) -> Unit
 ) {
-    var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
-
-    var playingSongName by remember { mutableStateOf("") }
-    var playingSongArtist by remember { mutableStateOf("") }
-
     Column(modifier = modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -173,38 +159,12 @@ private fun AlbumDetailScreenContent(
         SongList(
             modifier = Modifier
                 .weight(3f)
-                .fillMaxSize()
-                .padding(bottom = if (showMusicPlayer) PlayerHeight else 0.dp),
+                .fillMaxSize(),
             songs = tracks,
-            onSongClicked = remember {
-                { musicUrl, songName, songArtist ->
-                    onPlayAudio(musicUrl)
-
-                    playingSongName = songName
-                    playingSongArtist = songArtist
-
-                    if (!showMusicPlayer) {
-                        showMusicPlayer = true
-                    }
-                }
-            },
+            onSongClicked = onSongClicked,
             isSongAvailableInFavorites = isSongAvailableInFavorites,
             addFavoriteSong = addFavoriteSong,
             removeFavoriteSong = removeFavoriteSong
-        )
-    }
-    if (showMusicPlayer) {
-        MusicPlayer(
-            songName = playingSongName,
-            songArtist = playingSongArtist,
-            onCloseClicked = remember {
-                {
-                    onDestroyAudio()
-                    showMusicPlayer = false
-                }
-            },
-            onPlayButtonClicked = { onPauseAudio() },
-            isAudioPlaying = isAudioPlaying
         )
     }
 }
@@ -213,7 +173,7 @@ private fun AlbumDetailScreenContent(
 private fun SongList(
     modifier: Modifier,
     songs: List<AlbumSong>,
-    onSongClicked: (String, String, String) -> Unit,
+    onSongClicked: (Music) -> Unit,
     isSongAvailableInFavorites: (Long) -> Boolean,
     addFavoriteSong: (FavoriteSongs) -> Unit,
     removeFavoriteSong: (Long) -> Unit
@@ -229,7 +189,16 @@ private fun SongList(
                 songName = it.title,
                 duration = "${it.duration.toDouble().seconds}",
                 onSongClicked = remember {
-                    { onSongClicked(it.preview, it.title, it.artist.name) }
+                    {
+                        onSongClicked(
+                            Music(
+                                imageUrl = it.album.coverBig,
+                                name = it.title,
+                                artistName = it.artist.name,
+                                audioUrl = it.preview
+                            )
+                        )
+                    }
                 },
                 onFavouriteBtnClicked = {
                     if (isSongAvailableInFavorites(it.id)) {

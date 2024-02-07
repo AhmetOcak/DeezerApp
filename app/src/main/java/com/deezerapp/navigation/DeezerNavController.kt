@@ -8,6 +8,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.deezerapp.utils.encodeForSafe
+import com.designsystem.utils.Music
 
 object MainDestinations {
     const val MUSIC_GENRES_ROUTE = "music_genres_route"
@@ -20,6 +21,10 @@ object MainDestinations {
     const val ARTIST_ID_KEY = "artist_id"
     const val ALBUM_ID_KEY = "album_id"
     const val PLAY_MUSIC_ROUTE = "play_music_route"
+    const val PLAY_MUSIC_NAME_KEY = "music_name_key"
+    const val PLAY_MUSIC_ARTIST_KEY = "artist_name_key"
+    const val PLAY_MUSIC_IMG_KEY = "album_img_key"
+    const val PLAY_MUSIC_AUDIO_URL_KEY = "music_audio_key"
 }
 
 @Composable
@@ -60,9 +65,12 @@ class DeezerNavController(val navController: NavHostController) {
         }
     }
 
-    fun navigatePlayMusic(from: NavBackStackEntry) {
+    fun navigatePlayMusic(
+        music: Music,
+        from: NavBackStackEntry
+    ) {
         if (shouldNavigate(from)) {
-            navController.navigate(MainDestinations.PLAY_MUSIC_ROUTE)
+            navController.navigate("${MainDestinations.PLAY_MUSIC_ROUTE}/${encodeForSafe(music.imageUrl)}/${encodeForSafe(music.name)}/${encodeForSafe(music.artistName)}/${encodeForSafe(music.audioUrl)}")
         }
     }
 }

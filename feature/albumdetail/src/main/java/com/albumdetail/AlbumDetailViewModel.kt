@@ -1,9 +1,6 @@
 package com.albumdetail
 
 import android.graphics.Bitmap
-import android.media.AudioAttributes
-import android.media.MediaPlayer
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -24,7 +21,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,20 +32,12 @@ class AlbumDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private var mediaPlayer: MediaPlayer = MediaPlayer()
-
     private val _uiState = MutableStateFlow(AlbumDetailsUiState())
     val uiState: StateFlow<AlbumDetailsUiState> = _uiState.asStateFlow()
 
     init {
         getAllFavoriteSongs()
         getAlbumDetails(checkNotNull(savedStateHandle.get<Long>("album_id")))
-
-        mediaPlayer.setAudioAttributes(
-            AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build()
-        )
     }
 
     private fun getAlbumDetails(albumId: Long) {
@@ -152,66 +140,6 @@ class AlbumDetailViewModel @Inject constructor(
         }
     }
 
-    fun playAudio(audioUrl: String) {
-        try {
-            if (mediaPlayer.isPlaying) {
-                setAudioPlaying()
-
-                mediaPlayer.stop()
-                mediaPlayer.reset()
-                mediaPlayer.setDataSource(audioUrl)
-                mediaPlayer.prepare()
-                mediaPlayer.start()
-            } else {
-                setAudioPlaying()
-
-                mediaPlayer.reset()
-                mediaPlayer.setDataSource(audioUrl)
-                mediaPlayer.prepare()
-                mediaPlayer.start()
-            }
-        } catch (e: IOException) {
-            Log.e("MEDIA PLAYER", e.stackTraceToString())
-            _uiState.update {
-                it.copy(
-                    errorMessages = listOf(
-                        UiText.DynamicString(e.message ?: "Something went wrong")
-                    )
-                )
-            }
-        }
-    }
-
-    fun pauseAudio() {
-        if (mediaPlayer.isPlaying) {
-            setAudioNotPlaying()
-            mediaPlayer.pause()
-        } else {
-            setAudioPlaying()
-            mediaPlayer.start()
-        }
-    }
-
-    fun closeMediaPlayer() {
-        setAudioNotPlaying()
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
-            mediaPlayer.reset()
-        }
-    }
-
-    private fun setAudioPlaying() {
-        _uiState.update {
-            it.copy(isAudioPlaying = true)
-        }
-    }
-
-    private fun setAudioNotPlaying() {
-        _uiState.update {
-            it.copy(isAudioPlaying = false)
-        }
-    }
-
     fun consumedErrorMessages() {
         _uiState.update {
             it.copy(errorMessages = listOf())
@@ -222,12 +150,6 @@ class AlbumDetailViewModel @Inject constructor(
         _uiState.update {
             it.copy(userMessages = listOf())
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-
-        mediaPlayer.release()
     }
 
     fun createPalette(bitmap: Bitmap) {
@@ -243,7 +165,6 @@ class AlbumDetailViewModel @Inject constructor(
 }
 
 data class AlbumDetailsUiState(
-    val isAudioPlaying: Boolean = false,
     val errorMessages: List<UiText> = listOf(),
     val userMessages: List<UiText> = listOf(),
     val favoriteSongs: List<FavoriteSongs> = listOf(),

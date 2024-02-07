@@ -22,9 +22,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -35,13 +35,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerScaffold
 import com.designsystem.icons.DeezerIcons
+import kotlinx.coroutines.delay
 
 @Composable
 fun PlayMusicScreen(
@@ -83,17 +83,18 @@ fun PlayMusicScreen(
     ) { paddingValues ->
         PlayMusicContent(
             modifier = Modifier.padding(paddingValues),
-            imageUrl = "https://images.unsplash.com/photo-1493612276216-ee3925520721?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmFuZG9tfGVufDB8fDB8fHww",
+            imageUrl = uiState.albumImg,
             onPainterStateSuccess = remember(viewModel) { { viewModel.createPalette(it.toBitmap()) } },
-            songName = "This is song name",
-            artistName = "Artist",
+            songName = uiState.musicName ?: "",
+            artistName = uiState.artistName ?: "",
             playIconTint = uiState.imageColors.first(),
-            onPlayClick = remember(viewModel) { {
-                viewModel.onPlayClick()
-            } },
-            onSkipPreviousClick = {},
-            onSkipNextClick = {},
-            isAudioPlaying = uiState.isAudioPlaying
+            onPlayClick = remember(viewModel) { viewModel::onPlayClick },
+            onForwardClick = remember(viewModel) { viewModel::seekForwardAudio },
+            onRewindClick = remember(viewModel) { viewModel::seekRewindAudio },
+            isAudioPlaying = uiState.isAudioPlaying,
+            audioDuration = uiState.audioDuration,
+            currentAudioPosition = viewModel.currentAudioPosition,
+            increaseCurrentAudioPosition = remember(viewModel) { viewModel::increaseAudioPosition }
         )
     }
 }
@@ -101,15 +102,18 @@ fun PlayMusicScreen(
 @Composable
 private fun PlayMusicContent(
     modifier: Modifier,
-    imageUrl: String,
+    imageUrl: String?,
     onPainterStateSuccess: (Drawable) -> Unit,
     songName: String,
     artistName: String,
     playIconTint: Color,
     onPlayClick: () -> Unit,
-    onSkipPreviousClick: () -> Unit,
-    onSkipNextClick: () -> Unit,
-    isAudioPlaying: Boolean
+    onForwardClick: () -> Unit,
+    onRewindClick: () -> Unit,
+    isAudioPlaying: Boolean,
+    audioDuration: Int,
+    currentAudioPosition: Int,
+    increaseCurrentAudioPosition: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -118,14 +122,18 @@ private fun PlayMusicContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Card(
-            modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp),
+            modifier = Modifier
+                .size(LocalConfiguration.current.screenWidthDp.dp)
+                .padding(32.dp),
             shape = RoundedCornerShape(16.dp)
         ) {
-            AnimatedImage(
-                modifier = Modifier.fillMaxSize(),
-                imageUrl = imageUrl,
-                onPainterStateSuccess = onPainterStateSuccess
-            )
+            imageUrl?.let {
+                AnimatedImage(
+                    modifier = Modifier.fillMaxSize(),
+                    imageUrl = imageUrl,
+                    onPainterStateSuccess = onPainterStateSuccess
+                )
+            }
         }
         Column {
             Text(
@@ -144,13 +152,18 @@ private fun PlayMusicContent(
             )
         }
         Column {
-            MusicSlider()
+            MusicSlider(
+                isAudioPlaying = isAudioPlaying,
+                audioDuration = audioDuration,
+                currentAudioPosition = currentAudioPosition,
+                increaseCurrentAudioPosition = increaseCurrentAudioPosition
+            )
         }
         PlayerSection(
             playIconTint = playIconTint,
             onPlayClick = onPlayClick,
-            onSkipPreviousClick = onSkipPreviousClick,
-            onSkipNextClick = onSkipNextClick,
+            onForwardClick = onForwardClick,
+            onRewindClick = onRewindClick,
             isAudioPlaying = isAudioPlaying
         )
     }
@@ -160,8 +173,8 @@ private fun PlayMusicContent(
 private fun PlayerSection(
     playIconTint: Color,
     onPlayClick: () -> Unit,
-    onSkipPreviousClick: () -> Unit,
-    onSkipNextClick: () -> Unit,
+    onForwardClick: () -> Unit,
+    onRewindClick: () -> Unit,
     isAudioPlaying: Boolean
 ) {
     val iconSize = 36.dp
@@ -170,10 +183,10 @@ private fun PlayerSection(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = onSkipPreviousClick) {
+        IconButton(onClick = onRewindClick) {
             Icon(
                 modifier = Modifier.size(iconSize),
-                imageVector = DeezerIcons.SkipPrevious,
+                imageVector = DeezerIcons.Rewind,
                 contentDescription = null,
                 tint = Color.White
             )
@@ -192,10 +205,10 @@ private fun PlayerSection(
                 tint = playIconTint
             )
         }
-        IconButton(onClick = onSkipNextClick) {
+        IconButton(onClick = onForwardClick) {
             Icon(
                 modifier = Modifier.size(iconSize),
-                imageVector = DeezerIcons.SkipNext,
+                imageVector = DeezerIcons.Forward,
                 contentDescription = null,
                 tint = Color.White
             )
@@ -204,15 +217,30 @@ private fun PlayerSection(
 }
 
 @Composable
-private fun MusicSlider() {
+private fun MusicSlider(
+    isAudioPlaying: Boolean,
+    audioDuration: Int,
+    currentAudioPosition: Int,
+    increaseCurrentAudioPosition: () -> Unit
+) {
+    LaunchedEffect(isAudioPlaying) {
+        if (isAudioPlaying && currentAudioPosition <= audioDuration) {
+            while (true) {
+                delay(1000)
+                increaseCurrentAudioPosition()
+            }
+        }
+    }
+
     Column {
         Slider(
-            value = 0f,
+            value = currentAudioPosition.toFloat(),
             onValueChange = {},
-            valueRange = 0f..30f,
+            valueRange = 0f..audioDuration.toFloat(),
             colors = SliderDefaults.colors(
                 thumbColor = Color.White,
-                inactiveTrackColor = Color.White.copy(alpha = 0.3f)
+                inactiveTrackColor = Color.White.copy(alpha = 0.3f),
+                activeTrackColor = Color.White
             )
         )
         Row(
@@ -225,27 +253,14 @@ private fun MusicSlider() {
                 color = Color.White.copy(alpha = 0.8f),
                 fontWeight = FontWeight.W400
             )
-            Text(text = "0:00", style = style)
-            Text(text = "0:30", style = style)
+            Text(
+                text = if (currentAudioPosition < 10) {
+                    "0:0$currentAudioPosition"
+                } else {
+                    "0:$currentAudioPosition"
+                }, style = style
+            )
+            Text(text = "0:$audioDuration", style = style)
         }
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun PlayMusicPreview() {
-    Surface {
-        PlayMusicContent(
-            modifier = Modifier,
-            imageUrl = "",
-            onPainterStateSuccess = {},
-            songName = "This is a preview music name",
-            artistName = "Preview artist",
-            playIconTint = Color.Red,
-            onPlayClick = {},
-            onSkipPreviousClick = {},
-            onSkipNextClick = {},
-            isAudioPlaying = false
-        )
     }
 }

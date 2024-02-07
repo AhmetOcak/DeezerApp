@@ -2,10 +2,10 @@ package com.designsystem.icons
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FastForward
+import androidx.compose.material.icons.filled.FastRewind
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
@@ -17,6 +17,6 @@ object DeezerIcons {
     val Play = Icons.Filled.PlayArrow
     val Pause = Icons.Filled.Pause
     val Close = Icons.Filled.Close
-    val SkipNext = Icons.Filled.SkipNext
-    val SkipPrevious = Icons.Filled.SkipPrevious
+    val Forward = Icons.Filled.FastForward
+    val Rewind = Icons.Filled.FastRewind
 }

@@ -3,8 +3,11 @@ package com.playmusic
 import android.graphics.Bitmap
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.designsystem.utils.UiText
 import com.designsystem.utils.generatePaletteFromImage
@@ -14,15 +17,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.io.IOException
+import java.net.URLDecoder
 import javax.inject.Inject
 
 @HiltViewModel
-class PlayMusicViewModel @Inject constructor() : ViewModel() {
+class PlayMusicViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PlayMusicUiState())
     val uiState: StateFlow<PlayMusicUiState> = _uiState.asStateFlow()
 
     private val mediaPlayer: MediaPlayer by lazy { MediaPlayer() }
+
+    var currentAudioPosition: Int by mutableIntStateOf(0)
+        private set
 
     fun createPalette(bitmap: Bitmap) {
         generatePaletteFromImage(
@@ -42,7 +51,18 @@ class PlayMusicViewModel @Inject constructor() : ViewModel() {
                 .build()
         )
 
-        startAudio("https://cdns-preview-f.dzcdn.net/stream/c-f30e22028688f380ae744148406abf59-4.mp3")
+        mediaPlayer.setOnPreparedListener {
+            _uiState.update {
+                it.copy(audioDuration = mediaPlayer.duration / 1000)
+            }
+        }
+
+        mediaPlayer.setOnCompletionListener {
+            setAudioNotPlaying()
+        }
+
+        startAudio(URLDecoder.decode(checkNotNull(savedStateHandle["music_audio_key"]), "UTF-8"))
+        initializeMusicInfo()
     }
 
     fun onPlayClick() {
@@ -52,6 +72,25 @@ class PlayMusicViewModel @Inject constructor() : ViewModel() {
         } else {
             setAudioPlaying()
             mediaPlayer.start()
+        }
+    }
+
+    private fun initializeMusicInfo() {
+        _uiState.update {
+            it.copy(
+                musicName = URLDecoder.decode(
+                    checkNotNull(savedStateHandle["music_name_key"]),
+                    "UTF-8"
+                ),
+                albumImg = URLDecoder.decode(
+                    checkNotNull(savedStateHandle["album_img_key"]),
+                    "UTF-8"
+                ),
+                artistName = URLDecoder.decode(
+                    checkNotNull(savedStateHandle["artist_name_key"]),
+                    "UTF-8"
+                )
+            )
         }
     }
 
@@ -74,7 +113,6 @@ class PlayMusicViewModel @Inject constructor() : ViewModel() {
                 mediaPlayer.start()
             }
         } catch (e: IOException) {
-            Log.e("MEDIA PLAYER", e.stackTraceToString())
             _uiState.update {
                 it.copy(
                     errorMessages = listOf(
@@ -89,12 +127,39 @@ class PlayMusicViewModel @Inject constructor() : ViewModel() {
         _uiState.update {
             it.copy(isAudioPlaying = true)
         }
+        if (mediaPlayer.currentPosition == mediaPlayer.duration) {
+            currentAudioPosition = 0
+        }
     }
 
     private fun setAudioNotPlaying() {
         _uiState.update {
             it.copy(isAudioPlaying = false)
         }
+    }
+
+    fun seekForwardAudio() {
+        if (10 + currentAudioPosition > (mediaPlayer.duration / 1000)) {
+            mediaPlayer.seekTo(mediaPlayer.duration)
+            currentAudioPosition = (mediaPlayer.duration / 1000)
+        } else {
+            mediaPlayer.seekTo((10 + currentAudioPosition) * 1000)
+            currentAudioPosition += 10
+        }
+    }
+
+    fun seekRewindAudio() {
+        if (currentAudioPosition - 10 < 0) {
+            mediaPlayer.seekTo(0)
+            currentAudioPosition = 0
+        } else {
+            mediaPlayer.seekTo((currentAudioPosition - 10) * 1000)
+            currentAudioPosition -= 10
+        }
+    }
+
+    fun increaseAudioPosition() {
+        currentAudioPosition++
     }
 
     fun consumedErrorMessages() {
@@ -112,8 +177,12 @@ class PlayMusicViewModel @Inject constructor() : ViewModel() {
 data class PlayMusicUiState(
     val isAudioPlaying: Boolean = false,
     val errorMessages: List<UiText> = listOf(),
+    val albumImg: String? = null,
+    val musicName: String? = null,
+    val artistName: String? = null,
     val imageColors: List<Color> = listOf(
         Color.Transparent,
         Color.Transparent
-    )
+    ),
+    val audioDuration: Int = 0
 )

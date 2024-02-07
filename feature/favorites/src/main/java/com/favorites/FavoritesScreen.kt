@@ -18,10 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,10 +28,9 @@ import com.designsystem.components.DeezerScaffold
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
+import com.designsystem.utils.Music
 import com.models.FavoriteSongs
 import com.ui.EmptyListBox
-import com.ui.MusicPlayer
-import com.ui.PlayerHeight
 import com.ui.SongCard
 import kotlin.time.Duration.Companion.seconds
 
@@ -45,7 +41,8 @@ private val HEART_SIZE = 196.dp
 fun FavoritesScreen(
     modifier: Modifier = Modifier,
     upPress: () -> Unit,
-    viewModel: FavoritesViewModel = hiltViewModel()
+    viewModel: FavoritesViewModel = hiltViewModel(),
+    onSongClicked: (Music) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -73,11 +70,8 @@ fun FavoritesScreen(
             modifier = Modifier.padding(paddingValues),
             onFavouriteBtnClicked = remember(viewModel) { viewModel::removeFavoriteSong },
             getAllFavoriteSongs = remember(viewModel) { viewModel::getAllFavoriteSongs },
-            onPlayAudio = remember(viewModel) { viewModel::playAudio },
-            onPauseAudio = remember(viewModel) { viewModel::pauseAudio },
-            onDestroyAudio = remember(viewModel) { viewModel::closeMediaPlayer },
-            isAudioPlaying = uiState.isAudioPlaying,
-            favoriteSongsList = uiState.favoriteSongsList
+            favoriteSongsList = uiState.favoriteSongsList,
+            onSongClicked = onSongClicked
         )
     }
 }
@@ -88,17 +82,9 @@ private fun FavoritesScreenContent(
     modifier: Modifier,
     onFavouriteBtnClicked: (Long) -> Unit,
     getAllFavoriteSongs: () -> Unit,
-    onPlayAudio: (String) -> Unit,
-    onPauseAudio: () -> Unit,
-    onDestroyAudio: () -> Unit,
-    isAudioPlaying: Boolean,
-    favoriteSongsList: List<FavoriteSongs>
+    favoriteSongsList: List<FavoriteSongs>,
+    onSongClicked: (Music) -> Unit
 ) {
-    var showMusicPlayer by rememberSaveable { mutableStateOf(false) }
-
-    var playingArtistName by remember { mutableStateOf("") }
-    var playingSongName by remember { mutableStateOf("") }
-
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -118,37 +104,11 @@ private fun FavoritesScreenContent(
         FavoriteSongsList(
             modifier = Modifier
                 .weight(4f)
-                .fillMaxSize()
-                .padding(bottom = if (showMusicPlayer) PlayerHeight else 0.dp),
-            onSongClicked = remember {
-                { musicUrl, artistName, songName ->
-                    onPlayAudio(musicUrl)
-
-                    playingArtistName = artistName
-                    playingSongName = songName
-
-                    if (!showMusicPlayer) {
-                        showMusicPlayer = true
-                    }
-                }
-            },
+                .fillMaxSize(),
+            onSongClicked = onSongClicked,
             favoriteSongsList = favoriteSongsList,
             onFavouriteBtnClicked = onFavouriteBtnClicked,
             getAllFavoriteSongs = getAllFavoriteSongs
-        )
-    }
-    if (showMusicPlayer) {
-        MusicPlayer(
-            songName = playingSongName,
-            songArtist = playingArtistName,
-            onCloseClicked = remember {
-                {
-                    onDestroyAudio()
-                    showMusicPlayer = false
-                }
-            },
-            onPlayButtonClicked = remember { { onPauseAudio() } },
-            isAudioPlaying = isAudioPlaying
         )
     }
 }
@@ -171,7 +131,7 @@ private fun LikesBoard(modifier: Modifier) {
 @Composable
 private fun FavoriteSongsList(
     modifier: Modifier,
-    onSongClicked: (String, String, String) -> Unit,
+    onSongClicked: (Music) -> Unit,
     favoriteSongsList: List<FavoriteSongs>,
     onFavouriteBtnClicked: (Long) -> Unit,
     getAllFavoriteSongs: () -> Unit,
@@ -189,7 +149,16 @@ private fun FavoriteSongsList(
                     duration = "${it.duration.toDouble().seconds}",
                     favoriteIconInitVal = true,
                     onSongClicked = remember {
-                        { onSongClicked(it.audioUrl, it.artistName, it.songName) }
+                        {
+                            onSongClicked(
+                                Music(
+                                    imageUrl = it.songImgUrl,
+                                    name = it.songName,
+                                    artistName = it.artistName,
+                                    audioUrl = it.audioUrl
+                                )
+                            )
+                        }
                     },
                     onFavouriteBtnClicked = remember {
                         { onFavouriteBtnClicked(it.id) }
