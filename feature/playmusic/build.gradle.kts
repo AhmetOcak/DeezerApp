@@ -65,6 +65,9 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.android.compiler)
 
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
     implementation(project(":feature:designsystem"))
     implementation(project(":feature:ui"))
 }

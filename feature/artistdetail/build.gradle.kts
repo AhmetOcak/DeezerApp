@@ -70,6 +70,9 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
     implementation(project(":feature:designsystem"))
     implementation(project(":feature:ui"))
 
