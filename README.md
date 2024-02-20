@@ -28,6 +28,10 @@ The application is developed using the Kotlin language and incorporates Jetpack 
 
 * [Paging 3](https://developer.android.com/topic/libraries/architecture/paging/v3-overview?hl=en)
 
+* [Palette](https://developer.android.com/develop/ui/views/graphics/palette-colors)
+
+* [Lifecycle](https://developer.android.com/jetpack/compose/state#use-other-types-of-state-in-jetpack-compose)
+
 ## Video from app 📱
 
 <div>
