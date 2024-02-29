@@ -36,7 +36,7 @@ The application is developed using the Kotlin language and incorporates Jetpack 
 
 <div>
   
-  <video src='https://github.com/AhmetOcak/DeezerApp/assets/73544434/959b542c-ef5a-4bdc-b94b-69c4f6a576f3' />
+  <video src='https://github.com/AhmetOcak/DeezerApp/assets/73544434/15dc3791-ed5a-4554-ba62-ec11889bf410' />
   
 </div>
 
@@ -50,7 +50,6 @@ The application is developed using the Kotlin language and incorporates Jetpack 
 | Album Detail        | <img src="https://github.com/AhmetOcak/DeezerApp/assets/73544434/f6508ea8-4206-4207-93af-ab648dc426c8" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/DeezerApp/assets/73544434/d4df63dd-03ef-421d-a75d-a92acbbfaff4" width="240" height="480"/>     |
 | Favorites       | <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/e009941b-fbd4-4153-96f5-23fd49d727f3" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/AppcentDeezerApp/assets/73544434/f801affa-a08a-47d7-bccb-0802865fbdad" width="240" height="480"/>     |
 | Play Music       | <img src="https://github.com/AhmetOcak/DeezerApp/assets/73544434/89f05073-21ca-484f-86a3-cc9ce32faef0" width="240" height="480"/>     |  <img src="https://github.com/AhmetOcak/DeezerApp/assets/73544434/5e42a0ab-b128-469b-bf60-a3b4c47f0739" width="240" height="480"/>     |
-
 
 ## Modularization 📦
 
