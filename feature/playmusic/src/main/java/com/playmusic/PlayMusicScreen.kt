@@ -84,17 +84,17 @@ fun PlayMusicScreen(
         PlayMusicContent(
             modifier = Modifier.padding(paddingValues),
             imageUrl = uiState.albumImg,
-            onPainterStateSuccess = remember(viewModel) { { viewModel.createPalette(it.toBitmap()) } },
+            onPainterStateSuccess = remember { { viewModel.createPalette(it.toBitmap()) } },
             songName = uiState.musicName ?: "",
             artistName = uiState.artistName ?: "",
             playIconTint = uiState.imageColors.first(),
-            onPlayClick = remember(viewModel) { viewModel::onPlayClick },
-            onForwardClick = remember(viewModel) { viewModel::seekForwardAudio },
-            onRewindClick = remember(viewModel) { viewModel::seekRewindAudio },
+            onPlayClick = remember { viewModel::onPlayClick },
+            onForwardClick = remember { viewModel::seekForwardAudio },
+            onRewindClick = remember { viewModel::seekRewindAudio },
             isAudioPlaying = uiState.isAudioPlaying,
             audioDuration = uiState.audioDuration,
             currentAudioPosition = viewModel.currentAudioPosition,
-            increaseCurrentAudioPosition = remember(viewModel) { viewModel::increaseAudioPosition }
+            increaseCurrentAudioPosition = remember { viewModel::increaseAudioPosition }
         )
     }
 }

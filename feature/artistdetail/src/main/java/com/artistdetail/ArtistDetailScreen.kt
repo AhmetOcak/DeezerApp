@@ -71,9 +71,7 @@ fun ArtistDetailScreen(
             onAlbumClicked = onArtistClick,
             detailState = uiState.detailState,
             albums = uiState.albumsList?.collectAsLazyPagingItems(),
-            onPainterStateSuccess = remember(viewModel) {
-                { viewModel.createPalette(it.toBitmap()) }
-            },
+            onPainterStateSuccess = remember { { viewModel.createPalette(it.toBitmap()) } },
             gradientColorList = uiState.imageColors
         )
     }

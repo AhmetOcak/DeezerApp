@@ -97,15 +97,13 @@ fun AlbumDetailScreen(
             is DetailsState.Success -> {
                 AlbumDetailScreenContent(
                     modifier = Modifier.padding(paddingValues),
-                    isSongAvailableInFavorites = remember(viewModel) { viewModel::isSongAvailableInFavorites },
-                    addFavoriteSong = remember(viewModel) { viewModel::addFavoriteSong },
-                    removeFavoriteSong = remember(viewModel) { viewModel::removeFavoriteSong },
+                    isSongAvailableInFavorites = remember { viewModel::isSongAvailableInFavorites },
+                    addFavoriteSong = remember { viewModel::addFavoriteSong },
+                    removeFavoriteSong = remember { viewModel::removeFavoriteSong },
                     albumImgUrl = state.data.coverBig,
                     tracks = state.data.tracks.data,
                     gradientColorList = uiState.imageColor,
-                    onPainterStateSuccess = remember(viewModel) {
-                        { viewModel.createPalette(it.toBitmap()) }
-                    },
+                    onPainterStateSuccess = remember { { viewModel.createPalette(it.toBitmap()) } },
                     onSongClicked = onSongClicked
                 )
             }

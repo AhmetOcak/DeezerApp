@@ -68,8 +68,8 @@ fun FavoritesScreen(
     ) { paddingValues ->
         FavoritesScreenContent(
             modifier = Modifier.padding(paddingValues),
-            onFavouriteBtnClicked = remember(viewModel) { viewModel::removeFavoriteSong },
-            getAllFavoriteSongs = remember(viewModel) { viewModel::getAllFavoriteSongs },
+            onFavouriteBtnClicked = remember{ viewModel::removeFavoriteSong },
+            getAllFavoriteSongs = remember { viewModel::getAllFavoriteSongs },
             favoriteSongsList = uiState.favoriteSongsList,
             onSongClicked = onSongClicked
         )

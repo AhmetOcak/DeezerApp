@@ -9,7 +9,6 @@ android {
 
     defaultConfig {
         minSdk = ConfigData.minSdk
-        targetSdk = ConfigData.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -47,10 +46,5 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
 
     implementation(project(":models"))
-
-    implementation(project(":data:musicgenres"))
-    implementation(project(":data:artist"))
-    implementation(project(":data:artistdetail"))
-    implementation(project(":data:albumdetail"))
-    implementation(project(":data:favoritesongs"))
+    implementation(project(":data"))
 }
