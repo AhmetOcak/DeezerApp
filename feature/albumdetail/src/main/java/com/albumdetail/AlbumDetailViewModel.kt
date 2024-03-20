@@ -5,12 +5,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ahmetocak.domain.GetAllFavoriteSongsUseCase
 import com.designsystem.utils.UiText
 import com.designsystem.utils.generatePaletteFromImage
 import com.ahmetocak.domain.albumdetail.AddFavoriteSongUseCase
 import com.ahmetocak.domain.albumdetail.DeleteFavoriteSongUseCase
 import com.ahmetocak.domain.albumdetail.GetAlbumDetailsUseCase
-import com.ahmetocak.domain.albumdetail.GetAllFavoriteSongsUseCase
 import com.ahmetocak.domain.utils.Response
 import com.ahmetocak.models.FavoriteSongs
 import com.ahmetocak.models.AlbumDetails
@@ -74,18 +74,18 @@ class AlbumDetailViewModel @Inject constructor(
 
     private fun getAllFavoriteSongs() {
         viewModelScope.launch(Dispatchers.IO) {
-            getAllFavoriteSongsUseCase().collect { response ->
-                when (response) {
-                    is Response.Success -> {
+            when (val response = getAllFavoriteSongsUseCase()) {
+                is Response.Success -> {
+                    response.data.collect { favoriteSongs ->
                         _uiState.update {
-                            it.copy(favoriteSongs = response.data)
+                            it.copy(favoriteSongs = favoriteSongs)
                         }
                     }
+                }
 
-                    is Response.Error -> {
-                        _uiState.update {
-                            it.copy(isDatabaseAvailable = false)
-                        }
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(isDatabaseAvailable = false)
                     }
                 }
             }
@@ -98,7 +98,7 @@ class AlbumDetailViewModel @Inject constructor(
                 when (response) {
                     is Response.Success -> {
                         _uiState.update {
-                            it.copy(userMessages = listOf())
+                            it.copy(userMessages = listOf(UiText.StringResource(R.string.fav_song_added_message)))
                         }
                     }
 
@@ -118,7 +118,7 @@ class AlbumDetailViewModel @Inject constructor(
                 when (response) {
                     is Response.Success -> {
                         _uiState.update {
-                            it.copy(userMessages = listOf(UiText.DynamicString("The song has been successfully added to favorites.")))
+                            it.copy(userMessages = listOf(UiText.StringResource(R.string.fav_song_removed_message)))
                         }
                     }
 

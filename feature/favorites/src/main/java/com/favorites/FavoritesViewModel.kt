@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.designsystem.utils.UiText
 import com.ahmetocak.domain.favorites.DeleteFavoriteSongUseCase
-import com.ahmetocak.domain.favorites.GetAllFavoriteSongsUseCase
+import com.ahmetocak.domain.GetAllFavoriteSongsUseCase
 import com.ahmetocak.domain.utils.Response
 import com.ahmetocak.models.FavoriteSongs
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,18 +31,18 @@ class FavoritesViewModel @Inject constructor(
 
     fun getAllFavoriteSongs() {
         viewModelScope.launch(Dispatchers.IO) {
-            getAllFavoriteSongsUseCase().collect { response ->
-                when (response) {
-                    is Response.Success -> {
+            when (val response = getAllFavoriteSongsUseCase()) {
+                is Response.Success -> {
+                    response.data.collect { favoriteSongs ->
                         _uiState.update {
-                            it.copy(favoriteSongsList = response.data)
+                            it.copy(favoriteSongsList = favoriteSongs)
                         }
                     }
+                }
 
-                    is Response.Error -> {
-                        _uiState.update {
-                            it.copy(userMessages = listOf(UiText.StringResource(response.errorMessageId)))
-                        }
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(userMessages = listOf(UiText.StringResource(response.errorMessageId)))
                     }
                 }
             }

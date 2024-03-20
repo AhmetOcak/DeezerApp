@@ -24,8 +24,6 @@ googleDaggerHiltAndroid = "2.48"
 javax-inject = "1"
 paging = "3.2.1"
 paging-compose = "3.2.1"
-appcompat = "1.6.1"
-material = "1.11.0"
 lifecycle-runtime-compose = "2.7.0"
 
 [libraries]
@@ -44,7 +42,6 @@ androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", vers
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
-androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-runtime-ktx" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle-runtime-compose" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging-compose" }
@@ -65,8 +62,6 @@ okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject" }
-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

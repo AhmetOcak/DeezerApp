@@ -2,4 +2,5 @@
 <resources>
     <string name="fav_song_added_message">The song has been successfully added to favorites.</string>
     <string name="db_error_message">Favorite songs could not be found. Please try again later.</string>
+    <string name="fav_song_removed_message">"The song has been successfully removed from favorites."</string>
 </resources>

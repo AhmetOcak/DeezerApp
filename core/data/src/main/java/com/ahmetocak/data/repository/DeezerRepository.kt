@@ -13,7 +13,7 @@ interface DeezerRepository {
 
     suspend fun getAlbumDetails(albumId: Long): AlbumDetails
 
-    suspend fun getAllFavoriteSongs(): List<FavoriteSongs>
+    fun getAllFavoriteSongs(): Flow<List<FavoriteSongs>>
 
     suspend fun addFavoriteSong(favoriteSongs: FavoriteSongs)
 

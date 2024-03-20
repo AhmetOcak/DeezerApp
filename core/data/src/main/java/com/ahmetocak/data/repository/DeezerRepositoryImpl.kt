@@ -29,14 +29,14 @@ class DeezerRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDeezerDataSource,
     private val localDataSource: FavoriteSongsLocalDataSource,
     private val deezerApi: DeezerApi
-): DeezerRepository {
+) : DeezerRepository {
 
     override suspend fun getAlbumDetails(albumId: Long): AlbumDetails {
         return remoteDataSource.getAlbumDetails(albumId).toAlbumDetails()
     }
 
-    override suspend fun getAllFavoriteSongs(): List<FavoriteSongs> {
-        return localDataSource.getAllFavoriteSongs().toFavoriteSongsList()
+    override fun getAllFavoriteSongs(): Flow<List<FavoriteSongs>> {
+        return localDataSource.getAllFavoriteSongs().map { it.toFavoriteSongsList() }
     }
 
     override suspend fun addFavoriteSong(favoriteSongs: FavoriteSongs) {
