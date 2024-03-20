@@ -53,16 +53,15 @@ The application is developed using the Kotlin language and incorporates Jetpack 
 
 ## Modularization 📦
 
-<img src="https://github.com/AhmetOcak/DeezerApp/assets/73544434/c3e8b689-215f-46f5-9e97-8118f2270502"/>
+<img src="https://github.com/AhmetOcak/DeezerApp/assets/73544434/03766667-ebdc-48c2-aeef-c23ce844cfcd"/>
  
 * ``:app`` The module responsible for navigation.
 * ``:feature:albumdetail``,``:feature:artistdetail`` ,``:feature:artists`` ,``:feature:favorites`` ,``:feature:musicgenres``, ``:feature:playmusic`` Each module represents a screen.
 * ``:feature:designsystem``  It houses the components and icons present in the application. It sets the theme of the application.
 * ``:feature:ui`` It houses the common components used by screens.
-* ``:models`` It contains the models to be used on the UI side.
-* ``:domain:usecases``  It houses use cases. It serves as a bridge between the data layer's repositories and the UI.
-* ``:data`` It retrieves data from sources and sends it to the UI through the ``:domain:usecase`` module. 
- 
+* ``:core:models`` It contains the models to be used on the UI side.
+* ``:core:domain``  It houses use cases. It serves as a bridge between the data layer's repositories and the UI.
+* ``:core:data`` It retrieves data from sources and sends it to the UI through the ``:core:domain`` module. 
 * ``:core:network``  It sends requests to APIs and processes the returned responses.
 * ``:core:database`` It stores data in a local database using Room.
 
