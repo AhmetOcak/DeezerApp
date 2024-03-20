@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ahmetocak.models.Data
+import com.ahmetocak.models.MusicGenreDetail
 import com.designsystem.R
 import com.designsystem.components.DeezerCircularProgressIndicator
 import com.designsystem.components.DeezerScaffold
@@ -78,7 +78,7 @@ fun MusicGenresScreen(
 private fun CategoryList(
     modifier: Modifier,
     onGenreClicked: (Long, String) -> Unit,
-    musicGenres: List<Data>
+    musicGenres: List<MusicGenreDetail>
 ) {
     LazyVerticalGrid(
         modifier = modifier.fillMaxSize(),
@@ -90,7 +90,7 @@ private fun CategoryList(
         items(musicGenres, key = { it.id }) {
             DeezerResourceCard(
                 onClick = remember { { onGenreClicked(it.id, it.name) } },
-                resourceImgUrl = it.pictureMedium,
+                resourceImgUrl = it.image,
                 resourceName = it.name
             )
         }

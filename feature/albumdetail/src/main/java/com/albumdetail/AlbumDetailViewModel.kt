@@ -13,7 +13,7 @@ import com.ahmetocak.domain.albumdetail.GetAlbumDetailsUseCase
 import com.ahmetocak.domain.albumdetail.GetAllFavoriteSongsUseCase
 import com.ahmetocak.domain.utils.Response
 import com.ahmetocak.models.FavoriteSongs
-import com.ahmetocak.models.albumdetail.AlbumDetails
+import com.ahmetocak.models.AlbumDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

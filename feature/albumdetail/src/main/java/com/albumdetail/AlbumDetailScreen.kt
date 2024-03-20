@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ahmetocak.models.AlbumSong
 import com.ahmetocak.models.FavoriteSongs
-import com.ahmetocak.models.albumdetail.AlbumSong
 import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerScaffold
 import com.designsystem.components.DeezerTopAppBar
@@ -100,8 +100,8 @@ fun AlbumDetailScreen(
                     isSongAvailableInFavorites = remember { viewModel::isSongAvailableInFavorites },
                     addFavoriteSong = remember { viewModel::addFavoriteSong },
                     removeFavoriteSong = remember { viewModel::removeFavoriteSong },
-                    albumImgUrl = state.data.coverBig,
-                    tracks = state.data.tracks.data,
+                    albumImgUrl = state.data.image,
+                    tracks = state.data.tracks.songs,
                     gradientColorList = uiState.imageColor,
                     onPainterStateSuccess = remember { { viewModel.createPalette(it.toBitmap()) } },
                     onSongClicked = onSongClicked
@@ -183,14 +183,14 @@ private fun SongList(
     ) {
         items(songs, key = { it.id }) {
             SongCard(
-                songImageUrl = it.album.coverBig,
+                songImageUrl = it.album.image,
                 songName = it.title,
                 duration = "${it.duration.toDouble().seconds}",
                 onSongClicked = remember {
                     {
                         onSongClicked(
                             Music(
-                                imageUrl = it.album.coverBig,
+                                imageUrl = it.album.image,
                                 name = it.title,
                                 artistName = it.artist.name,
                                 audioUrl = it.preview
@@ -205,7 +205,7 @@ private fun SongList(
                         addFavoriteSong(
                             FavoriteSongs(
                                 id = it.id,
-                                songImgUrl = it.album.coverBig,
+                                songImgUrl = it.album.image,
                                 songName = it.title,
                                 duration = it.duration,
                                 artistName = it.artist.name,

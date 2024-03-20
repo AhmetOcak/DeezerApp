@@ -127,7 +127,7 @@ private fun ArtistImageSection(
                     modifier = Modifier
                         .size(ARTIST_IMG_SIZE)
                         .clip(RoundedCornerShape(20)),
-                    imageUrl = detailState.data.pictureBig,
+                    imageUrl = detailState.data.image,
                     onPainterStateSuccess = onPainterStateSuccess
                 )
             }
@@ -166,7 +166,7 @@ private fun AlbumsSection(
                 items(albums.itemCount, key = albums.itemKey { it.id }) { index ->
                     albums[index]?.let { album ->
                         AlbumCard(
-                            albumImage = album.coverBig,
+                            albumImage = album.image,
                             albumName = album.title,
                             albumId = album.id,
                             albumReleaseDate = album.releaseDate,

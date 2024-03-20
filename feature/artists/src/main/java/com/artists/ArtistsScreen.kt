@@ -86,7 +86,7 @@ private fun ArtistList(
         items(artists, key = { it.id }) {
             DeezerResourceCard(
                 onClick = remember { { onArtistClicked(it.id) } },
-                resourceImgUrl = it.pictureMedium,
+                resourceImgUrl = it.image,
                 resourceName = it.name
             )
         }

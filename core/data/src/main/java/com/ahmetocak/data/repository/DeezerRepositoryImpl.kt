@@ -17,7 +17,7 @@ import com.ahmetocak.models.ArtistAlbums
 import com.ahmetocak.models.ArtistDetail
 import com.ahmetocak.models.FavoriteSongs
 import com.ahmetocak.models.MusicGenre
-import com.ahmetocak.models.albumdetail.AlbumDetails
+import com.ahmetocak.models.AlbumDetails
 import com.ahmetocak.network.datasource.ArtistAlbumsPagingSource
 import com.ahmetocak.network.datasource.RemoteDeezerDataSource
 import com.ahmetocak.network.retrofit.DeezerApi

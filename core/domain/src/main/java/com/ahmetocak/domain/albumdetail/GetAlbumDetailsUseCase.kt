@@ -1,7 +1,7 @@
 package com.ahmetocak.domain.albumdetail
 
 import com.ahmetocak.data.repository.DeezerRepository
-import com.ahmetocak.models.albumdetail.AlbumDetails
+import com.ahmetocak.models.AlbumDetails
 import com.ahmetocak.domain.utils.Response
 import com.ahmetocak.domain.utils.apiCall
 import kotlinx.coroutines.flow.Flow

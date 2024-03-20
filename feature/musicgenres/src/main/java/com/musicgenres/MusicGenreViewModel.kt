@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.designsystem.utils.UiText
 import com.ahmetocak.domain.musicgenres.GetMusicGenresUseCase
 import com.ahmetocak.domain.utils.Response
-import com.ahmetocak.models.Data
+import com.ahmetocak.models.MusicGenreDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,6 +48,6 @@ class MusicGenreViewModel @Inject constructor(
 
 sealed interface MusicGenresUiState {
     object Loading : MusicGenresUiState
-    data class Success(val musicGenresList: List<Data>) : MusicGenresUiState
+    data class Success(val musicGenresList: List<MusicGenreDetail>) : MusicGenresUiState
     data class Error(val message: UiText) : MusicGenresUiState
 }
