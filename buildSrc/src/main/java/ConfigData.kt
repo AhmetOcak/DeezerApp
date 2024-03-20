@@ -9,7 +9,7 @@ object ConfigData {
 }
 
 object BuildTypes {
-    const val isMinifyEnabled = true
+    const val isMinifyEnabled = false
 }
 
 object ComposeOptions {
