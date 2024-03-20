@@ -36,7 +36,7 @@ The application is developed using the Kotlin language and incorporates Jetpack 
 
 <div>
   
-  <video src='https://github.com/AhmetOcak/DeezerApp/assets/73544434/15dc3791-ed5a-4554-ba62-ec11889bf410' />
+  <video src='https://github.com/AhmetOcak/DeezerApp/assets/73544434/d3938ef7-89ed-4bb1-ba2a-92c784e1f779' />
   
 </div>
 
