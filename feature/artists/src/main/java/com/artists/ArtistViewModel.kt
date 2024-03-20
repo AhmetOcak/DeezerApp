@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.designsystem.utils.UiText
-import com.models.ArtistData
-import com.usecases.artists.GetArtistsUseCase
-import com.usecases.utils.Response
+import com.ahmetocak.domain.artists.GetArtistsUseCase
+import com.ahmetocak.domain.utils.Response
+import com.ahmetocak.models.ArtistData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

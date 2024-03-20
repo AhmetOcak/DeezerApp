@@ -3,9 +3,9 @@ package com.musicgenres
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.designsystem.utils.UiText
-import com.models.Data
-import com.usecases.musicgenres.GetMusicGenresUseCase
-import com.usecases.utils.Response
+import com.ahmetocak.domain.musicgenres.GetMusicGenresUseCase
+import com.ahmetocak.domain.utils.Response
+import com.ahmetocak.models.Data
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

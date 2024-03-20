@@ -18,13 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ahmetocak.models.Data
 import com.designsystem.R
 import com.designsystem.components.DeezerCircularProgressIndicator
 import com.designsystem.components.DeezerScaffold
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
-import com.models.Data
 import com.ui.DeezerResourceCard
 import com.ui.ErrorBox
 

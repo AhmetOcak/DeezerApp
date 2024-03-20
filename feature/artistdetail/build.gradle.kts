@@ -74,8 +74,6 @@ dependencies {
 
     implementation(project(":feature:designsystem"))
     implementation(project(":feature:ui"))
-
-    implementation(project(":domain:usecases"))
-
-    implementation(project(":models"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:models"))
 }

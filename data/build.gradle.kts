@@ -52,5 +52,5 @@ dependencies {
 
     implementation(project(":core:network"))
     implementation(project(":core:database"))
-    implementation(project(":models"))
+    implementation(project(":core:models"))
 }

@@ -24,12 +24,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ahmetocak.models.FavoriteSongs
 import com.designsystem.components.DeezerScaffold
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.designsystem.theme.HeartRed
 import com.designsystem.utils.Music
-import com.models.FavoriteSongs
 import com.ui.EmptyListBox
 import com.ui.SongCard
 import kotlin.time.Duration.Companion.seconds

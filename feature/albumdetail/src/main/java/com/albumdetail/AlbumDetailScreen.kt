@@ -31,13 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ahmetocak.models.FavoriteSongs
+import com.ahmetocak.models.albumdetail.AlbumSong
 import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerScaffold
 import com.designsystem.components.DeezerTopAppBar
 import com.designsystem.icons.DeezerIcons
 import com.designsystem.utils.Music
-import com.models.FavoriteSongs
-import com.models.albumdetail.AlbumSong
 import com.ui.ErrorBox
 import com.ui.FullScreenProgIndicator
 import com.ui.SongCard

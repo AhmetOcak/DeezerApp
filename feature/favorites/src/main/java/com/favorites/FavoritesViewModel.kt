@@ -3,10 +3,10 @@ package com.favorites
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.designsystem.utils.UiText
-import com.models.FavoriteSongs
-import com.usecases.favorites.DeleteFavoriteSongUseCase
-import com.usecases.favorites.GetAllFavoriteSongsUseCase
-import com.usecases.utils.Response
+import com.ahmetocak.domain.favorites.DeleteFavoriteSongUseCase
+import com.ahmetocak.domain.favorites.GetAllFavoriteSongsUseCase
+import com.ahmetocak.domain.utils.Response
+import com.ahmetocak.models.FavoriteSongs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

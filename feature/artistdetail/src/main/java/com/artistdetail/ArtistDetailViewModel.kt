@@ -9,11 +9,11 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.designsystem.utils.UiText
 import com.designsystem.utils.generatePaletteFromImage
-import com.models.ArtistAlbums
-import com.models.ArtistDetail
-import com.usecases.artistdetail.GetArtistAlbumsUseCase
-import com.usecases.artistdetail.GetArtistDetailUseCase
-import com.usecases.utils.Response
+import com.ahmetocak.domain.artistdetail.GetArtistAlbumsUseCase
+import com.ahmetocak.domain.artistdetail.GetArtistDetailUseCase
+import com.ahmetocak.domain.utils.Response
+import com.ahmetocak.models.ArtistAlbums
+import com.ahmetocak.models.ArtistDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
