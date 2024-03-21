@@ -9,7 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.designsystem.utils.UiText
+import com.ahmetocak.common.UiText
 import com.designsystem.utils.generatePaletteFromImage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

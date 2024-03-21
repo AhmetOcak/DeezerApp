@@ -51,4 +51,6 @@ dependencies {
 
     // Paging 3
     implementation(libs.androidx.paging.runtime)
+
+    implementation(project(":core:common"))
 }

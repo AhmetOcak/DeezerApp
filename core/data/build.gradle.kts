@@ -48,4 +48,5 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:database"))
     implementation(project(":core:models"))
+    implementation(project(":core:common"))
 }

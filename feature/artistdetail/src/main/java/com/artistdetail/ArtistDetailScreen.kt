@@ -32,8 +32,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.ahmetocak.common.UiText
 import com.ahmetocak.models.ArtistAlbums
-import com.designsystem.utils.UiText
 import com.designsystem.components.AnimatedImage
 import com.designsystem.components.DeezerCircularProgressIndicator
 import com.designsystem.components.DeezerScaffold

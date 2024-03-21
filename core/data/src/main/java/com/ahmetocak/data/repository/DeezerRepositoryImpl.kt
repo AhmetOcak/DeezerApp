@@ -4,6 +4,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.ahmetocak.common.Response
+import com.ahmetocak.common.mapResponse
 import com.ahmetocak.data.mapper.toAlbumDetails
 import com.ahmetocak.data.mapper.toArtist
 import com.ahmetocak.data.mapper.toArtistAlbums
@@ -31,28 +33,33 @@ class DeezerRepositoryImpl @Inject constructor(
     private val deezerApi: DeezerApi
 ) : DeezerRepository {
 
-    override suspend fun getAlbumDetails(albumId: Long): AlbumDetails {
-        return remoteDataSource.getAlbumDetails(albumId).toAlbumDetails()
+    override suspend fun getAlbumDetails(albumId: Long): Response<AlbumDetails> {
+        return remoteDataSource.getAlbumDetails(albumId).mapResponse { it.toAlbumDetails() }
     }
 
-    override fun getAllFavoriteSongs(): Flow<List<FavoriteSongs>> {
-        return localDataSource.getAllFavoriteSongs().map { it.toFavoriteSongsList() }
+    override suspend fun getAllFavoriteSongs(): Response<Flow<List<FavoriteSongs>>> {
+        return localDataSource.getAllFavoriteSongs()
+            .mapResponse {
+                it.map { value ->
+                    value.toFavoriteSongsList()
+                }
+            }
     }
 
-    override suspend fun addFavoriteSong(favoriteSongs: FavoriteSongs) {
+    override suspend fun addFavoriteSong(favoriteSongs: FavoriteSongs): Response<Unit> {
         return localDataSource.addFavoriteSong(favoriteSongs.toFavoriteSongsEntity())
     }
 
-    override suspend fun removeFavoriteSong(songId: Long) {
+    override suspend fun removeFavoriteSong(songId: Long): Response<Unit> {
         return localDataSource.removeFavoriteSong(songId)
     }
 
-    override suspend fun getArtists(genreId: Long): Artist {
-        return remoteDataSource.getArtists(genreId).toArtist()
+    override suspend fun getArtists(genreId: Long): Response<Artist> {
+        return remoteDataSource.getArtists(genreId).mapResponse { it.toArtist() }
     }
 
-    override suspend fun getArtistDetails(artistId: Long): ArtistDetail {
-        return remoteDataSource.getArtistDetails(artistId).toArtistDetail()
+    override suspend fun getArtistDetails(artistId: Long): Response<ArtistDetail> {
+        return remoteDataSource.getArtistDetails(artistId).mapResponse { it.toArtistDetail() }
     }
 
     override fun getArtistAlbums(artistId: Long): Flow<PagingData<ArtistAlbums>> {
@@ -69,7 +76,7 @@ class DeezerRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMusicGenres(): MusicGenre {
-        return remoteDataSource.getMusicGenres().toMusicGenre()
+    override suspend fun getMusicGenres(): Response<MusicGenre> {
+        return remoteDataSource.getMusicGenres().mapResponse { it.toMusicGenre() }
     }
 }

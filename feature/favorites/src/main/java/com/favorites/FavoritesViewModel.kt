@@ -2,13 +2,13 @@ package com.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.designsystem.utils.UiText
+import com.ahmetocak.common.Response
+import com.ahmetocak.common.UiText
 import com.ahmetocak.domain.favorites.DeleteFavoriteSongUseCase
 import com.ahmetocak.domain.GetAllFavoriteSongsUseCase
-import com.ahmetocak.domain.utils.Response
 import com.ahmetocak.models.FavoriteSongs
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
     private val getAllFavoriteSongsUseCase: GetAllFavoriteSongsUseCase,
-    private val deleteFavoriteSongUseCase: DeleteFavoriteSongUseCase
+    private val deleteFavoriteSongUseCase: DeleteFavoriteSongUseCase,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavoritesUiState())
@@ -30,7 +31,7 @@ class FavoritesViewModel @Inject constructor(
     }
 
     fun getAllFavoriteSongs() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             when (val response = getAllFavoriteSongsUseCase()) {
                 is Response.Success -> {
                     response.data.collect { favoriteSongs ->
@@ -42,7 +43,7 @@ class FavoritesViewModel @Inject constructor(
 
                 is Response.Error -> {
                     _uiState.update {
-                        it.copy(userMessages = listOf(UiText.StringResource(response.errorMessageId)))
+                        it.copy(userMessages = listOf(response.errorMessage))
                     }
                 }
             }
@@ -50,19 +51,17 @@ class FavoritesViewModel @Inject constructor(
     }
 
     fun removeFavoriteSong(songId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            deleteFavoriteSongUseCase(songId).collect { response ->
-                when (response) {
-                    is Response.Success -> {
-                        _uiState.update {
-                            it.copy(userMessages = listOf(UiText.StringResource(R.string.fav_song_removed_message)))
-                        }
+        viewModelScope.launch(ioDispatcher) {
+            when (val response = deleteFavoriteSongUseCase(songId)) {
+                is Response.Success -> {
+                    _uiState.update {
+                        it.copy(userMessages = listOf(UiText.StringResource(R.string.fav_song_removed_message)))
                     }
+                }
 
-                    is Response.Error -> {
-                        _uiState.update {
-                            it.copy(userMessages = listOf(UiText.StringResource(response.errorMessageId)))
-                        }
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(userMessages = listOf(response.errorMessage))
                     }
                 }
             }

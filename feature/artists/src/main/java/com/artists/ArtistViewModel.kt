@@ -3,12 +3,12 @@ package com.artists
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.designsystem.utils.UiText
+import com.ahmetocak.common.Response
+import com.ahmetocak.common.UiText
 import com.ahmetocak.domain.artists.GetArtistsUseCase
-import com.ahmetocak.domain.utils.Response
 import com.ahmetocak.models.ArtistData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -17,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ArtistViewModel @Inject constructor(
     private val getArtistsUseCase: GetArtistsUseCase,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<ArtistUiState>(ArtistUiState.Loading)
@@ -28,18 +29,15 @@ class ArtistViewModel @Inject constructor(
     }
 
     private fun getArtists(genreId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             _uiState.value = ArtistUiState.Loading
-            getArtistsUseCase(genreId).collect { response ->
-                when (response) {
-                    is Response.Success -> {
-                        _uiState.value = ArtistUiState.Success(artistList = response.data.data)
-                    }
+            when (val response = getArtistsUseCase(genreId)) {
+                is Response.Success -> {
+                    _uiState.value = ArtistUiState.Success(artistList = response.data.data)
+                }
 
-                    is Response.Error -> {
-                        _uiState.value =
-                            ArtistUiState.Error(message = UiText.StringResource(response.errorMessageId))
-                    }
+                is Response.Error -> {
+                    _uiState.value = ArtistUiState.Error(message = response.errorMessage)
                 }
             }
         }

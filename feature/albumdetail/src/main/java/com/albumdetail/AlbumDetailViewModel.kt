@@ -5,17 +5,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ahmetocak.common.Response
+import com.ahmetocak.common.UiText
 import com.ahmetocak.domain.GetAllFavoriteSongsUseCase
-import com.designsystem.utils.UiText
 import com.designsystem.utils.generatePaletteFromImage
 import com.ahmetocak.domain.albumdetail.AddFavoriteSongUseCase
 import com.ahmetocak.domain.albumdetail.DeleteFavoriteSongUseCase
 import com.ahmetocak.domain.albumdetail.GetAlbumDetailsUseCase
-import com.ahmetocak.domain.utils.Response
 import com.ahmetocak.models.FavoriteSongs
 import com.ahmetocak.models.AlbumDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +29,8 @@ class AlbumDetailViewModel @Inject constructor(
     private val getAllFavoriteSongsUseCase: GetAllFavoriteSongsUseCase,
     private val addFavoriteSongUseCase: AddFavoriteSongUseCase,
     private val deleteFavoriteSongUseCase: DeleteFavoriteSongUseCase,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AlbumDetailsUiState())
@@ -41,31 +42,23 @@ class AlbumDetailViewModel @Inject constructor(
     }
 
     private fun getAlbumDetails(albumId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             _uiState.update {
                 it.copy(detailState = DetailsState.Loading)
             }
-            getAlbumDetailsUseCase(albumId).collect { response ->
-                when (response) {
-                    is Response.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                albumName = response.data.title,
-                                detailState = DetailsState.Success(response.data)
-                            )
-                        }
+            when (val response = getAlbumDetailsUseCase(albumId)) {
+                is Response.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            albumName = response.data.title,
+                            detailState = DetailsState.Success(response.data)
+                        )
                     }
+                }
 
-                    is Response.Error -> {
-                        _uiState.update {
-                            it.copy(
-                                detailState = DetailsState.Error(
-                                    message = UiText.StringResource(
-                                        response.errorMessageId
-                                    )
-                                )
-                            )
-                        }
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(detailState = DetailsState.Error(message = response.errorMessage))
                     }
                 }
             }
@@ -73,7 +66,7 @@ class AlbumDetailViewModel @Inject constructor(
     }
 
     private fun getAllFavoriteSongs() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             when (val response = getAllFavoriteSongsUseCase()) {
                 is Response.Success -> {
                     response.data.collect { favoriteSongs ->
@@ -93,19 +86,17 @@ class AlbumDetailViewModel @Inject constructor(
     }
 
     fun addFavoriteSong(favoriteSongs: FavoriteSongs) {
-        viewModelScope.launch(Dispatchers.IO) {
-            addFavoriteSongUseCase(favoriteSongs).collect { response ->
-                when (response) {
-                    is Response.Success -> {
-                        _uiState.update {
-                            it.copy(userMessages = listOf(UiText.StringResource(R.string.fav_song_added_message)))
-                        }
+        viewModelScope.launch(ioDispatcher) {
+            when (val response = addFavoriteSongUseCase(favoriteSongs)) {
+                is Response.Success -> {
+                    _uiState.update {
+                        it.copy(userMessages = listOf(UiText.StringResource(R.string.fav_song_added_message)))
                     }
+                }
 
-                    is Response.Error -> {
-                        _uiState.update {
-                            it.copy(errorMessages = listOf(UiText.StringResource(response.errorMessageId)))
-                        }
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(errorMessages = listOf(response.errorMessage))
                     }
                 }
             }
@@ -113,19 +104,17 @@ class AlbumDetailViewModel @Inject constructor(
     }
 
     fun removeFavoriteSong(songId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            deleteFavoriteSongUseCase(songId).collect { response ->
-                when (response) {
-                    is Response.Success -> {
-                        _uiState.update {
-                            it.copy(userMessages = listOf(UiText.StringResource(R.string.fav_song_removed_message)))
-                        }
+        viewModelScope.launch(ioDispatcher) {
+            when (val response = deleteFavoriteSongUseCase(songId)) {
+                is Response.Success -> {
+                    _uiState.update {
+                        it.copy(userMessages = listOf(UiText.StringResource(R.string.fav_song_removed_message)))
                     }
+                }
 
-                    is Response.Error -> {
-                        _uiState.update {
-                            it.copy(errorMessages = listOf(UiText.StringResource(response.errorMessageId)))
-                        }
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(errorMessages = listOf(response.errorMessage))
                     }
                 }
             }

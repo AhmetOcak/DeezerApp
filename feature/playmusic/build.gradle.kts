@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(project(":core:common"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -70,4 +71,5 @@ dependencies {
 
     implementation(project(":feature:designsystem"))
     implementation(project(":feature:ui"))
+    implementation(project(":core:common"))
 }

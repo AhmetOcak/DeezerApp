@@ -2,12 +2,12 @@ package com.musicgenres
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.designsystem.utils.UiText
+import com.ahmetocak.common.Response
+import com.ahmetocak.common.UiText
 import com.ahmetocak.domain.musicgenres.GetMusicGenresUseCase
-import com.ahmetocak.domain.utils.Response
 import com.ahmetocak.models.MusicGenreDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MusicGenreViewModel @Inject constructor(
-    private val getMusicGenresUseCase: GetMusicGenresUseCase
+    private val getMusicGenresUseCase: GetMusicGenresUseCase,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MusicGenresUiState>(MusicGenresUiState.Loading)
@@ -27,19 +28,16 @@ class MusicGenreViewModel @Inject constructor(
     }
 
     private fun getMusicGenres() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             _uiState.value = MusicGenresUiState.Loading
-            getMusicGenresUseCase().collect { response ->
-                when (response) {
-                    is Response.Success -> {
-                        _uiState.value =
-                            MusicGenresUiState.Success(musicGenresList = response.data.data)
-                    }
+            when (val response = getMusicGenresUseCase()) {
+                is Response.Success -> {
+                    _uiState.value =
+                        MusicGenresUiState.Success(musicGenresList = response.data.data)
+                }
 
-                    is Response.Error -> {
-                        _uiState.value =
-                            MusicGenresUiState.Error(message = UiText.StringResource(response.errorMessageId))
-                    }
+                is Response.Error -> {
+                    _uiState.value = MusicGenresUiState.Error(message = response.errorMessage)
                 }
             }
         }

@@ -76,4 +76,5 @@ dependencies {
     implementation(project(":feature:ui"))
     implementation(project(":core:domain"))
     implementation(project(":core:models"))
+    implementation(project(":core:common"))
 }

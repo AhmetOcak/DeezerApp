@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.favorites"
+    namespace = "com.ahmetocak.common"
     compileSdk = ConfigData.compileSdk
 
     defaultConfig {
@@ -51,26 +51,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.preview)
     implementation(libs.androidx.compose.material3)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-
     // Hilt
     implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.android.compiler)
-
-    // Lifecycle
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    implementation(project(":feature:designsystem"))
-    implementation(project(":feature:ui"))
-    implementation(project(":core:domain"))
-    implementation(project(":core:models"))
-    implementation(project(":core:common"))
 }
