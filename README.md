@@ -53,7 +53,7 @@ The application is developed using the Kotlin language and incorporates Jetpack 
 
 ## Modularization 📦
 
-<img src="https://github.com/AhmetOcak/DeezerApp/assets/73544434/03766667-ebdc-48c2-aeef-c23ce844cfcd"/>
+<img src="https://github.com/AhmetOcak/DeezerApp/assets/73544434/42d768b5-cb84-4909-b41a-4cc2fe084cdf"/>
  
 * ``:app`` The module responsible for navigation.
 * ``:feature:albumdetail``,``:feature:artistdetail`` ,``:feature:artists`` ,``:feature:favorites`` ,``:feature:musicgenres``, ``:feature:playmusic`` Each module represents a screen.
@@ -64,6 +64,7 @@ The application is developed using the Kotlin language and incorporates Jetpack 
 * ``:core:data`` It retrieves data from sources and sends it to the UI through the ``:core:domain`` module. 
 * ``:core:network``  It sends requests to APIs and processes the returned responses.
 * ``:core:database`` It stores data in a local database using Room.
+* ``:core:common`` Stores common classes shared between modules.
 
 ## Architecture 🏗
 The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional flow of data, separation of concern, testability, and a lot more.
